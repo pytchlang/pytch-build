@@ -28,3 +28,7 @@ class ProjectCommit:
         if not self.has_identifier_slug:
             raise ValueError(f"commit {self.oid} has no identifier-slug")
         return self.maybe_identifier_slug
+
+    @cached_property
+    def is_base(self):
+        return bool(re.match(r'\{base\}', self.message_subject))
