@@ -10,6 +10,19 @@ class TestProjectAsset:
         pa = TH.ProjectAsset(fname, data)
         assert str(pa) == '<ProjectAsset "alien.png": 19 bytes>'
 
+    def test_from_delta(self, this_raw_repo):
+        commit_adding_file = this_raw_repo["d8496bd73702"]
+        parent_commit = this_raw_repo[commit_adding_file.parent_ids[0]]
+        diff = this_raw_repo.diff(a=parent_commit.tree,
+                                  b=commit_adding_file.tree)
+        deltas = list(diff.deltas)
+        assert len(deltas) == 1
+        delta = deltas[0]
+
+        pa = TH.ProjectAsset.from_delta(this_raw_repo, delta)
+        assert pa.path == "boing/project-assets/graphics/alien.png"
+        assert pa.data == b"This is not a real PNG file!"
+
 
 class TestProjectCommit:
     def test_short_oid(self, this_raw_repo):
