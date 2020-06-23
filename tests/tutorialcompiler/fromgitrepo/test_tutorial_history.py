@@ -20,3 +20,11 @@ class TestProjectCommit:
         assert pc.maybe_identifier_slug is None
         with pytest.raises(ValueError, match="commit .* has no identifier"):
             pc.identifier_slug
+
+    def test_base_detection_yes(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "84f5bb76")
+        assert pc.is_base
+
+    def test_base_detection_no(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "c936f83f")
+        assert not pc.is_base
