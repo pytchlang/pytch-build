@@ -3,6 +3,14 @@ import pytest
 import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history as TH
 
 
+class TestProjectAsset:
+    def test_str(self):
+        fname = "alien.png"
+        data = b"not-a-real-PNG-file"
+        pa = TH.ProjectAsset(fname, data)
+        assert str(pa) == '<ProjectAsset "alien.png": 19 bytes>'
+
+
 class TestProjectCommit:
     def test_short_oid(self, this_raw_repo):
         # Construct commit from shorter-than-short oid:
