@@ -1,4 +1,5 @@
 import re
+import pygit2
 from dataclasses import dataclass
 from cached_property import cached_property
 
@@ -13,6 +14,13 @@ class ProjectAsset:
     def __str__(self):
         return ('<ProjectAsset "{}": {} bytes>'
                 .format(self.path, len(self.data)))
+
+    @classmethod
+    def from_delta(cls, repo, delta):
+        if delta.status != pygit2.GIT_DELTA_ADDED:
+            raise ValueError("delta is not of type ADDED")
+
+        return cls(delta.new_file.path, repo[delta.new_file.id].data)
 
 
 ################################################################################
