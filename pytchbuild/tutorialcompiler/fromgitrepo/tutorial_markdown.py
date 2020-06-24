@@ -22,6 +22,16 @@ class ShortcodeProcessor(markdown.blockprocessors.BlockProcessor):
                           "data-slug": re_match.group(2)})
 
 
+class ShortcodeExtension(markdown.extensions.Extension):
+    def extendMarkdown(self, md):
+        # Not sure what priority is appropriate; 20 seems to work.
+        md.parser.blockprocessors.register(
+            ShortcodeProcessor(md.parser),
+            'shortcode',
+            20
+        )
+
+
 def soup_from_markdown_text(markdown_text):
     html = markdown.markdown(markdown_text)
     soup = BeautifulSoup(html, "html.parser")
