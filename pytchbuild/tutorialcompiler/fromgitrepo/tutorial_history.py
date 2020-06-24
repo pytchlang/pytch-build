@@ -61,3 +61,18 @@ class ProjectCommit:
     @cached_property
     def is_base(self):
         return bool(re.match(r'\{base\}', self.message_subject))
+
+    @cached_property
+    def diff_against_parent_or_empty(self):
+        # If there is at least one parent, use the first one's tree as the
+        # "tree" argument to pygit2.Tree.diff_to_tree().  If there is no parent,
+        # we must be a root commit, in which case we want to compute the diff
+        # against an empty tree, which is diff_to_tree()'s behaviour if no
+        # "tree" arg given.
+        parent_ids = self.commit.parent_ids
+        diff_args = (
+            (self.repo[parent_ids[0]].tree,)
+            if parent_ids
+            else ()
+        )
+        return self.commit.tree.diff_to_tree(*diff_args, swap=True)
