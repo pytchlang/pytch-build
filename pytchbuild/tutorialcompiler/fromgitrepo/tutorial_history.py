@@ -225,3 +225,7 @@ class ProjectHistory:
         commit = self.commit_from_slug[slug]
         code_blob = commit.tree / self.python_code_path
         return code_blob.data.decode("utf-8")
+
+    def code_patch_against_parent(self, slug):
+        commit = self.commit_from_slug[slug]
+        return commit.code_patch_against_parent
