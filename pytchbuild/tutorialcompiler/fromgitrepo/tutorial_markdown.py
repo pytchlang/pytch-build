@@ -33,6 +33,6 @@ class ShortcodeExtension(markdown.extensions.Extension):
 
 
 def soup_from_markdown_text(markdown_text):
-    html = markdown.markdown(markdown_text)
+    html = markdown.markdown(markdown_text, extensions=[ShortcodeExtension()])
     soup = BeautifulSoup(html, "html.parser")
     return soup
