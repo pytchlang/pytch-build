@@ -161,3 +161,6 @@ class TestProjectHistory:
 
     def test_top_level_directory_name(self, project_history):
         assert project_history.top_level_directory_name == "boing"
+
+    def test_python_code_path(self, project_history):
+        assert project_history.python_code_path == "boing/code.py"
