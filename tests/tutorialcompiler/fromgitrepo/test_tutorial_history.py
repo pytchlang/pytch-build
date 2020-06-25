@@ -1,5 +1,6 @@
 import pytest
 
+import pygit2
 import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history as TH
 
 
@@ -54,3 +55,14 @@ class TestProjectCommit:
     def test_base_detection_no(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "c936f83f")
         assert not pc.is_base
+
+    def test_diff_against_parent_or_empty(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "fd166346")
+        diff = pc.diff_against_parent_or_empty
+        assert len(diff) == 1
+        delta = list(diff.deltas)[0]
+        assert delta.status == pygit2.GIT_DELTA_MODIFIED
+
+    def test_diff_against_parent_or_empty_root_commit(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "156e4b616fce")
+        assert len(pc.diff_against_parent_or_empty) == 0
