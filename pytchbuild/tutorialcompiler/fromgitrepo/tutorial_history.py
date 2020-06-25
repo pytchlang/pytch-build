@@ -220,3 +220,8 @@ class ProjectHistory:
             for pc in self.project_commits
             if pc.has_identifier_slug
         }
+
+    def code_text_from_slug(self, slug):
+        commit = self.commit_from_slug[slug]
+        code_blob = commit.tree / self.python_code_path
+        return code_blob.data.decode("utf-8")
