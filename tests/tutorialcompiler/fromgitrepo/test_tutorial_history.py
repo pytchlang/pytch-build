@@ -164,3 +164,7 @@ class TestProjectHistory:
 
     def test_python_code_path(self, project_history):
         assert project_history.python_code_path == "boing/code.py"
+
+    def test_assets(self, project_history):
+        got_paths = [a.path for a in project_history.all_project_assets]
+        assert got_paths == ["boing/project-assets/graphics/alien.png"]
