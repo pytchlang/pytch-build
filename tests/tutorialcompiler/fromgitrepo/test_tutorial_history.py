@@ -43,6 +43,10 @@ class TestProjectCommit:
         pc = TH.ProjectCommit(this_raw_repo, oid)
         assert pc.summary_label == exp_summary
 
+    def test_str(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "ae1fea2")
+        assert str(pc) == "<ProjectCommit: ae1fea2c9f21 BASE>"
+
     def test_message_subject(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "ae1fea2c9f21")
         assert pc.message_subject == "{base} Add empty code file"
