@@ -39,6 +39,9 @@ class ProjectCommit:
         self.commit = repo[oid]
         self.oid = self.commit.id
 
+    def __str__(self):
+        return f"<ProjectCommit: {self.short_oid} {self.summary_label}>"
+
     @cached_property
     def short_oid(self):
         return self.oid.hex[:12]
