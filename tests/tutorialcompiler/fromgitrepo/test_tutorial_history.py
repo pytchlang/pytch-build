@@ -113,3 +113,14 @@ class TestProjectCommit:
         pc = TH.ProjectCommit(this_raw_repo, "ae1fea2")
         with pytest.raises(ValueError, match="not of type MODIFIED"):
             pc.sole_modify_against_parent
+
+    def test_added_assets_one_asset(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "d8496bd7")
+        got_assets = pc.added_assets
+        assert len(got_assets) == 1
+        assert got_assets[0].path == "boing/project-assets/graphics/alien.png"
+        assert got_assets[0].data == b"This is not a real PNG file!"
+
+    def test_added_assets_no_assets(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "fd166346")
+        assert pc.added_assets == []
