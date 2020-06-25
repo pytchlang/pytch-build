@@ -1,6 +1,7 @@
 import re
 import pathlib
 import pygit2
+import itertools
 from dataclasses import dataclass
 from cached_property import cached_property
 
@@ -186,6 +187,11 @@ class ProjectHistory:
             oid = project_commits[-1].commit.parent_ids[0]
             project_commits.append(ProjectCommit(self.repo, oid))
         return project_commits
+
+    @cached_property
+    def all_project_assets(self):
+        commits_assets = (c.added_assets for c in self.project_commits)
+        return list(itertools.chain.from_iterable(commits_assets))
 
     @cached_property
     def top_level_directory_name(self):
