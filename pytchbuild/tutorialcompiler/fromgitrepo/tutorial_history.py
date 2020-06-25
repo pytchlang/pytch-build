@@ -1,3 +1,4 @@
+import re
 from cached_property import cached_property
 
 
@@ -12,3 +13,18 @@ class ProjectCommit:
     @cached_property
     def message_subject(self):
         return self.commit.message.split('\n')[0]
+
+    @cached_property
+    def maybe_identifier_slug(self):
+        m = re.match(r'\{\#([^ ]+)\}', self.message_subject)
+        return m and m.group(1)
+
+    @cached_property
+    def has_identifier_slug(self):
+        return self.maybe_identifier_slug is not None
+
+    @cached_property
+    def identifier_slug(self):
+        if not self.has_identifier_slug:
+            raise ValueError(f"commit {self.oid} has no identifier-slug")
+        return self.maybe_identifier_slug
