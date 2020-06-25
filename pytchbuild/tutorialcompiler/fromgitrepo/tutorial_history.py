@@ -15,6 +15,10 @@ class ProjectCommit:
         return self.oid.hex[:12]
 
     @cached_property
+    def tree(self):
+        return self.commit.tree
+
+    @cached_property
     def message_subject(self):
         return self.commit.message.split('\n')[0]
 
