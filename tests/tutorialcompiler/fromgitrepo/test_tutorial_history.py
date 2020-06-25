@@ -165,6 +165,12 @@ class TestProjectHistory:
     def test_python_code_path(self, project_history):
         assert project_history.python_code_path == "boing/code.py"
 
+    def test_commit_from_slug(self, project_history):
+        assert len(project_history.commit_from_slug) == 2
+        got_oid = project_history.commit_from_slug["add-Alien-skeleton"].oid
+        exp_oid = "e41e02c9be0398f0a89e275da6edf5d3110add54"
+        assert str(got_oid) == exp_oid
+
     def test_assets(self, project_history):
         got_paths = [a.path for a in project_history.all_project_assets]
         assert got_paths == ["boing/project-assets/graphics/alien.png"]
