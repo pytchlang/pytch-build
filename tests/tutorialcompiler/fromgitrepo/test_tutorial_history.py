@@ -83,3 +83,17 @@ class TestProjectCommit:
     def test_diff_against_parent_or_empty_root_commit(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "156e4b616fce")
         assert len(pc.diff_against_parent_or_empty) == 0
+
+    def test_sole_modify_against_parent(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "e41e02c9be03")
+        assert pc.sole_modify_against_parent.old_file.path == "boing/code.py"
+
+    def test_sole_modify_against_parent_not_sole(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "c2642880a6fc")
+        with pytest.raises(ValueError, match="not have exactly one"):
+            pc.sole_modify_against_parent
+
+    def test_sole_modify_against_parent_not_modified(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "ae1fea2")
+        with pytest.raises(ValueError, match="not of type MODIFIED"):
+            pc.sole_modify_against_parent
