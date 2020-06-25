@@ -201,3 +201,8 @@ class ProjectHistory:
         only_entry = entries[0]
 
         return only_entry.name
+
+    @cached_property
+    def python_code_path(self):
+        dirname = self.top_level_directory_name
+        return f"{dirname}/{CODE_FILE_BASENAME}"
