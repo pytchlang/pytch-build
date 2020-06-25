@@ -73,6 +73,14 @@ class TestProjectCommit:
         with pytest.raises(ValueError, match="but also has"):
             pc.adds_project_assets
 
+    def test_modifies_tutorial_text_yes(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "e1655214c662")
+        assert pc.modifies_tutorial_text
+
+    def test_modifies_tutorial_text_no(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "e41e02c9be03")
+        assert not pc.modifies_tutorial_text
+
     def test_diff_against_parent_or_empty(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "fd166346")
         diff = pc.diff_against_parent_or_empty
