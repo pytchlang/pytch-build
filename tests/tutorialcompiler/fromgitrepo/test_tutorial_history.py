@@ -1,4 +1,5 @@
 import pytest
+import re
 
 import pygit2
 import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history as TH
@@ -174,3 +175,7 @@ class TestProjectHistory:
     def test_assets(self, project_history):
         got_paths = [a.path for a in project_history.all_project_assets]
         assert got_paths == ["boing/project-assets/graphics/alien.png"]
+
+    def test_code_text_from_slug(self, project_history):
+        text = project_history.code_text_from_slug("add-Alien-skeleton")
+        assert re.match(r"^import.*pass$", text, re.DOTALL)
