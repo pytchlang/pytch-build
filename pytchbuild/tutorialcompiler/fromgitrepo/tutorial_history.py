@@ -104,3 +104,13 @@ class ProjectCommit:
                              f" has other deltas")
 
         return bool(deltas_adding_assets)
+
+    @cached_property
+    def sole_modify_against_parent(self):
+        diff = self.diff_against_parent_or_empty
+        if len(diff) != 1:
+            raise ValueError(f"commit {self.oid} does not have exactly one delta")
+        delta = list(diff.deltas)[0]
+        if delta.status != pygit2.GIT_DELTA_MODIFIED:
+            raise ValueError(f"commit {self.oid}'s delta is not of type MODIFIED")
+        return delta
