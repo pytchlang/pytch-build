@@ -212,3 +212,11 @@ class ProjectHistory:
     def python_code_path(self):
         dirname = self.top_level_directory_name
         return f"{dirname}/{CODE_FILE_BASENAME}"
+
+    @cached_property
+    def commit_from_slug(self):
+        return {
+            pc.identifier_slug: pc
+            for pc in self.project_commits
+            if pc.has_identifier_slug
+        }
