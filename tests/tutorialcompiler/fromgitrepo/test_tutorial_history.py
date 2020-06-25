@@ -179,3 +179,9 @@ class TestProjectHistory:
     def test_code_text_from_slug(self, project_history):
         text = project_history.code_text_from_slug("add-Alien-skeleton")
         assert re.match(r"^import.*pass$", text, re.DOTALL)
+
+    def test_code_patch(self, project_history):
+        patch = project_history.code_patch_against_parent("add-Alien-skeleton")
+        context, n_adds, n_dels = patch.line_stats
+        assert n_adds == 4
+        assert n_dels == 0
