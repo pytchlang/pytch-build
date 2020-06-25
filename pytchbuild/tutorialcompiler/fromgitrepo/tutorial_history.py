@@ -8,6 +8,7 @@ from cached_property import cached_property
 ################################################################################
 
 PROJECT_ASSET_DIRNAME = "project-assets"
+TUTORIAL_TEXT_FILE_BASENAME = "tutorial.md"
 
 
 ################################################################################
@@ -82,6 +83,16 @@ class ProjectCommit:
             else ()
         )
         return self.commit.tree.diff_to_tree(*diff_args, swap=True)
+
+    @cached_property
+    def modifies_tutorial_text(self):
+        try:
+            delta = self.sole_modify_against_parent
+        except ValueError:
+            return False
+
+        path_of_modified_file = pathlib.Path(delta.old_file.path)
+        return path_of_modified_file.name == TUTORIAL_TEXT_FILE_BASENAME
 
     @staticmethod
     def path_is_a_project_asset(path_str):
