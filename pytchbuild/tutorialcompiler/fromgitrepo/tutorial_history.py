@@ -11,6 +11,10 @@ class ProjectCommit:
         self.oid = self.commit.id
 
     @cached_property
+    def short_oid(self):
+        return self.oid.hex[:12]
+
+    @cached_property
     def message_subject(self):
         return self.commit.message.split('\n')[0]
 
