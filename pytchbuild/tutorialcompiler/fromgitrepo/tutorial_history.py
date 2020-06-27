@@ -214,6 +214,11 @@ class ProjectHistory:
         return f"{dirname}/{CODE_FILE_BASENAME}"
 
     @cached_property
+    def tutorial_text_path(self):
+        dirname = self.top_level_directory_name
+        return f"{dirname}/{TUTORIAL_TEXT_FILE_BASENAME}"
+
+    @cached_property
     def commit_from_slug(self):
         return {
             pc.identifier_slug: pc
