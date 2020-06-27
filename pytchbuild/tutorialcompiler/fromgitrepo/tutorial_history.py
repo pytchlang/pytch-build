@@ -219,6 +219,12 @@ class ProjectHistory:
         return f"{dirname}/{TUTORIAL_TEXT_FILE_BASENAME}"
 
     @cached_property
+    def tutorial_text(self):
+        final_tree = self.project_commits[0].tree
+        text_blob = final_tree / self.tutorial_text_path
+        return text_blob.data.decode("utf-8")
+
+    @cached_property
     def commit_from_slug(self):
         return {
             pc.identifier_slug: pc
