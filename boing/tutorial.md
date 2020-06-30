@@ -1,6 +1,6 @@
 # Boing!
 
-This is a fun game.
+This is a fun game.  It comes from "Code the Classics".
 
 You can see how it turns out:
 
