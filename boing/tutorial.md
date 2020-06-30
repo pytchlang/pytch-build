@@ -2,6 +2,15 @@
 
 This is a fun game.
 
+You can see how it turns out:
+
+{{< run-finished-project >}}
+
+Hope you enjoy making it!
+
+
+----------------------------------------------------------------
+
 
 ## First we set up the skeleton
 
