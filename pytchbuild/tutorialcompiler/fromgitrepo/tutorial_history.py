@@ -1,5 +1,14 @@
 import re
+from dataclasses import dataclass
 from cached_property import cached_property
+
+
+################################################################################
+
+@dataclass
+class ProjectAsset:
+    path: str
+    data: bytes
 
 
 ################################################################################
