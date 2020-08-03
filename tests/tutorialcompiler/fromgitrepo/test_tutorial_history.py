@@ -172,6 +172,9 @@ class TestProjectHistory:
     def test_tutorial_text(self, project_history):
         assert re.match(r"# Boing!", project_history.tutorial_text)
 
+    def test_final_code_text(self, project_history):
+        assert re.match(r"import pytch", project_history.final_code_text)
+
     def test_commit_from_slug(self, project_history):
         assert len(project_history.commit_from_slug) == 2
         got_oid = project_history.commit_from_slug["add-Alien-skeleton"].oid
