@@ -169,3 +169,20 @@ class ProjectCommit:
         old_blob = self.repo[delta.old_file.id]
         new_blob = self.repo[delta.new_file.id]
         return old_blob.diff(new_blob)
+
+
+################################################################################
+
+class ProjectHistory:
+    def __init__(self, repo_directory, tip_revision):
+        self.repo = pygit2.Repository(repo_directory)
+        tip_oid = self.repo.revparse_single(tip_revision).oid
+        self.project_commits = self.commit_linear_ancestors(tip_oid)
+
+    def commit_linear_ancestors(self, tip_oid):
+        project_commits = [ProjectCommit(self.repo, tip_oid)]
+        while not project_commits[-1].is_base:
+            # TODO: Handle merges (more than one parent).
+            oid = project_commits[-1].commit.parent_ids[0]
+            project_commits.append(ProjectCommit(self.repo, oid))
+        return project_commits
