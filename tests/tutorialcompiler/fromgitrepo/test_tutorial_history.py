@@ -152,3 +152,9 @@ class TestProjectCommit:
         pc = TH.ProjectCommit(this_raw_repo, "d8496bd7")
         with pytest.raises(ValueError, match="does not modify the Python code"):
             pc.code_patch_against_parent
+
+
+class TestProjectHistory:
+    def test_project_commits(self, project_history):
+        # Fairly weak test, to avoid having to keep updating it.
+        assert len(project_history.project_commits) >= 4
