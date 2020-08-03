@@ -166,6 +166,9 @@ class TestProjectHistory:
     def test_python_code_path(self, project_history):
         assert project_history.python_code_path == "boing/code.py"
 
+    def test_tutorial_text_path(self, project_history):
+        assert project_history.tutorial_text_path == "boing/tutorial.md"
+
     def test_commit_from_slug(self, project_history):
         assert len(project_history.commit_from_slug) == 2
         got_oid = project_history.commit_from_slug["add-Alien-skeleton"].oid
