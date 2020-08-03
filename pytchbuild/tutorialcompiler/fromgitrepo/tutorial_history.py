@@ -70,6 +70,15 @@ class ProjectCommit:
     def is_base(self):
         return bool(re.match(r'\{base\}', self.message_subject))
 
+    def modifies_single_file(self, target_basename):
+        try:
+            delta = self.sole_modify_against_parent
+        except ValueError:
+            return False
+
+        path_of_modified_file = pathlib.Path(delta.old_file.path)
+        return path_of_modified_file.name == target_basename
+
     @cached_property
     def diff_against_parent_or_empty(self):
         # If there is at least one parent, use the first one's tree as the
