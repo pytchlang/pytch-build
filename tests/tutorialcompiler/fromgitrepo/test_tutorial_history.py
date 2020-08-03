@@ -56,6 +56,23 @@ class TestProjectCommit:
         pc = TH.ProjectCommit(this_raw_repo, "c936f83f")
         assert not pc.is_base
 
+    def test_whether_adds_assets_yes(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "9b4081817626")
+        assert pc.adds_project_assets
+
+    def test_whether_adds_assets_no(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "e41e02c9be03")
+        assert not pc.adds_project_assets
+
+    def test_whether_adds_assets_root_commit(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "156e4b616fce")
+        assert not pc.adds_project_assets
+
+    def test_whether_adds_assets_error(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "019fc857")
+        with pytest.raises(ValueError, match="but also has"):
+            pc.adds_project_assets
+
     def test_diff_against_parent_or_empty(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "fd166346")
         diff = pc.diff_against_parent_or_empty
