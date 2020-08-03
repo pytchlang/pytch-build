@@ -186,3 +186,18 @@ class ProjectHistory:
             oid = project_commits[-1].commit.parent_ids[0]
             project_commits.append(ProjectCommit(self.repo, oid))
         return project_commits
+
+    @cached_property
+    def top_level_directory_name(self):
+        # 'project_commits' has the tip as the first element:
+        final_tree = self.project_commits[0].tree
+
+        entries = list(final_tree)
+        n_entries = len(entries)
+        if n_entries != 1:
+            raise ValueError(
+                f"top-level tree has {n_entries} entries (expecting just one)"
+            )
+        only_entry = entries[0]
+
+        return only_entry.name
