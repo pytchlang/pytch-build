@@ -31,6 +31,22 @@ class TestProjectCommit:
         pc = TH.ProjectCommit(this_raw_repo, "ae1fea2")
         assert pc.short_oid == "ae1fea2c9f21"
 
+    @pytest.mark.parametrize(
+        "oid, exp_summary",
+        [
+            ("ae1fea2c", "BASE"),
+            ("e1655214", "tutorial-text"),
+            ("e41e02c9", "#add-Alien-skeleton"),
+            ("9b408181", 'assets("boing/project-assets/graphics/alien.png")'),
+        ])
+    def test_summary_label(self, this_raw_repo, oid, exp_summary):
+        pc = TH.ProjectCommit(this_raw_repo, oid)
+        assert pc.summary_label == exp_summary
+
+    def test_str(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "ae1fea2")
+        assert str(pc) == "<ProjectCommit: ae1fea2c9f21 BASE>"
+
     def test_message_subject(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "ae1fea2c9f21")
         assert pc.message_subject == "{base} Add empty code file"

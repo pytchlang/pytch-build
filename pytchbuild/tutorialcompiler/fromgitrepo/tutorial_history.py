@@ -39,9 +39,27 @@ class ProjectCommit:
         self.commit = repo[oid]
         self.oid = self.commit.id
 
+    def __str__(self):
+        return f"<ProjectCommit: {self.short_oid} {self.summary_label}>"
+
     @cached_property
     def short_oid(self):
         return self.oid.hex[:12]
+
+    @cached_property
+    def summary_label(self):
+        if self.has_identifier_slug:
+            return f"#{self.identifier_slug}"
+        if self.modifies_python_code:
+            return "untagged-Python-change"
+        if self.is_base:
+            return "BASE"
+        if self.adds_project_assets:
+            asset_paths = ", ".join(f'"{a.path}"' for a in self.added_assets)
+            return f"assets({asset_paths})"
+        if self.modifies_tutorial_text:
+            return "tutorial-text"
+        return "?? unknown ??"
 
     @cached_property
     def tree(self):
