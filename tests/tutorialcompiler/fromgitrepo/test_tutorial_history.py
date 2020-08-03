@@ -81,6 +81,14 @@ class TestProjectCommit:
         pc = TH.ProjectCommit(this_raw_repo, "e41e02c9be03")
         assert not pc.modifies_tutorial_text
 
+    def test_modifies_python_code_yes(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "e41e02c9be03")
+        assert pc.modifies_python_code
+
+    def test_modifies_python_code_no(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "9b4081817626")
+        assert not pc.modifies_python_code
+
     def test_diff_against_parent_or_empty(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "fd166346")
         diff = pc.diff_against_parent_or_empty
