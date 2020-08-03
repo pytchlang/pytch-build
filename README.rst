@@ -12,3 +12,4 @@ To set up a virtualenv for development and testing::
 
   virtualenv -p python3 venv
   source venv/bin/activate
+  pip install tox
