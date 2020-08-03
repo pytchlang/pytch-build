@@ -158,3 +158,6 @@ class TestProjectHistory:
     def test_project_commits(self, project_history):
         # Fairly weak test, to avoid having to keep updating it.
         assert len(project_history.project_commits) >= 4
+
+    def test_top_level_directory_name(self, project_history):
+        assert project_history.top_level_directory_name == "boing"
