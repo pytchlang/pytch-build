@@ -1,3 +1,28 @@
+"""Representation of a tutorial within a Git repo
+
+The files making up the tutorial should all live within a top-level directory
+named for the tutorial.  Using "bunner" as an example tutorial name, the
+structure should be::
+
+   bunner/
+      tutorial.md
+      code.py
+      project-assets/
+         images/
+            rabbit.png
+            car.png
+            ...etc...
+         sounds/
+            squish.mp3
+            ...etc...
+
+Internally, the relevant piece of Git history is represented by a
+:py:class:`ProjectHistory` instance.  The commits within that history are
+represented by :py:class:`ProjectCommit` instances, which should be of one of a
+handful of particular forms.  The project's assets (images or sounds) are
+represented by :py:class:`ProjectAsset` instances.
+"""
+
 import re
 import pathlib
 import pygit2
@@ -17,6 +42,9 @@ TUTORIAL_TEXT_FILE_BASENAME = "tutorial.md"
 
 @dataclass
 class ProjectAsset:
+    """An asset (graphics or sound) used in the tutorial's project
+    """
+
     path: str
     data: bytes
 
@@ -26,6 +54,8 @@ class ProjectAsset:
 
     @classmethod
     def from_delta(cls, repo, delta):
+        """Construct a :py:class:`ProjectAsset` from a Git delta
+        """
         if delta.status != pygit2.GIT_DELTA_ADDED:
             raise ValueError("delta is not of type ADDED")
 
@@ -35,6 +65,28 @@ class ProjectAsset:
 ################################################################################
 
 class ProjectCommit:
+    """An individual commit within a tutorial's history
+
+    Constructed from a ``pygit2.Repository`` and an ``oid``, which can be an
+    SHA1 string.
+
+    Should be one of the following types:
+
+    Unique base commit
+       The 'initial empty state' commit of the project.
+
+    Update to project's Python code
+       Modifies the project's ``code.py`` file.  Such a commit should have a
+       *tag*, i.e., its commit subject should start with a string like
+       ``{#check-for-winning}``.
+
+    Update to tutorial text
+       Modifies the tutorial text, held in the ``tutorial.md`` file.
+
+    Addition of project asset or assets
+       Adds one or more files within the ``project-assets`` directory.
+    """
+
     def __init__(self, repo, oid):
         self.repo = repo
         self.commit = repo[oid]
@@ -175,6 +227,9 @@ class ProjectCommit:
 ################################################################################
 
 class ProjectHistory:
+    """Development history of a Pytch project within a tutorial context
+    """
+
     def __init__(self, repo_directory, tip_revision):
         self.repo = pygit2.Repository(repo_directory)
         tip_oid = self.repo.revparse_single(tip_revision).oid
@@ -190,11 +245,17 @@ class ProjectHistory:
 
     @cached_property
     def all_project_assets(self):
+        """List of all assets added during the history of the project
+        """
         commits_assets = (c.added_assets for c in self.project_commits)
         return list(itertools.chain.from_iterable(commits_assets))
 
     @cached_property
     def top_level_directory_name(self):
+        """The sole directory at top level of the repo
+
+        In the example, ``bunner``.
+        """
         # 'project_commits' has the tip as the first element:
         final_tree = self.project_commits[0].tree
 
@@ -220,12 +281,22 @@ class ProjectHistory:
 
     @cached_property
     def tutorial_text(self):
+        """The final tutorial text
+
+        In the example, the contents of the file ``bunner/tutorial.md`` as of
+        the tip commit from which the :py:class:`ProjectHistory` was constructed.
+        """
         final_tree = self.project_commits[0].tree
         text_blob = final_tree / self.tutorial_text_path
         return text_blob.data.decode("utf-8")
 
     @cached_property
     def final_code_text(self):
+        """The final Python code
+
+        In the example, the contents of the file ``bunner/code.py`` as of the
+        tip commit from which the :py:class:`ProjectHistory` was constructed.
+        """
         final_tree = self.project_commits[0].tree
         code_blob = final_tree / self.python_code_path
         return code_blob.data.decode("utf-8")
@@ -239,6 +310,8 @@ class ProjectHistory:
         }
 
     def code_text_from_slug(self, slug):
+        """The contents of ``code.py`` as of the commit tagged with the given *slug*
+        """
         commit = self.commit_from_slug[slug]
         code_blob = commit.tree / self.python_code_path
         return code_blob.data.decode("utf-8")
