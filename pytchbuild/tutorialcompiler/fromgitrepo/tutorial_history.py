@@ -10,6 +10,10 @@ class ProjectAsset:
     path: str
     data: bytes
 
+    def __str__(self):
+        return ('<ProjectAsset "{}": {} bytes>'
+                .format(self.path, len(self.data)))
+
 
 ################################################################################
 
