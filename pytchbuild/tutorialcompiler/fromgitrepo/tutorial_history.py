@@ -1,7 +1,15 @@
 import re
+import pathlib
 import pygit2
 from dataclasses import dataclass
 from cached_property import cached_property
+
+
+################################################################################
+
+PROJECT_ASSET_DIRNAME = "project-assets"
+CODE_FILE_BASENAME = "code.py"
+TUTORIAL_TEXT_FILE_BASENAME = "tutorial.md"
 
 
 ################################################################################
@@ -61,3 +69,67 @@ class ProjectCommit:
     @cached_property
     def is_base(self):
         return bool(re.match(r'\{base\}', self.message_subject))
+
+    def modifies_single_file(self, target_basename):
+        try:
+            delta = self.sole_modify_against_parent
+        except ValueError:
+            return False
+
+        path_of_modified_file = pathlib.Path(delta.old_file.path)
+        return path_of_modified_file.name == target_basename
+
+    @cached_property
+    def diff_against_parent_or_empty(self):
+        # If there is at least one parent, use the first one's tree as the
+        # "tree" argument to pygit2.Tree.diff_to_tree().  If there is no parent,
+        # we must be a root commit, in which case we want to compute the diff
+        # against an empty tree, which is diff_to_tree()'s behaviour if no
+        # "tree" arg given.
+        parent_ids = self.commit.parent_ids
+        diff_args = (
+            (self.repo[parent_ids[0]].tree,)
+            if parent_ids
+            else ()
+        )
+        return self.commit.tree.diff_to_tree(*diff_args, swap=True)
+
+    @cached_property
+    def modifies_tutorial_text(self):
+        return self.modifies_single_file(TUTORIAL_TEXT_FILE_BASENAME)
+
+    @cached_property
+    def modifies_python_code(self):
+        return self.modifies_single_file(CODE_FILE_BASENAME)
+
+    @staticmethod
+    def path_is_a_project_asset(path_str):
+        return pathlib.Path(path_str).parts[1] == PROJECT_ASSET_DIRNAME
+
+    @cached_property
+    def adds_project_assets(self):
+        deltas_adding_assets = []
+        other_deltas = []
+
+        for delta in self.diff_against_parent_or_empty.deltas:
+            if (delta.status == pygit2.GIT_DELTA_ADDED
+                    and self.path_is_a_project_asset(delta.new_file.path)):
+                deltas_adding_assets.append(delta)
+            else:
+                other_deltas.append(delta)
+
+        if deltas_adding_assets and other_deltas:
+            raise ValueError(f"commit {self.oid} adds project assets but also"
+                             f" has other deltas")
+
+        return bool(deltas_adding_assets)
+
+    @cached_property
+    def sole_modify_against_parent(self):
+        diff = self.diff_against_parent_or_empty
+        if len(diff) != 1:
+            raise ValueError(f"commit {self.oid} does not have exactly one delta")
+        delta = list(diff.deltas)[0]
+        if delta.status != pygit2.GIT_DELTA_MODIFIED:
+            raise ValueError(f"commit {self.oid}'s delta is not of type MODIFIED")
+        return delta
