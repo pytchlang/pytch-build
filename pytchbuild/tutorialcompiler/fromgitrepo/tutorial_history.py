@@ -8,6 +8,7 @@ from cached_property import cached_property
 ################################################################################
 
 PROJECT_ASSET_DIRNAME = "project-assets"
+CODE_FILE_BASENAME = "code.py"
 TUTORIAL_TEXT_FILE_BASENAME = "tutorial.md"
 
 
@@ -93,6 +94,16 @@ class ProjectCommit:
 
         path_of_modified_file = pathlib.Path(delta.old_file.path)
         return path_of_modified_file.name == TUTORIAL_TEXT_FILE_BASENAME
+
+    @cached_property
+    def modifies_python_code(self):
+        try:
+            delta = self.sole_modify_against_parent
+        except ValueError:
+            return False
+
+        path_of_modified_file = pathlib.Path(delta.old_file.path)
+        return path_of_modified_file.name == CODE_FILE_BASENAME
 
     @staticmethod
     def path_is_a_project_asset(path_str):
