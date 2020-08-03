@@ -8,6 +8,8 @@ with open('README.rst') as readme_file:
 requirements = [
     'cached_property',
     'pygit2>=1.2.1',
+    'Markdown>=3.2.2',
+    'beautifulsoup4>=4.9.1',
 ]
 
 setup(
