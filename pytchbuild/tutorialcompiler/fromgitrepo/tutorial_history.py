@@ -1,7 +1,13 @@
 import re
+import pathlib
 import pygit2
 from dataclasses import dataclass
 from cached_property import cached_property
+
+
+################################################################################
+
+PROJECT_ASSET_DIRNAME = "project-assets"
 
 
 ################################################################################
@@ -76,3 +82,7 @@ class ProjectCommit:
             else ()
         )
         return self.commit.tree.diff_to_tree(*diff_args, swap=True)
+
+    @staticmethod
+    def path_is_a_project_asset(path_str):
+        return pathlib.Path(path_str).parts[1] == PROJECT_ASSET_DIRNAME
