@@ -133,3 +133,21 @@ class ProjectCommit:
         if delta.status != pygit2.GIT_DELTA_MODIFIED:
             raise ValueError(f"commit {self.oid}'s delta is not of type MODIFIED")
         return delta
+
+    @cached_property
+    def added_assets(self):
+        if self.adds_project_assets:
+            return [ProjectAsset.from_delta(self.repo, delta)
+                    for delta in self.diff_against_parent_or_empty.deltas]
+        else:
+            return []
+
+    @cached_property
+    def code_patch_against_parent(self):
+        if not self.modifies_python_code:
+            raise ValueError(f"commit {self.oid} does not modify the Python code")
+
+        delta = self.sole_modify_against_parent
+        old_blob = self.repo[delta.old_file.id]
+        new_blob = self.repo[delta.new_file.id]
+        return old_blob.diff(new_blob)
