@@ -1,6 +1,7 @@
 import re
 import pathlib
 import pygit2
+import itertools
 from dataclasses import dataclass
 from cached_property import cached_property
 
@@ -169,3 +170,79 @@ class ProjectCommit:
         old_blob = self.repo[delta.old_file.id]
         new_blob = self.repo[delta.new_file.id]
         return old_blob.diff(new_blob)
+
+
+################################################################################
+
+class ProjectHistory:
+    def __init__(self, repo_directory, tip_revision):
+        self.repo = pygit2.Repository(repo_directory)
+        tip_oid = self.repo.revparse_single(tip_revision).oid
+        self.project_commits = self.commit_linear_ancestors(tip_oid)
+
+    def commit_linear_ancestors(self, tip_oid):
+        project_commits = [ProjectCommit(self.repo, tip_oid)]
+        while not project_commits[-1].is_base:
+            # TODO: Handle merges (more than one parent).
+            oid = project_commits[-1].commit.parent_ids[0]
+            project_commits.append(ProjectCommit(self.repo, oid))
+        return project_commits
+
+    @cached_property
+    def all_project_assets(self):
+        commits_assets = (c.added_assets for c in self.project_commits)
+        return list(itertools.chain.from_iterable(commits_assets))
+
+    @cached_property
+    def top_level_directory_name(self):
+        # 'project_commits' has the tip as the first element:
+        final_tree = self.project_commits[0].tree
+
+        entries = list(final_tree)
+        n_entries = len(entries)
+        if n_entries != 1:
+            raise ValueError(
+                f"top-level tree has {n_entries} entries (expecting just one)"
+            )
+        only_entry = entries[0]
+
+        return only_entry.name
+
+    @cached_property
+    def python_code_path(self):
+        dirname = self.top_level_directory_name
+        return f"{dirname}/{CODE_FILE_BASENAME}"
+
+    @cached_property
+    def tutorial_text_path(self):
+        dirname = self.top_level_directory_name
+        return f"{dirname}/{TUTORIAL_TEXT_FILE_BASENAME}"
+
+    @cached_property
+    def tutorial_text(self):
+        final_tree = self.project_commits[0].tree
+        text_blob = final_tree / self.tutorial_text_path
+        return text_blob.data.decode("utf-8")
+
+    @cached_property
+    def final_code_text(self):
+        final_tree = self.project_commits[0].tree
+        code_blob = final_tree / self.python_code_path
+        return code_blob.data.decode("utf-8")
+
+    @cached_property
+    def commit_from_slug(self):
+        return {
+            pc.identifier_slug: pc
+            for pc in self.project_commits
+            if pc.has_identifier_slug
+        }
+
+    def code_text_from_slug(self, slug):
+        commit = self.commit_from_slug[slug]
+        code_blob = commit.tree / self.python_code_path
+        return code_blob.data.decode("utf-8")
+
+    def code_patch_against_parent(self, slug):
+        commit = self.commit_from_slug[slug]
+        return commit.code_patch_against_parent

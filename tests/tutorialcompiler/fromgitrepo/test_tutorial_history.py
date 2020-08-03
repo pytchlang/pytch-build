@@ -1,4 +1,5 @@
 import pytest
+import re
 
 import pygit2
 import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history as TH
@@ -152,3 +153,44 @@ class TestProjectCommit:
         pc = TH.ProjectCommit(this_raw_repo, "d8496bd7")
         with pytest.raises(ValueError, match="does not modify the Python code"):
             pc.code_patch_against_parent
+
+
+class TestProjectHistory:
+    def test_project_commits(self, project_history):
+        # Fairly weak test, to avoid having to keep updating it.
+        assert len(project_history.project_commits) >= 4
+
+    def test_top_level_directory_name(self, project_history):
+        assert project_history.top_level_directory_name == "boing"
+
+    def test_python_code_path(self, project_history):
+        assert project_history.python_code_path == "boing/code.py"
+
+    def test_tutorial_text_path(self, project_history):
+        assert project_history.tutorial_text_path == "boing/tutorial.md"
+
+    def test_tutorial_text(self, project_history):
+        assert re.match(r"# Boing!", project_history.tutorial_text)
+
+    def test_final_code_text(self, project_history):
+        assert re.match(r"import pytch", project_history.final_code_text)
+
+    def test_commit_from_slug(self, project_history):
+        assert len(project_history.commit_from_slug) == 2
+        got_oid = project_history.commit_from_slug["add-Alien-skeleton"].oid
+        exp_oid = "e41e02c9be0398f0a89e275da6edf5d3110add54"
+        assert str(got_oid) == exp_oid
+
+    def test_assets(self, project_history):
+        got_paths = [a.path for a in project_history.all_project_assets]
+        assert got_paths == ["boing/project-assets/graphics/alien.png"]
+
+    def test_code_text_from_slug(self, project_history):
+        text = project_history.code_text_from_slug("add-Alien-skeleton")
+        assert re.match(r"^import.*pass$", text, re.DOTALL)
+
+    def test_code_patch(self, project_history):
+        patch = project_history.code_patch_against_parent("add-Alien-skeleton")
+        context, n_adds, n_dels = patch.line_stats
+        assert n_adds == 4
+        assert n_dels == 0
