@@ -225,6 +225,12 @@ class ProjectHistory:
         return text_blob.data.decode("utf-8")
 
     @cached_property
+    def final_code_text(self):
+        final_tree = self.project_commits[0].tree
+        code_blob = final_tree / self.python_code_path
+        return code_blob.data.decode("utf-8")
+
+    @cached_property
     def commit_from_slug(self):
         return {
             pc.identifier_slug: pc
