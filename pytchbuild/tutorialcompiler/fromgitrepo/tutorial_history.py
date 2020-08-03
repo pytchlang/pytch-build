@@ -96,23 +96,11 @@ class ProjectCommit:
 
     @cached_property
     def modifies_tutorial_text(self):
-        try:
-            delta = self.sole_modify_against_parent
-        except ValueError:
-            return False
-
-        path_of_modified_file = pathlib.Path(delta.old_file.path)
-        return path_of_modified_file.name == TUTORIAL_TEXT_FILE_BASENAME
+        return self.modifies_single_file(TUTORIAL_TEXT_FILE_BASENAME)
 
     @cached_property
     def modifies_python_code(self):
-        try:
-            delta = self.sole_modify_against_parent
-        except ValueError:
-            return False
-
-        path_of_modified_file = pathlib.Path(delta.old_file.path)
-        return path_of_modified_file.name == CODE_FILE_BASENAME
+        return self.modifies_single_file(CODE_FILE_BASENAME)
 
     @staticmethod
     def path_is_a_project_asset(path_str):
