@@ -6,6 +6,8 @@ with open('README.rst') as readme_file:
     readme = readme_file.read()
 
 requirements = [
+    'cached_property',
+    'pygit2>=1.2.1',
 ]
 
 setup(
