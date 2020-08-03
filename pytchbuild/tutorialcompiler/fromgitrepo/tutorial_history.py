@@ -1,3 +1,8 @@
+from cached_property import cached_property
+
+
+################################################################################
+
 class ProjectCommit:
     def __init__(self, repo, oid):
         self.repo = repo
