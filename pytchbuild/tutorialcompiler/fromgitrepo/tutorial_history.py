@@ -86,3 +86,21 @@ class ProjectCommit:
     @staticmethod
     def path_is_a_project_asset(path_str):
         return pathlib.Path(path_str).parts[1] == PROJECT_ASSET_DIRNAME
+
+    @cached_property
+    def adds_project_assets(self):
+        deltas_adding_assets = []
+        other_deltas = []
+
+        for delta in self.diff_against_parent_or_empty.deltas:
+            if (delta.status == pygit2.GIT_DELTA_ADDED
+                    and self.path_is_a_project_asset(delta.new_file.path)):
+                deltas_adding_assets.append(delta)
+            else:
+                other_deltas.append(delta)
+
+        if deltas_adding_assets and other_deltas:
+            raise ValueError(f"commit {self.oid} adds project assets but also"
+                             f" has other deltas")
+
+        return bool(deltas_adding_assets)
