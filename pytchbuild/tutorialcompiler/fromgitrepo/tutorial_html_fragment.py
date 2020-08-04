@@ -1,4 +1,32 @@
 """Create an *HTML soup* of the tutorial
+
+The resulting structure is::
+
+   <div class="tutorial-bundle">
+     <div class="front-matter"
+          data-complete-code-text="import pytch etc">
+       <h1>Bunner!</h1>
+       <p>In this tutorial etc.</p>
+     </div>
+     <div class="chapter-content">
+       <h2>Making the stage</h2>
+       <p>First we make the stage etc.</p>
+       <div class="patch"
+            data-code-as-of-commit="import pytch etc">
+         <table> <!-- rows for lines of first hunk of patch --> </table>
+         <table> <!-- rows for lines of second hunk of patch --> </table>
+       </div>
+       <p>And then we etc.</p>
+       <div class="patch">
+         <!-- <table>s for hunks of patch -->
+       </div>
+     </div>
+     <div class="chapter-content">
+       <h2>Adding our hero</h2>
+       <p>Next we bring in the rabbit etc.</p>
+       <!-- more <p>s, patch-<div>s, <h3>s, etc. -->
+     </div>
+   </div>
 """
 
 import re
