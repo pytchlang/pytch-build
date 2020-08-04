@@ -79,3 +79,11 @@ def node_is_patch(elt):
     return (elt.name == "div"
             and elt.has_attr("class")
             and "patch-hunks" in elt.attrs["class"])
+
+
+def augment_patch_elt(soup, elt, project_history):
+    target_slug = elt.attrs["data-slug"]
+    code_text = project_history.code_text_from_slug(target_slug)
+    elt.attrs["data-code-as-of-commit"] = code_text
+    patch = project_history.code_patch_against_parent(target_slug)
+    elt.append(tables_div_from_patch(soup, patch))
