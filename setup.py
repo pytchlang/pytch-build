@@ -10,6 +10,7 @@ requirements = [
     'pygit2>=1.2.1',
     'Markdown>=3.2.2',
     'beautifulsoup4>=4.9.1',
+    'click>=7.1.0',
 ]
 
 setup(
@@ -28,6 +29,7 @@ setup(
     description="Assemble Pytch website from content, IDE, and tutorials",
     entry_points={
         'console_scripts': [
+            'pytchbuild=pytchbuild.cli:main',
         ],
     },
     install_requires=requirements,
