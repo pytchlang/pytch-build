@@ -47,6 +47,13 @@ def tables_div_from_patch(soup, patch):
     return div
 
 
+def div_from_elements(soup, div_class, elements):
+    div = soup.new_tag("div", attrs={"class": div_class})
+    for elt in elements:
+        div.append(elt)
+    return div
+
+
 def div_from_chapter(soup, chapter):
     chapter_div = soup.new_tag("div", attrs={"class": "chapter-content"})
     for elt in chapter:
