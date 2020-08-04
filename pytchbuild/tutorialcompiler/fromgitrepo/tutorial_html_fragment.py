@@ -71,3 +71,9 @@ def node_is_relevant(soup_node):
         and RE_WHITESPACE.match(soup_node)
     )
     return not node_is_whitespace_string
+
+
+def node_is_patch(elt):
+    return (elt.name == "div"
+            and elt.has_attr("class")
+            and "patch-hunks" in elt.attrs["class"])
