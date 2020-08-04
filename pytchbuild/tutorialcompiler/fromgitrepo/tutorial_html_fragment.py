@@ -54,7 +54,7 @@ def table_data_from_line_number(soup, lineno):
 
 
 def table_row_from_line(soup, line):
-    row = soup.new_tag("tr", attrs={"class": line_classification(line)})
+    row = soup.new_tag("tr")
     content_cell = soup.new_tag("td")
     content_pre = soup.new_tag("pre")
 
