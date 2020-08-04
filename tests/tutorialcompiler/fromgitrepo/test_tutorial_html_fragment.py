@@ -18,6 +18,11 @@ class MockHunk:
     lines: List[MockHunkLine]
 
 
+@dataclass
+class MockPatch:
+    hunks: List[MockHunk]
+
+
 @pytest.fixture
 def soup():
     return BeautifulSoup('', 'html.parser')
