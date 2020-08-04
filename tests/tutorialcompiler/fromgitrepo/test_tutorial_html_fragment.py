@@ -145,3 +145,19 @@ class TestHtmlFragment:
             '<p>world</p>'
             '</div>'
         )
+
+
+class TestPredicates:
+    @pytest.mark.parametrize(
+        'html,exp_is_relevant',
+        [
+            ('<p>Hello</p>', True),
+            ('   Hello', True),
+            ('Hello       ', True),
+            ('    ', False),
+            ('\n\nfoo\n', True),
+        ])
+    def test_node_is_relevant(self, html, exp_is_relevant):
+        soup = BeautifulSoup(html, "html.parser")
+        node = next(soup.children)
+        assert THF.node_is_relevant(node) == exp_is_relevant
