@@ -27,6 +27,11 @@ The resulting structure is::
        <!-- more <p>s, patch-<div>s, <h3>s, etc. -->
      </div>
    </div>
+
+TODO: Add syntax highlighting to the code in the table rows?  Might be useful.
+
+TODO: Do something clearer with multiple hunks in the one patch, rather than
+just stacking two tables?
 """
 
 import re
