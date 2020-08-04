@@ -42,3 +42,10 @@ def tables_div_from_patch(soup, patch):
     for hunk in patch.hunks:
         div.append(table_from_hunk(soup, hunk))
     return div
+
+
+def div_from_chapter(soup, chapter):
+    chapter_div = soup.new_tag("div", attrs={"class": "chapter-content"})
+    for elt in chapter:
+        chapter_div.append(elt)
+    return chapter_div
