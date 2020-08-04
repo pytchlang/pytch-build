@@ -89,6 +89,7 @@ class TestHunkTable:
             ]),
             MockHunk([
                 MockHunkLine(-1, 22, 'baz()'),
+                MockHunkLine(-1, 23, 'baz2()'),
                 MockHunkLine(24, 24, 'qux()'),
             ]),
         ])
@@ -112,6 +113,9 @@ class TestHunkTable:
             '<tr>'
             '<td></td><td>22</td>'
             '<td><pre>baz()</pre></td></tr>'
+            '<tr>'
+            '<td></td><td>23</td>'
+            '<td><pre>baz2()</pre></td></tr>'
             '</tbody>'
             '<tbody class="diff-unch">'
             '<tr>'
