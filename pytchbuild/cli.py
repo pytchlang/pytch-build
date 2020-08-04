@@ -4,6 +4,8 @@
 import sys
 import click
 
+import pygit2
+
 from .tutorialcompiler.fromgitrepo import compile as compile_fromgitrepo
 
 
@@ -15,7 +17,7 @@ from .tutorialcompiler.fromgitrepo import compile as compile_fromgitrepo
 )
 @click.option(
     "-r", "--repository-path",
-    required=True,
+    default=pygit2.discover_repository("."),
 )
 @click.argument("tip_revision")
 def main(output_file, repository_path, tip_revision):
