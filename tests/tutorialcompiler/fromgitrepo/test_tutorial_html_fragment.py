@@ -54,3 +54,20 @@ class TestHunkTable:
             '<td>10</td><td>12</td>'
             '<td><pre>foo()</pre></td></tr>'
         )
+
+    def test_table_from_hunk(self, soup):
+        hunk = MockHunk([
+            MockHunkLine(10, 12, 'foo()'),
+            MockHunkLine(11, -1, 'bar()'),
+        ])
+        got_html = THF.table_from_hunk(soup, hunk)
+        assert str(got_html) == (
+            '<table>'
+            '<tr class="diff-unch">'
+            '<td>10</td><td>12</td>'
+            '<td><pre>foo()</pre></td></tr>'
+            '<tr class="diff-del">'
+            '<td>11</td><td></td>'
+            '<td><pre>bar()</pre></td></tr>'
+            '</table>'
+        )
