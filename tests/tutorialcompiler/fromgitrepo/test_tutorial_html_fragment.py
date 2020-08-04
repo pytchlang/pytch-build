@@ -76,3 +76,36 @@ class TestHunkTable:
             '<td><pre>bar()</pre></td></tr>'
             '</table>'
         )
+
+    def test_tables_div_from_patch(self, soup):
+        patch = MockPatch([
+            MockHunk([
+                MockHunkLine(10, 12, 'foo()'),
+                MockHunkLine(11, -1, 'bar()'),
+            ]),
+            MockHunk([
+                MockHunkLine(-1, 22, 'baz()'),
+                MockHunkLine(24, 24, 'qux()'),
+            ]),
+        ])
+        got_html = THF.tables_div_from_patch(soup, patch)
+        assert str(got_html) == (
+            '<div class="patch">'
+            '<table>'
+            '<tr class="diff-unch">'
+            '<td>10</td><td>12</td>'
+            '<td><pre>foo()</pre></td></tr>'
+            '<tr class="diff-del">'
+            '<td>11</td><td></td>'
+            '<td><pre>bar()</pre></td></tr>'
+            '</table>'
+            '<table>'
+            '<tr class="diff-add">'
+            '<td></td><td>22</td>'
+            '<td><pre>baz()</pre></td></tr>'
+            '<tr class="diff-unch">'
+            '<td>24</td><td>24</td>'
+            '<td><pre>qux()</pre></td></tr>'
+            '</table>'
+            '</div>'
+        )
