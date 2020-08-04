@@ -14,10 +14,13 @@ from .tutorialcompiler.fromgitrepo import compile as compile_fromgitrepo
     "-o", "output_file",
     type=click.File(mode="wb"),
     required=True,
+    help="where to write the zipfile containing the tutorial content",
 )
 @click.option(
     "-r", "--repository-path",
     default=pygit2.discover_repository("."),
+    metavar="PATH",
+    help="path to root of git repository",
 )
 @click.argument("tip_revision")
 def main(output_file, repository_path, tip_revision):
