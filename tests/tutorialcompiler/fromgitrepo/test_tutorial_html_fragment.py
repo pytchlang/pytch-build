@@ -1,5 +1,6 @@
 import pytest
 from dataclasses import dataclass
+from typing import List
 from bs4 import BeautifulSoup
 
 import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_html_fragment as THF
@@ -10,6 +11,11 @@ class MockHunkLine:
     old_lineno: int
     new_lineno: int
     content: str
+
+
+@dataclass
+class MockHunk:
+    lines: List[MockHunkLine]
 
 
 @pytest.fixture
