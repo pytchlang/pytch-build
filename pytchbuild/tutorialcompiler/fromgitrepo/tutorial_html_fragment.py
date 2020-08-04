@@ -35,3 +35,10 @@ def table_from_hunk(soup, hunk):
     for line in hunk.lines:
         table.append(table_row_from_line(soup, line))
     return table
+
+
+def tables_div_from_patch(soup, patch):
+    div = soup.new_tag("div", attrs={"class": "patch"})
+    for hunk in patch.hunks:
+        div.append(table_from_hunk(soup, hunk))
+    return div
