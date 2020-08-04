@@ -4,6 +4,8 @@
 import re
 import bs4
 
+from .tutorial_markdown import soup_from_markdown_text
+
 
 def line_classification(hunk_line):
     return ("diff-add" if hunk_line.old_lineno == -1
@@ -87,3 +89,47 @@ def augment_patch_elt(soup, elt, project_history):
     elt.attrs["data-code-as-of-commit"] = code_text
     patch = project_history.code_patch_against_parent(target_slug)
     elt.append(tables_div_from_patch(soup, patch))
+
+
+def div_from_project_history(project_history):
+    soup = soup_from_markdown_text(project_history.tutorial_text)
+
+    chapters = []
+    current_chapter = []
+    front_matter = []
+
+    past_front_matter = False
+
+    for elt in filter(node_is_relevant, soup.children):
+        if not isinstance(elt, bs4.element.Tag):
+            raise ValueError(f"child {elt} not a tag")
+
+        if elt.name == "hr":
+            past_front_matter = True
+        elif not past_front_matter:
+            front_matter.append(elt)
+        else:
+            if node_is_patch(elt):
+                augment_patch_elt(soup, elt, project_history)
+            elif elt.name == "h2":
+                chapters.append(current_chapter)
+                current_chapter = []
+
+            current_chapter.append(elt)
+
+    chapters.append(current_chapter)
+
+    tutorial_div = soup.new_tag("div", attrs={"class": "tutorial-bundle"})
+
+    tutorial_div.append(div_from_front_matter(
+        soup,
+        front_matter,
+        project_history.final_code_text
+    ))
+
+    # Skip the first 'chapter'; it should be empty because the main content
+    # should start with a <H2>.  TODO: Check this.
+    for chapter in chapters[1:]:
+        tutorial_div.append(div_from_chapter(soup, chapter))
+
+    return tutorial_div
