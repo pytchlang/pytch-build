@@ -28,3 +28,10 @@ def table_row_from_line(soup, line):
     row.append(content_cell)
 
     return row
+
+
+def table_from_hunk(soup, hunk):
+    table = soup.new_tag("table")
+    for line in hunk.lines:
+        table.append(table_row_from_line(soup, line))
+    return table
