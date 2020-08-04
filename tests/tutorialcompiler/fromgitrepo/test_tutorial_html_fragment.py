@@ -39,3 +39,12 @@ class TestHunkTable:
     def test_table_data_from_line_number(self, soup, lineno, exp_html):
         got_html = THF.table_data_from_line_number(soup, lineno)
         assert str(got_html) == exp_html
+
+    def test_table_row_from_line(self, soup):
+        line = MockHunkLine(10, 12, 'foo()')
+        got_html = THF.table_row_from_line(soup, line)
+        assert str(got_html) == (
+            '<tr class="diff-unch">'
+            '<td>10</td><td>12</td>'
+            '<td><pre>foo()</pre></td></tr>'
+        )
