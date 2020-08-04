@@ -23,7 +23,12 @@ from .tutorialcompiler.fromgitrepo import compile as compile_fromgitrepo
     metavar="PATH",
     help="path to root of git repository",
 )
-@click.argument("tip_revision")
+@click.option(
+    "-b", "--tip-revision",
+    default="HEAD",
+    metavar="REVISION",
+    help="revision (e.g., branch name) at tip of tutorial",
+)
 def main(output_file, repository_path, tip_revision):
     if repository_path is None:
         raise click.UsageError(
