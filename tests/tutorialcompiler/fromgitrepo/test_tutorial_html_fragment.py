@@ -109,3 +109,23 @@ class TestHunkTable:
             '</table>'
             '</div>'
         )
+
+
+class TestHtmlFragment:
+    @staticmethod
+    def paragraph(soup, text):
+        p = soup.new_tag("p")
+        p.append(text)
+        return p
+
+    def test_div_from_chapter(self, soup):
+        chapter = [
+            self.paragraph(soup, "hello"),
+            self.paragraph(soup, "world"),
+        ]
+        assert str(THF.div_from_chapter(soup, chapter)) == (
+            '<div class="chapter-content">'
+            '<p>hello</p>'
+            '<p>world</p>'
+            '</div>'
+        )
