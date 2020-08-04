@@ -25,6 +25,12 @@ from .tutorialcompiler.fromgitrepo import compile as compile_fromgitrepo
 )
 @click.argument("tip_revision")
 def main(output_file, repository_path, tip_revision):
+    if repository_path is None:
+        raise click.UsageError(
+            "\nUnable to discover repository.  Please specify one\n"
+            "either with the -r/--repository-path option or via\n"
+            "the GIT_DIR environment variable.")
+
     compile_fromgitrepo(output_file, repository_path, tip_revision)
 
     return 0
