@@ -49,3 +49,11 @@ def div_from_chapter(soup, chapter):
     for elt in chapter:
         chapter_div.append(elt)
     return chapter_div
+
+
+def div_from_front_matter(soup, front_matter, final_code_text):
+    front_matter_div = soup.new_tag("div", attrs={"class": "front-matter"})
+    front_matter_div["data-complete-code-text"] = final_code_text
+    for elt in front_matter:
+        front_matter_div.append(elt)
+    return front_matter_div
