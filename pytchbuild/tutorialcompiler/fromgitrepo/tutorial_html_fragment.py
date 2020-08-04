@@ -69,9 +69,24 @@ def table_row_from_line(soup, line):
 
 
 def table_from_hunk(soup, hunk):
-    table = soup.new_tag("table")
+    prev_class = None
+    running_tbody = None
+    tbody_elts = []
+
     for line in hunk.lines:
-        table.append(table_row_from_line(soup, line))
+        line_class = line_classification(line)
+        if line_class != prev_class:
+            tbody_elts.append(running_tbody)
+            running_tbody = soup.new_tag("tbody", attrs={"class": line_class})
+
+        prev_class = line_class
+
+        running_tbody.append(table_row_from_line(soup, line))
+
+    table = soup.new_tag("table")
+    for tbody in tbody_elts[1:] + [running_tbody]:
+        table.append(tbody)
+
     return table
 
 
