@@ -55,18 +55,13 @@ def div_from_elements(soup, div_class, elements):
 
 
 def div_from_chapter(soup, chapter):
-    chapter_div = soup.new_tag("div", attrs={"class": "chapter-content"})
-    for elt in chapter:
-        chapter_div.append(elt)
-    return chapter_div
+    return div_from_elements(soup, "chapter-content", chapter)
 
 
 def div_from_front_matter(soup, front_matter, final_code_text):
-    front_matter_div = soup.new_tag("div", attrs={"class": "front-matter"})
-    front_matter_div["data-complete-code-text"] = final_code_text
-    for elt in front_matter:
-        front_matter_div.append(elt)
-    return front_matter_div
+    div = div_from_elements(soup, "front-matter", front_matter)
+    div["data-complete-code-text"] = final_code_text
+    return div
 
 
 RE_WHITESPACE = re.compile(r"\s*\Z")
