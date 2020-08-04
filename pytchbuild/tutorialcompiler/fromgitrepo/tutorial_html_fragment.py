@@ -1,6 +1,9 @@
 """Create an *HTML soup* of the tutorial
 """
 
+import re
+import bs4
+
 
 def line_classification(hunk_line):
     return ("diff-add" if hunk_line.old_lineno == -1
@@ -57,3 +60,14 @@ def div_from_front_matter(soup, front_matter, final_code_text):
     for elt in front_matter:
         front_matter_div.append(elt)
     return front_matter_div
+
+
+RE_WHITESPACE = re.compile(r"\s*\Z")
+
+
+def node_is_relevant(soup_node):
+    node_is_whitespace_string = (
+        isinstance(soup_node, bs4.element.NavigableString)
+        and RE_WHITESPACE.match(soup_node)
+    )
+    return not node_is_whitespace_string
