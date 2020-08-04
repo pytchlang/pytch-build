@@ -19,6 +19,7 @@ from .tutorialcompiler.fromgitrepo import compile as compile_fromgitrepo
 @click.option(
     "-r", "--repository-path",
     default=pygit2.discover_repository("."),
+    envvar="GIT_DIR",
     metavar="PATH",
     help="path to root of git repository",
 )
