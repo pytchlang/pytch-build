@@ -109,7 +109,7 @@ class TestHunkTable:
             '</tbody>'
             '</table>'
             '<table>'
-            '<tbody class="diff-add">'
+            '<tbody class="diff-add" data-added-text="baz()\nbaz2()\n">'
             '<tr>'
             '<td></td><td>22</td>'
             '<td><pre>baz()</pre></td></tr>'
