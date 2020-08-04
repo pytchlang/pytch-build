@@ -62,8 +62,8 @@ class TestHunkTable:
 
     def test_table_from_hunk(self, soup):
         hunk = MockHunk([
-            MockHunkLine(10, 12, 'foo()'),
-            MockHunkLine(11, -1, 'bar()'),
+            MockHunkLine(10, 12, 'foo()\n'),
+            MockHunkLine(11, -1, 'bar()\n'),
         ])
         got_html = THF.table_from_hunk(soup, hunk)
         assert str(got_html) == (
@@ -84,13 +84,13 @@ class TestHunkTable:
     def test_tables_div_from_patch(self, soup):
         patch = MockPatch([
             MockHunk([
-                MockHunkLine(10, 12, 'foo()'),
-                MockHunkLine(11, -1, 'bar()'),
+                MockHunkLine(10, 12, 'foo()\n'),
+                MockHunkLine(11, -1, 'bar()\n'),
             ]),
             MockHunk([
-                MockHunkLine(-1, 22, 'baz()'),
-                MockHunkLine(-1, 23, 'baz2()'),
-                MockHunkLine(24, 24, 'qux()'),
+                MockHunkLine(-1, 22, 'baz()\n'),
+                MockHunkLine(-1, 23, 'baz2()\n'),
+                MockHunkLine(24, 24, 'qux()\n'),
             ]),
         ])
         got_html = THF.tables_div_from_patch(soup, patch)
