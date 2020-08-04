@@ -29,3 +29,13 @@ class TestHunkTable:
         mock_hunk_line = MockHunkLine(old_lineno, new_lineno, 'ignored')
         got_class = THF.line_classification(mock_hunk_line)
         assert got_class == exp_class
+
+    @pytest.mark.parametrize(
+        'lineno,exp_html',
+        [
+            (-1, '<td></td>'),
+            (10, '<td>10</td>'),
+        ])
+    def test_table_data_from_line_number(self, soup, lineno, exp_html):
+        got_html = THF.table_data_from_line_number(soup, lineno)
+        assert str(got_html) == exp_html
