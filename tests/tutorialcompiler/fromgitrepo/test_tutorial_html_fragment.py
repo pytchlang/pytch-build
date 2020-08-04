@@ -1,5 +1,6 @@
 import pytest
 from dataclasses import dataclass
+from bs4 import BeautifulSoup
 
 import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_html_fragment as THF
 
@@ -9,6 +10,11 @@ class MockHunkLine:
     old_lineno: int
     new_lineno: int
     content: str
+
+
+@pytest.fixture
+def soup():
+    return BeautifulSoup('', 'html.parser')
 
 
 class TestHunkTable:
