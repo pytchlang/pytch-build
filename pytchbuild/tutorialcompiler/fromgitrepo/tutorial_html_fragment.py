@@ -78,10 +78,14 @@ def table_from_hunk(soup, hunk):
         if line_class != prev_class:
             tbody_elts.append(running_tbody)
             running_tbody = soup.new_tag("tbody", attrs={"class": line_class})
+            if line_class == "diff-add":
+                running_tbody["data-added-text"] = ""
 
         prev_class = line_class
 
         running_tbody.append(table_row_from_line(soup, line))
+        if line_class == "diff-add":
+            running_tbody["data-added-text"] += line.content
 
     table = soup.new_tag("table")
     for tbody in tbody_elts[1:] + [running_tbody]:
