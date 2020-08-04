@@ -179,6 +179,15 @@ class ProjectCommit:
 
     @cached_property
     def adds_project_assets(self):
+        # Special-case the BASE commit, which can add a whole lot of files in
+        # various places in the tree.  Treat it as not adding assets.
+        #
+        # TODO: Revisit this.  Maybe provide a helper script which sets up the
+        # first commit or two in a canonical way?
+        #
+        if self.is_base:
+            return False
+
         deltas_adding_assets = []
         other_deltas = []
 
