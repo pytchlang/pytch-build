@@ -44,8 +44,8 @@ class TestHunkTable:
     @pytest.mark.parametrize(
         'lineno,exp_html',
         [
-            (-1, '<td></td>'),
-            (10, '<td>10</td>'),
+            (-1, '<td class="linenum"></td>'),
+            (10, '<td class="linenum"><pre>10</pre></td>'),
         ])
     def test_table_data_from_line_number(self, soup, lineno, exp_html):
         got_html = THF.table_data_from_line_number(soup, lineno)
