@@ -44,8 +44,8 @@ class TestHunkTable:
     @pytest.mark.parametrize(
         'lineno,exp_html',
         [
-            (-1, '<td></td>'),
-            (10, '<td>10</td>'),
+            (-1, '<td class="linenum"></td>'),
+            (10, '<td class="linenum"><pre>10</pre></td>'),
         ])
     def test_table_data_from_line_number(self, soup, lineno, exp_html):
         got_html = THF.table_data_from_line_number(soup, lineno)
@@ -56,7 +56,8 @@ class TestHunkTable:
         got_html = THF.table_row_from_line(soup, line)
         assert str(got_html) == (
             '<tr>'
-            '<td>10</td><td>12</td>'
+            '<td class="linenum"><pre>10</pre></td>'
+            '<td class="linenum"><pre>12</pre></td>'
             '<td><pre>foo()</pre></td></tr>'
         )
 
@@ -70,12 +71,14 @@ class TestHunkTable:
             '<table>'
             '<tbody class="diff-unch">'
             '<tr>'
-            '<td>10</td><td>12</td>'
+            '<td class="linenum"><pre>10</pre></td>'
+            '<td class="linenum"><pre>12</pre></td>'
             '<td><pre>foo()</pre></td></tr>'
             '</tbody>'
             '<tbody class="diff-del">'
             '<tr>'
-            '<td>11</td><td></td>'
+            '<td class="linenum"><pre>11</pre></td>'
+            '<td class="linenum"></td>'
             '<td><pre>bar()</pre></td></tr>'
             '</tbody>'
             '</table>'
@@ -99,27 +102,32 @@ class TestHunkTable:
             '<table>'
             '<tbody class="diff-unch">'
             '<tr>'
-            '<td>10</td><td>12</td>'
+            '<td class="linenum"><pre>10</pre></td>'
+            '<td class="linenum"><pre>12</pre></td>'
             '<td><pre>foo()</pre></td></tr>'
             '</tbody>'
             '<tbody class="diff-del">'
             '<tr>'
-            '<td>11</td><td></td>'
+            '<td class="linenum"><pre>11</pre></td>'
+            '<td class="linenum"></td>'
             '<td><pre>bar()</pre></td></tr>'
             '</tbody>'
             '</table>'
             '<table>'
             '<tbody class="diff-add" data-added-text="baz()\nbaz2()\n">'
             '<tr>'
-            '<td></td><td>22</td>'
+            '<td class="linenum"></td>'
+            '<td class="linenum"><pre>22</pre></td>'
             '<td><pre>baz()</pre></td></tr>'
             '<tr>'
-            '<td></td><td>23</td>'
+            '<td class="linenum"></td>'
+            '<td class="linenum"><pre>23</pre></td>'
             '<td><pre>baz2()</pre></td></tr>'
             '</tbody>'
             '<tbody class="diff-unch">'
             '<tr>'
-            '<td>24</td><td>24</td>'
+            '<td class="linenum"><pre>24</pre></td>'
+            '<td class="linenum"><pre>24</pre></td>'
             '<td><pre>qux()</pre></td></tr>'
             '</tbody>'
             '</table>'
