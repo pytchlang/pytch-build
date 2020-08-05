@@ -55,57 +55,73 @@ class TestHunkTable:
         line = MockHunkLine(10, 12, 'foo()')
         got_html = THF.table_row_from_line(soup, line)
         assert str(got_html) == (
-            '<tr class="diff-unch">'
+            '<tr>'
             '<td>10</td><td>12</td>'
             '<td><pre>foo()</pre></td></tr>'
         )
 
     def test_table_from_hunk(self, soup):
         hunk = MockHunk([
-            MockHunkLine(10, 12, 'foo()'),
-            MockHunkLine(11, -1, 'bar()'),
+            MockHunkLine(10, 12, 'foo()\n'),
+            MockHunkLine(11, -1, 'bar()\n'),
         ])
         got_html = THF.table_from_hunk(soup, hunk)
         assert str(got_html) == (
             '<table>'
-            '<tr class="diff-unch">'
+            '<tbody class="diff-unch">'
+            '<tr>'
             '<td>10</td><td>12</td>'
             '<td><pre>foo()</pre></td></tr>'
-            '<tr class="diff-del">'
+            '</tbody>'
+            '<tbody class="diff-del">'
+            '<tr>'
             '<td>11</td><td></td>'
             '<td><pre>bar()</pre></td></tr>'
+            '</tbody>'
             '</table>'
         )
 
     def test_tables_div_from_patch(self, soup):
         patch = MockPatch([
             MockHunk([
-                MockHunkLine(10, 12, 'foo()'),
-                MockHunkLine(11, -1, 'bar()'),
+                MockHunkLine(10, 12, 'foo()\n'),
+                MockHunkLine(11, -1, 'bar()\n'),
             ]),
             MockHunk([
-                MockHunkLine(-1, 22, 'baz()'),
-                MockHunkLine(24, 24, 'qux()'),
+                MockHunkLine(-1, 22, 'baz()\n'),
+                MockHunkLine(-1, 23, 'baz2()\n'),
+                MockHunkLine(24, 24, 'qux()\n'),
             ]),
         ])
         got_html = THF.tables_div_from_patch(soup, patch)
         assert str(got_html) == (
             '<div class="patch">'
             '<table>'
-            '<tr class="diff-unch">'
+            '<tbody class="diff-unch">'
+            '<tr>'
             '<td>10</td><td>12</td>'
             '<td><pre>foo()</pre></td></tr>'
-            '<tr class="diff-del">'
+            '</tbody>'
+            '<tbody class="diff-del">'
+            '<tr>'
             '<td>11</td><td></td>'
             '<td><pre>bar()</pre></td></tr>'
+            '</tbody>'
             '</table>'
             '<table>'
-            '<tr class="diff-add">'
+            '<tbody class="diff-add" data-added-text="baz()\nbaz2()\n">'
+            '<tr>'
             '<td></td><td>22</td>'
             '<td><pre>baz()</pre></td></tr>'
-            '<tr class="diff-unch">'
+            '<tr>'
+            '<td></td><td>23</td>'
+            '<td><pre>baz2()</pre></td></tr>'
+            '</tbody>'
+            '<tbody class="diff-unch">'
+            '<tr>'
             '<td>24</td><td>24</td>'
             '<td><pre>qux()</pre></td></tr>'
+            '</tbody>'
             '</table>'
             '</div>'
         )

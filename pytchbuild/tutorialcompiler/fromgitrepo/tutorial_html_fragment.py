@@ -54,7 +54,7 @@ def table_data_from_line_number(soup, lineno):
 
 
 def table_row_from_line(soup, line):
-    row = soup.new_tag("tr", attrs={"class": line_classification(line)})
+    row = soup.new_tag("tr")
     content_cell = soup.new_tag("td")
     content_pre = soup.new_tag("pre")
 
@@ -69,9 +69,28 @@ def table_row_from_line(soup, line):
 
 
 def table_from_hunk(soup, hunk):
-    table = soup.new_tag("table")
+    prev_class = None
+    running_tbody = None
+    tbody_elts = []
+
     for line in hunk.lines:
-        table.append(table_row_from_line(soup, line))
+        line_class = line_classification(line)
+        if line_class != prev_class:
+            tbody_elts.append(running_tbody)
+            running_tbody = soup.new_tag("tbody", attrs={"class": line_class})
+            if line_class == "diff-add":
+                running_tbody["data-added-text"] = ""
+
+        prev_class = line_class
+
+        running_tbody.append(table_row_from_line(soup, line))
+        if line_class == "diff-add":
+            running_tbody["data-added-text"] += line.content
+
+    table = soup.new_tag("table")
+    for tbody in tbody_elts[1:] + [running_tbody]:
+        table.append(tbody)
+
     return table
 
 
