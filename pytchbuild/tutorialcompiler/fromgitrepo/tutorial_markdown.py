@@ -5,21 +5,25 @@ from bs4 import BeautifulSoup
 
 
 class ShortcodeProcessor(markdown.blockprocessors.BlockProcessor):
-    RE_SHORTCODE = re.compile(r"^\s*\{\{< (\w+) (.*) >\}\}\s*$")
+    RE_SHORTCODE = re.compile(r"^\s*\{\{< ([-\w]+)( (.*))? >\}\}\s*$")
 
     def test(self, parent, block):
         m = self.RE_SHORTCODE.match(block)
-        # TODO: More extensible shortcode mechanism.
-        return (m is not None) and m.group(1) == "commit"
+        return (m is not None)
 
     def run(self, parent, blocks):
         block = blocks.pop(0)
         re_match = self.RE_SHORTCODE.match(block)
+        kind = re_match.group(1)
+        args_str = re_match.group(3)
 
-        # Ignore value; goal is side-effect of attaching to parent:
-        etree.SubElement(parent, "div",
-                         {"class": "patch-hunks",
-                          "data-slug": re_match.group(2)})
+        if kind == "commit":
+            # Ignore value; goal is side-effect of attaching to parent:
+            etree.SubElement(parent, "div",
+                             {"class": "patch-hunks",
+                              "data-slug": args_str})
+        else:
+            raise ValueError(f'unknown shortcode kind "{kind}"')
 
 
 class ShortcodeExtension(markdown.extensions.Extension):
