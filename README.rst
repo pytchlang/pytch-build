@@ -23,3 +23,5 @@ Then one or both of::
 and/or::
 
   tox
+
+(Using ``tox`` will also build the docs and run ``flake8``.)
