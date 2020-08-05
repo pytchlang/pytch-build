@@ -58,14 +58,19 @@ The structure is::
      <div class="chapter-content">  <!-- first chapter -->
        <h2>Making the stage</h2>
        <p>First we make the stage etc.</p>
-       <div class="patch"
+       <div class="patch-container"
             data-code-as-of-commit="import pytch etc">
-         <table> <!-- rows for lines of first hunk of patch --> </table>
-         <table> <!-- rows for lines of second hunk of patch --> </table>
+         <div class="patch">
+           <table> <!-- rows for lines of first hunk of patch --> </table>
+           <table> <!-- rows for lines of second hunk of patch --> </table>
+         </div>
        </div>
        <p>And then we etc.</p>
-       <div class="patch">
-         <!-- <table>s for hunks of patch -->
+       <div class="patch-container"
+            data-code-as-of-commit="...">
+          <div class="patch">
+            <!-- <table>s for hunks of patch -->
+          </div>
        </div>
      </div>
      <div class="chapter-content">  <!-- second chapter -->
