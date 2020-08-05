@@ -56,7 +56,8 @@ class TestHunkTable:
         got_html = THF.table_row_from_line(soup, line)
         assert str(got_html) == (
             '<tr>'
-            '<td>10</td><td>12</td>'
+            '<td class="linenum"><pre>10</pre></td>'
+            '<td class="linenum"><pre>12</pre></td>'
             '<td><pre>foo()</pre></td></tr>'
         )
 
