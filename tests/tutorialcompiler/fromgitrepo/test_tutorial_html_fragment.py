@@ -184,8 +184,8 @@ class TestPredicates:
             ('<p>Hello</p>', False),
             ('<div><p>Hello</p></div>', False),
             ('<div class="banana"><p>Hello</p></div>', False),
-            ('<div class="patch-hunks"><p>Hello</p></div>', True),
-            ('<div class="patch-hunks banana"><p>Hello</p></div>', True),
+            ('<div class="patch-container"><p>Hello</p></div>', True),
+            ('<div class="patch-container banana"><p>Hello</p></div>', True),
         ])
     def test_node_is_patch(self, html, exp_is_patch):
         soup = BeautifulSoup(html, "html.parser")

@@ -104,7 +104,7 @@ def node_is_relevant(soup_node):
 def node_is_patch(elt):
     return (elt.name == "div"
             and elt.has_attr("class")
-            and "patch-hunks" in elt.attrs["class"])
+            and "patch-container" in elt.attrs["class"])
 
 
 def augment_patch_elt(soup, elt, project_history):
