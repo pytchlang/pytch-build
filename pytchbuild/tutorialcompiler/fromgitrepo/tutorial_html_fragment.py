@@ -19,9 +19,11 @@ def line_classification(hunk_line):
 
 
 def table_data_from_line_number(soup, lineno):
-    cell = soup.new_tag("td")
+    cell = soup.new_tag("td", attrs={"class": "linenum"})
     if lineno != -1:
-        cell.append(str(lineno))
+        lineno_pre = soup.new_tag("pre")
+        lineno_pre.append(str(lineno))
+        cell.append(lineno_pre)
     return cell
 
 
