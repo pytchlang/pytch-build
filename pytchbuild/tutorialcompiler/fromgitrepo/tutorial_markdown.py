@@ -20,7 +20,7 @@ class ShortcodeProcessor(markdown.blockprocessors.BlockProcessor):
         if kind == "commit":
             # Ignore value; goal is side-effect of attaching to parent:
             etree.SubElement(parent, "div",
-                             {"class": "patch-hunks",
+                             {"class": "patch-container",
                               "data-slug": args_str})
         else:
             raise ValueError(f'unknown shortcode kind "{kind}"')
