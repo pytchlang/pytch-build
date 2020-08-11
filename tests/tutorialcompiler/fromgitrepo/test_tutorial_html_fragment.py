@@ -168,6 +168,7 @@ class TestHtmlFragment:
         assert str(got_div) == (
             '<div class="front-matter"'
             ' data-complete-code-text="foo()"'
+            ' data-initial-code-text="bar()"'
             '>'
             '<p>hello</p>'
             '<p>world</p>'
