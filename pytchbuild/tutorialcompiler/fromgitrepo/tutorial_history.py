@@ -118,6 +118,10 @@ class ProjectCommit:
     def tree(self):
         return self.commit.tree
 
+    def text_file_contents(self, path):
+        text_blob = self.tree / path
+        return text_blob.data.decode("utf-8")
+
     @cached_property
     def message_subject(self):
         return self.commit.message.split('\n')[0]
