@@ -163,8 +163,11 @@ class TestHtmlFragment:
         # It's possible this will fail one day if I'm making unwarranted
         # assumptions about the order in which attributes are represented
         # in the string form of an HTML fragment.
-        assert str(THF.div_from_front_matter(soup, front_matter, code)) == (
-            '<div class="front-matter" data-complete-code-text="foo()">'
+        got_div = THF.div_from_front_matter(soup, front_matter, code)
+        assert str(got_div) == (
+            '<div class="front-matter"'
+            ' data-complete-code-text="foo()"'
+            '>'
             '<p>hello</p>'
             '<p>world</p>'
             '</div>'
