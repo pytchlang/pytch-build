@@ -86,7 +86,11 @@ def div_from_chapter(soup, chapter):
     return div_from_elements(soup, "chapter-content", chapter)
 
 
-def div_from_front_matter(soup, front_matter, final_code_text):
+def div_from_front_matter(
+        soup,
+        front_matter,
+        final_code_text
+):
     div = div_from_elements(soup, "front-matter", front_matter)
     div["data-complete-code-text"] = final_code_text
     return div
