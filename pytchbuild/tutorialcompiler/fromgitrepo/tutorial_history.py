@@ -300,6 +300,18 @@ class ProjectHistory:
         return text_blob.data.decode("utf-8")
 
     @cached_property
+    def initial_code_text(self):
+        """The initial Python code
+
+        In the example, the contents of the file ``bunner/code.py`` as of the
+        special *base* commit in the ancestry of the tip commit from which the
+        :py:class:`ProjectHistory` was constructed.
+        """
+        base_tree = self.project_commits[-1].tree
+        code_blob = base_tree / self.python_code_path
+        return code_blob.data.decode("utf-8")
+
+    @cached_property
     def final_code_text(self):
         """The final Python code
 
