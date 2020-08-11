@@ -154,6 +154,10 @@ class TestProjectCommit:
         with pytest.raises(ValueError, match="does not modify the Python code"):
             pc.code_patch_against_parent
 
+    def test_text_file_contents(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "fd16634610de")
+        assert pc.text_file_contents("boing/code.py") == "import pytch\n"
+
 
 class TestProjectHistory:
     def test_project_commits(self, project_history):
@@ -171,6 +175,9 @@ class TestProjectHistory:
 
     def test_tutorial_text(self, project_history):
         assert re.match(r"# Boing!", project_history.tutorial_text)
+
+    def test_initial_code_text(self, project_history):
+        assert project_history.initial_code_text == ""
 
     def test_final_code_text(self, project_history):
         assert re.match(r"import pytch", project_history.final_code_text)

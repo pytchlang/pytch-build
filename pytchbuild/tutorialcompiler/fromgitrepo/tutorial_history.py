@@ -118,6 +118,10 @@ class ProjectCommit:
     def tree(self):
         return self.commit.tree
 
+    def text_file_contents(self, path):
+        text_blob = self.tree / path
+        return text_blob.data.decode("utf-8")
+
     @cached_property
     def message_subject(self):
         return self.commit.message.split('\n')[0]
@@ -295,9 +299,19 @@ class ProjectHistory:
         In the example, the contents of the file ``bunner/tutorial.md`` as of
         the tip commit from which the :py:class:`ProjectHistory` was constructed.
         """
-        final_tree = self.project_commits[0].tree
-        text_blob = final_tree / self.tutorial_text_path
-        return text_blob.data.decode("utf-8")
+        tip_commit = self.project_commits[0]
+        return tip_commit.text_file_contents(self.tutorial_text_path)
+
+    @cached_property
+    def initial_code_text(self):
+        """The initial Python code
+
+        In the example, the contents of the file ``bunner/code.py`` as of the
+        special *base* commit in the ancestry of the tip commit from which the
+        :py:class:`ProjectHistory` was constructed.
+        """
+        base_commit = self.project_commits[-1]
+        return base_commit.text_file_contents(self.python_code_path)
 
     @cached_property
     def final_code_text(self):
@@ -306,9 +320,8 @@ class ProjectHistory:
         In the example, the contents of the file ``bunner/code.py`` as of the
         tip commit from which the :py:class:`ProjectHistory` was constructed.
         """
-        final_tree = self.project_commits[0].tree
-        code_blob = final_tree / self.python_code_path
-        return code_blob.data.decode("utf-8")
+        tip_commit = self.project_commits[0]
+        return tip_commit.text_file_contents(self.python_code_path)
 
     @cached_property
     def commit_from_slug(self):
@@ -322,8 +335,7 @@ class ProjectHistory:
         """The contents of ``code.py`` as of the commit tagged with the given *slug*
         """
         commit = self.commit_from_slug[slug]
-        code_blob = commit.tree / self.python_code_path
-        return code_blob.data.decode("utf-8")
+        return commit.text_file_contents(self.python_code_path)
 
     def code_patch_against_parent(self, slug):
         commit = self.commit_from_slug[slug]

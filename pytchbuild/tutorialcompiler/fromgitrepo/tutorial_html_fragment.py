@@ -86,8 +86,14 @@ def div_from_chapter(soup, chapter):
     return div_from_elements(soup, "chapter-content", chapter)
 
 
-def div_from_front_matter(soup, front_matter, final_code_text):
+def div_from_front_matter(
+        soup,
+        front_matter,
+        initial_code_text,
+        final_code_text
+):
     div = div_from_elements(soup, "front-matter", front_matter)
+    div["data-initial-code-text"] = initial_code_text
     div["data-complete-code-text"] = final_code_text
     return div
 
@@ -150,6 +156,7 @@ def div_from_project_history(project_history):
     tutorial_div.append(div_from_front_matter(
         soup,
         front_matter,
+        project_history.initial_code_text,
         project_history.final_code_text
     ))
 
