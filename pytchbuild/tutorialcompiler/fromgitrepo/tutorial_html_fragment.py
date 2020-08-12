@@ -115,6 +115,12 @@ def node_is_patch(elt):
             and "patch-container" in elt.attrs["class"])
 
 
+def node_is_work_in_progress_marker(elt):
+    return (elt.name == "div"
+            and elt.has_attr("class")
+            and "work-in-progress" in elt.attrs["class"])
+
+
 def augment_patch_elt(soup, elt, project_history):
     target_slug = elt.attrs["data-slug"]
     code_text = project_history.code_text_from_slug(target_slug)
