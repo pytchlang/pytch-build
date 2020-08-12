@@ -58,10 +58,17 @@ def main(output_file, repository_path, tip_revision, tutorial_text_source, outpu
     tutorial_text_source = getattr(ProjectHistory.TutorialTextSource,
                                    tutorial_text_source)
 
-    compile_fromgitrepo(output_file,
-                        repository_path,
-                        tip_revision,
-                        tutorial_text_source)
+    if output_format == "bundle-zipfile":
+        compile_fun = compile_fromgitrepo
+    elif output_format == "html-only":
+        compile_fun = compile_html_only_fromgitrepo
+    else:
+        raise ValueError(f"unknown output_format \"{output_format}\"")
+
+    compile_fun(output_file,
+                repository_path,
+                tip_revision,
+                tutorial_text_source)
 
     return 0
 
