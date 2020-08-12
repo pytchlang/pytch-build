@@ -309,10 +309,21 @@ class ProjectHistory:
 
     @cached_property
     def tutorial_text(self):
-        """The final tutorial text
+        """The final tutorial text, depending on ``tutorial_text_source``
 
-        In the example, the contents of the file ``bunner/tutorial.md`` as of
-        the tip commit from which the :py:class:`ProjectHistory` was constructed.
+        The value depends on the ``tutorial_text_source`` value this
+        :py:class:`ProjectHistory` was constructed with:
+
+        If ``TIP_REVISION``, the value is the contents of the ``tutorial.md``
+        file as of the tip commit.
+
+        If ``WORKING_DIRECTORY``, the value is the contents of the file in the
+        working directory of the repository.  If there are uncommitted changes,
+        this will differ from the ``TIP_REVISION`` value.
+
+        In the example, the contents of the file ``bunner/tutorial.md``, either
+        as of the tip commit from which the :py:class:`ProjectHistory` was
+        constructed, or as currently in the repo's working directory.
         """
         if self.tutorial_text_source == self.TutorialTextSource.TIP_REVISION:
             tip_commit = self.project_commits[0]
