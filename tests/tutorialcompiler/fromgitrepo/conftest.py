@@ -10,6 +10,21 @@ def this_raw_repo():
 
 
 @pytest.fixture(scope="session")
+def cloned_repo(tmpdir_factory):
+    clone_path = tmpdir_factory.mktemp("tutorials-")
+    repo = pygit2.clone_repository(".",
+                                   clone_path,
+                                   checkout_branch="unit-tests-commits")
+
+    tutorial_path = clone_path / "boing/tutorial.md"
+
+    with open(tutorial_path, "wt") as f_tutorial:
+        f_tutorial.write("Working copy of tutorial\n")
+
+    return repo
+
+
+@pytest.fixture(scope="session")
 def project_history():
     return TH.ProjectHistory(".", "unit-tests-commits")
 
