@@ -29,6 +29,10 @@ In general, ``pytchbuild`` can be told:
 
 * which revision is the tip of the tutorial; by default, ``HEAD``.
 
+* whether to use the current working directory's version of the
+  tutorial text markdown file (or use the default, which is the
+  content as of the tip revision).
+
 Typical development workflow, then, is to be working in the
 ``pytch-tutorials`` repo on a branch named for your tutorial.  When
 ready to try the tutorial in the IDE, run something like::
@@ -284,6 +288,10 @@ Major pieces are:
       process.  (QN: Might one day want to support more than one
       'final' branch, to support 'now you try this', or 'alternatively
       we could have implemented this feature like this.)
+
+    - Tip revision.
+
+    - Which source to use for the tutorial text.
 
 
 .. py:class:: TutorialRawText
