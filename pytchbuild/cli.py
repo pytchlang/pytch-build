@@ -6,7 +6,9 @@ import click
 
 import pygit2
 
-from .tutorialcompiler.fromgitrepo import compile as compile_fromgitrepo
+from .tutorialcompiler.fromgitrepo import (
+    compile as compile_fromgitrepo,
+)
 from .tutorialcompiler.fromgitrepo.tutorial_history import ProjectHistory
 
 
