@@ -89,12 +89,17 @@ def div_from_chapter(soup, chapter):
 def div_from_front_matter(
         soup,
         front_matter,
+        maybe_seek_to_chapter,
         initial_code_text,
         final_code_text
 ):
     div = div_from_elements(soup, "front-matter", front_matter)
     div["data-initial-code-text"] = initial_code_text
     div["data-complete-code-text"] = final_code_text
+
+    if maybe_seek_to_chapter is not None:
+        div["data-seek-to-chapter"] = str(maybe_seek_to_chapter)
+
     return div
 
 
