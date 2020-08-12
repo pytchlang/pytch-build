@@ -18,7 +18,8 @@ from .tutorialcompiler.fromgitrepo.tutorial_history import ProjectHistory
     "-o", "--output-file",
     type=click.File(mode="wb"),
     required=True,
-    help="where to write the zipfile containing the tutorial content",
+    help=("where to write the zipfile containing the tutorial content"
+          " (or, under \"--html-only\", the HTML fragment)"),
 )
 @click.option(
     "-r", "--repository-path",
