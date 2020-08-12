@@ -294,6 +294,10 @@ class ProjectHistory:
         return only_entry.name
 
     @cached_property
+    def workdir_path(self):
+        return pathlib.Path(self.repo.workdir)
+
+    @cached_property
     def python_code_path(self):
         dirname = self.top_level_directory_name
         return f"{dirname}/{CODE_FILE_BASENAME}"
