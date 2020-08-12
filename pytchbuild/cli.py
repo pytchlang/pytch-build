@@ -8,6 +8,7 @@ import pygit2
 
 from .tutorialcompiler.fromgitrepo import (
     compile as compile_fromgitrepo,
+    compile_html_only as compile_html_only_fromgitrepo,
 )
 from .tutorialcompiler.fromgitrepo.tutorial_history import ProjectHistory
 
