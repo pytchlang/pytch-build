@@ -27,6 +27,7 @@ import re
 import pathlib
 import pygit2
 import itertools
+import enum
 from dataclasses import dataclass
 from cached_property import cached_property
 
@@ -243,8 +244,18 @@ class ProjectHistory:
     """Development history of a Pytch project within a tutorial context
     """
 
-    def __init__(self, repo_directory, tip_revision):
+    class TutorialTextSource(enum.Enum):
+        TIP_REVISION = enum.auto()
+        WORKING_DIRECTORY = enum.auto()
+
+    def __init__(
+            self,
+            repo_directory,
+            tip_revision,
+            tutorial_text_source=TutorialTextSource.TIP_REVISION,
+    ):
         self.repo = pygit2.Repository(repo_directory)
+        self.tutorial_text_source = tutorial_text_source
         tip_oid = self.repo.revparse_single(tip_revision).oid
         self.project_commits = self.commit_linear_ancestors(tip_oid)
 
@@ -283,6 +294,10 @@ class ProjectHistory:
         return only_entry.name
 
     @cached_property
+    def workdir_path(self):
+        return pathlib.Path(self.repo.workdir)
+
+    @cached_property
     def python_code_path(self):
         dirname = self.top_level_directory_name
         return f"{dirname}/{CODE_FILE_BASENAME}"
@@ -294,13 +309,31 @@ class ProjectHistory:
 
     @cached_property
     def tutorial_text(self):
-        """The final tutorial text
+        """The final tutorial text, depending on ``tutorial_text_source``
 
-        In the example, the contents of the file ``bunner/tutorial.md`` as of
-        the tip commit from which the :py:class:`ProjectHistory` was constructed.
+        The value depends on the ``tutorial_text_source`` value this
+        :py:class:`ProjectHistory` was constructed with:
+
+        If ``TIP_REVISION``, the value is the contents of the ``tutorial.md``
+        file as of the tip commit.
+
+        If ``WORKING_DIRECTORY``, the value is the contents of the file in the
+        working directory of the repository.  If there are uncommitted changes,
+        this will differ from the ``TIP_REVISION`` value.
+
+        In the example, the contents of the file ``bunner/tutorial.md``, either
+        as of the tip commit from which the :py:class:`ProjectHistory` was
+        constructed, or as currently in the repo's working directory.
         """
-        tip_commit = self.project_commits[0]
-        return tip_commit.text_file_contents(self.tutorial_text_path)
+        if self.tutorial_text_source == self.TutorialTextSource.TIP_REVISION:
+            tip_commit = self.project_commits[0]
+            return tip_commit.text_file_contents(self.tutorial_text_path)
+        elif self.tutorial_text_source == self.TutorialTextSource.WORKING_DIRECTORY:
+            full_path = self.workdir_path / self.tutorial_text_path
+            with full_path.open("rt") as f_in:
+                return f_in.read()
+        else:
+            raise ValueError("unknown tutorial_text_source")
 
     @cached_property
     def initial_code_text(self):

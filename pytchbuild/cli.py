@@ -7,6 +7,7 @@ import click
 import pygit2
 
 from .tutorialcompiler.fromgitrepo import compile as compile_fromgitrepo
+from .tutorialcompiler.fromgitrepo.tutorial_history import ProjectHistory
 
 
 @click.command()
@@ -29,14 +30,28 @@ from .tutorialcompiler.fromgitrepo import compile as compile_fromgitrepo
     metavar="REVISION",
     help="revision (e.g., branch name) at tip of tutorial",
 )
-def main(output_file, repository_path, tip_revision):
+@click.option(
+    "-t", "--tutorial-text-source",
+    type=click.Choice([x.name for x in ProjectHistory.TutorialTextSource],
+                      case_sensitive=False),
+    default=ProjectHistory.TutorialTextSource.TIP_REVISION.name,
+    help="what source to use for the tutorial text",
+)
+def main(output_file, repository_path, tip_revision, tutorial_text_source):
     if repository_path is None:
         raise click.UsageError(
             "\nUnable to discover repository.  Please specify one\n"
             "either with the -r/--repository-path option or via\n"
             "the GIT_DIR environment variable.")
 
-    compile_fromgitrepo(output_file, repository_path, tip_revision)
+    # Convert string to enumerator:
+    tutorial_text_source = getattr(ProjectHistory.TutorialTextSource,
+                                   tutorial_text_source)
+
+    compile_fromgitrepo(output_file,
+                        repository_path,
+                        tip_revision,
+                        tutorial_text_source)
 
     return 0
 
