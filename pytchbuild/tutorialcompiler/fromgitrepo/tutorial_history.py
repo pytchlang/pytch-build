@@ -248,8 +248,14 @@ class ProjectHistory:
         TIP_REVISION = enum.auto()
         WORKING_DIRECTORY = enum.auto()
 
-    def __init__(self, repo_directory, tip_revision):
+    def __init__(
+            self,
+            repo_directory,
+            tip_revision,
+            tutorial_text_source=TutorialTextSource.TIP_REVISION,
+    ):
         self.repo = pygit2.Repository(repo_directory)
+        self.tutorial_text_source = tutorial_text_source
         tip_oid = self.repo.revparse_single(tip_revision).oid
         self.project_commits = self.commit_linear_ancestors(tip_oid)
 
