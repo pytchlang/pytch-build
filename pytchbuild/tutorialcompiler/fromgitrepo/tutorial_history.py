@@ -314,8 +314,15 @@ class ProjectHistory:
         In the example, the contents of the file ``bunner/tutorial.md`` as of
         the tip commit from which the :py:class:`ProjectHistory` was constructed.
         """
-        tip_commit = self.project_commits[0]
-        return tip_commit.text_file_contents(self.tutorial_text_path)
+        if self.tutorial_text_source == self.TutorialTextSource.TIP_REVISION:
+            tip_commit = self.project_commits[0]
+            return tip_commit.text_file_contents(self.tutorial_text_path)
+        elif self.tutorial_text_source == self.TutorialTextSource.WORKING_DIRECTORY:
+            full_path = self.workdir_path / self.tutorial_text_path
+            with full_path.open("rt") as f_in:
+                return f_in.read()
+        else:
+            raise ValueError("unknown tutorial_text_source")
 
     @cached_property
     def initial_code_text(self):
