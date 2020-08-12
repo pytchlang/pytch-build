@@ -174,7 +174,11 @@ class TestProjectHistory:
         assert project_history.tutorial_text_path == "boing/tutorial.md"
 
     def test_tutorial_text(self, project_history):
-        assert re.match(r"# Boing!", project_history.tutorial_text)
+        TTS = TH.ProjectHistory.TutorialTextSource
+        text_source = project_history.tutorial_text_source
+        target_text = ("# Boing!" if text_source == TTS.TIP_REVISION
+                       else "Working copy")
+        assert project_history.tutorial_text.startswith(target_text)
 
     def test_initial_code_text(self, project_history):
         assert project_history.initial_code_text == ""
