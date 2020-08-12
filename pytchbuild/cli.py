@@ -15,7 +15,7 @@ from .tutorialcompiler.fromgitrepo.tutorial_history import ProjectHistory
 
 @click.command()
 @click.option(
-    "-o", "output_file",
+    "-o", "--output-file",
     type=click.File(mode="wb"),
     required=True,
     help="where to write the zipfile containing the tutorial content",
