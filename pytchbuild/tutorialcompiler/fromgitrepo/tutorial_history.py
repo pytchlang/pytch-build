@@ -27,6 +27,7 @@ import re
 import pathlib
 import pygit2
 import itertools
+import enum
 from dataclasses import dataclass
 from cached_property import cached_property
 
@@ -242,6 +243,10 @@ class ProjectCommit:
 class ProjectHistory:
     """Development history of a Pytch project within a tutorial context
     """
+
+    class TutorialTextSource(enum.Enum):
+        TIP_REVISION = enum.auto()
+        WORKING_DIRECTORY = enum.auto()
 
     def __init__(self, repo_directory, tip_revision):
         self.repo = pygit2.Repository(repo_directory)
