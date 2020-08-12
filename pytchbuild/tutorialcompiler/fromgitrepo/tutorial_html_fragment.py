@@ -138,6 +138,7 @@ def div_from_project_history(project_history):
 
     past_front_matter = False
     chapter_idx = 0
+    maybe_wip_chapter_idx = None
 
     for elt in filter(node_is_relevant, soup.children):
         if not isinstance(elt, bs4.element.Tag):
@@ -147,6 +148,13 @@ def div_from_project_history(project_history):
             past_front_matter = True
         elif not past_front_matter:
             front_matter.append(elt)
+        elif node_is_work_in_progress_marker(elt):
+            if not past_front_matter:
+                raise ValueError("unexpected WiP marker in front matter")
+            # Although we increment chapter_idx as soon as we see the <h2>, and
+            # so the first real chapter gets index 1, this is correct because
+            # the front-matter is treated as "chapter 0".
+            maybe_wip_chapter_idx = chapter_idx
         else:
             if node_is_patch(elt):
                 augment_patch_elt(soup, elt, project_history)
