@@ -40,7 +40,13 @@ from .tutorialcompiler.fromgitrepo.tutorial_history import ProjectHistory
     default=ProjectHistory.TutorialTextSource.TIP_REVISION.name,
     help="what source to use for the tutorial text",
 )
-def main(output_file, repository_path, tip_revision, tutorial_text_source):
+@click.option(
+    "-f", "--output-format",
+    type=click.Choice(["bundle-zipfile", "html-only"]),
+    default="bundle-zipfile",
+    help="what to write: the full bundle zipfile, or just the HTML fragment",
+)
+def main(output_file, repository_path, tip_revision, tutorial_text_source, output_format):
     if repository_path is None:
         raise click.UsageError(
             "\nUnable to discover repository.  Please specify one\n"
