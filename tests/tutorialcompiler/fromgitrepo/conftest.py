@@ -24,9 +24,14 @@ def cloned_repo(tmpdir_factory):
     return repo
 
 
-@pytest.fixture(scope="session")
-def project_history():
-    return TH.ProjectHistory(".", "unit-tests-commits")
+@pytest.fixture(
+    scope="session",
+    params=list(TH.ProjectHistory.TutorialTextSource),
+)
+def project_history(cloned_repo, request):
+    return TH.ProjectHistory(cloned_repo.workdir,
+                             "unit-tests-commits",
+                             request.param)
 
 
 @pytest.fixture(scope="session")
