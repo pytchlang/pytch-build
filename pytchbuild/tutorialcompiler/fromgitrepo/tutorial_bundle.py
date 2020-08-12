@@ -24,7 +24,11 @@ class TutorialBundle:
         )
 
     def write_zipfile(self, out_file):
-        with closing(zipfile.ZipFile(out_file, mode="w")) as zfile:
+        bare_zfile = zipfile.ZipFile(out_file,
+                                     mode="w",
+                                     compression=zipfile.ZIP_DEFLATED)
+
+        with closing(bare_zfile) as zfile:
             bundle_root_path = Path(self.top_level_directory_name)
             tutorial_html_path = bundle_root_path / "tutorial.html"
             tutorial_html_bytes = self.html_fragment.encode("utf-8")
