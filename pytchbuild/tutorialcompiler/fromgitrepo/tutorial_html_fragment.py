@@ -137,6 +137,7 @@ def div_from_project_history(project_history):
     front_matter = []
 
     past_front_matter = False
+    chapter_idx = 0
 
     for elt in filter(node_is_relevant, soup.children):
         if not isinstance(elt, bs4.element.Tag):
@@ -152,6 +153,7 @@ def div_from_project_history(project_history):
             elif elt.name == "h2":
                 chapters.append(current_chapter)
                 current_chapter = []
+                chapter_idx += 1
 
             current_chapter.append(elt)
 
