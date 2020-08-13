@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 import json
+import asyncio
+import websockets
 
 
 class PytchFilesHandler(FileSystemEventHandler):
@@ -152,3 +154,42 @@ class MessageBroker:
             print(f'relay_messages(): sending "{msg}" to {n_clients} client/s')
             for write_q in self.write_q_from_id.values():
                 await write_q.put(msg)
+
+
+class ReloadServer:
+    """WebSockets server which tells clients when code/tutorial has changed
+
+    Constructed from the MessageBroker it is to register itself with:
+
+        reload_server = ReloadServer(message_broker)
+
+    and then turned into a WebSockets server via, say:
+
+        websocket_server = await websockets.serve(reload_server.serve_client,
+                                                  "127.0.0.1", 4111)
+
+    which can then be run essentially forever by:
+
+        await websocket_server.wait_closed()
+    """
+
+    def __init__(self, message_broker):
+        self.message_broker = message_broker
+
+    async def serve_client(self, websocket, path):
+        print("serve_client(): entering")
+        queue = asyncio.Queue()
+        qid = self.message_broker.register(queue)
+        print("serve_client(): registered and got qid", qid)
+        try:
+            while True:
+                print(f"serve_client() [{qid}]: waiting for msg")
+                msg = await queue.get()
+                print(f"serve_client() [{qid}]: passing on \"{msg}\"")
+                await websocket.send(msg.as_json())
+        except websockets.ConnectionClosed as closure:
+            print(f"serve_client() [{qid}]: connection closed:"
+                  f" {closure.code} / \"{closure.reason}\"")
+        finally:
+            self.message_broker.unregister(qid)
+            print(f"serve_client() [{qid}]: unregistered; leaving")
