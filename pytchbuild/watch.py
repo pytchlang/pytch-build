@@ -266,7 +266,7 @@ class ReloadServer:
             print(f"serve_client() [{qid}]: unregistered; leaving")
 
 
-async def async_main(dirname):
+async def async_main(dirname, repository_path, tip_revision):
     """Connect all the above together
 
     We launch a ``PytchFilesHandler``, which feeds into a ``MessageBroker``.
@@ -281,6 +281,12 @@ async def async_main(dirname):
             | [async side]
             v
         [IdeMessage.transform_paths()]
+            |
+            |
+        (IdeMessage instances via asyncio queue)
+            |
+            v
+        [rebuild_tutorial()]
             |
             |
         (IdeMessage instances via asyncio queue)
@@ -309,7 +315,11 @@ async def async_main(dirname):
     ide_msgs_q = asyncio.Queue()
     asyncio.create_task(IdeMessage.transform_paths(aggregated_paths_q, ide_msgs_q))
 
-    message_broker = MessageBroker(ide_msgs_q)
+    rebuilt_msgs_q = asyncio.Queue()
+    asyncio.create_task(rebuild_tutorial(ide_msgs_q, rebuilt_msgs_q,
+                                         repository_path, tip_revision))
+
+    message_broker = MessageBroker(rebuilt_msgs_q)
     asyncio.create_task(message_broker.relay_messages())
 
     reload_server = ReloadServer(message_broker)
