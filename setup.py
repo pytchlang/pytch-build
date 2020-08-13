@@ -11,6 +11,9 @@ requirements = [
     'Markdown>=3.2.2',
     'beautifulsoup4>=4.9.1',
     'click>=7.1.0',
+    'watchdog>=0.10.3',
+    'websockets>=8.1',
+    'janus>=0.5.0',
 ]
 
 setup(
@@ -30,6 +33,7 @@ setup(
     entry_points={
         'console_scripts': [
             'pytchbuild=pytchbuild.cli:main',
+            'pytchbuild-watch=pytchbuild.watch:main',
         ],
     },
     install_requires=requirements,
