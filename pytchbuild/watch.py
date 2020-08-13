@@ -7,6 +7,7 @@ import json
 import janus
 import asyncio
 import websockets
+import click
 
 
 class PytchFilesHandler(FileSystemEventHandler):
@@ -276,3 +277,13 @@ async def async_main(dirname):
     server = await websockets.serve(reload_server.serve_client, "127.0.0.1", 4111)
 
     await server.wait_closed()
+
+
+@click.command()
+@click.argument(
+    "dirname",
+    type=click.Path(exists=True, file_okay=False),
+    # Where does this go: help="the directory to watch for tutorial content changes"
+)
+def main(dirname):
+    asyncio.run(async_main(dirname))
