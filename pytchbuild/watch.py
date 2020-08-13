@@ -108,3 +108,47 @@ class IdeMessage:
         while True:
             path = await read_q.get()
             await write_q.put(cls.from_path(path))
+
+
+class MessageBroker:
+    """Broker relaying messages from a producer to all registered consumers
+
+    Constructed from the queue it is to read messages from:
+
+        broker = MessageBroker(read_q)
+
+    and then set in motion via a task:
+
+        asyncio.create_task(broker.relay_messages())
+
+    Then other tasks can register consumption queues with the broker, being
+    given a queue-id in return, and unregister themselves when finished.  A
+    client task which is only interested in reading one message could do:
+
+        qid = broker.register(my_read_q)
+        msg = await my_read_q.get()
+        broker.unregister(qid)
+    """
+
+    def __init__(self, read_q):
+        self.read_q = read_q
+        self.write_q_from_id = {}
+        self.next_qid = 1000
+
+    def register(self, write_q):
+        assigned_qid = self.next_qid
+        self.next_qid += 1
+        self.write_q_from_id[assigned_qid] = write_q
+        return assigned_qid
+
+    def unregister(self, qid):
+        del self.write_q_from_id[qid]
+
+    async def relay_messages(self):
+        while True:
+            print("relay_messages(): awaiting message")
+            msg = await self.read_q.get()
+            n_clients = len(self.write_q_from_id)
+            print(f'relay_messages(): sending "{msg}" to {n_clients} client/s')
+            for write_q in self.write_q_from_id.values():
+                await write_q.put(msg)
