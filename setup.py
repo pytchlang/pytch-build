@@ -12,6 +12,7 @@ requirements = [
     'beautifulsoup4>=4.9.1',
     'click>=7.1.0',
     'watchdog>=0.10.3',
+    'websockets>=8.1',
 ]
 
 setup(
