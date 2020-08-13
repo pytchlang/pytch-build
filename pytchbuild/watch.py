@@ -32,14 +32,10 @@ class PytchFilesHandler(FileSystemEventHandler):
     write-queue.
     """
 
-    # We keep an eye on the Python code, and on the compiled HTML fragment.
-    #
-    # TODO: Don't keep rebuilding the entire ProjectHistory if all that's
-    # changed is the tutorial text markdown file.
-    #
+    # We keep an eye on the Python code, and on the tutorial markdown.
     filenames_of_interest = [
         "code.py",
-        "tutorial.html",
+        "tutorial.md",
     ]
 
     def __init__(self, sync_q):
