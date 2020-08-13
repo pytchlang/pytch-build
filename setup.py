@@ -13,6 +13,7 @@ requirements = [
     'click>=7.1.0',
     'watchdog>=0.10.3',
     'websockets>=8.1',
+    'janus>=0.5.0',
 ]
 
 setup(
