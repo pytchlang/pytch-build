@@ -11,6 +11,7 @@ requirements = [
     'Markdown>=3.2.2',
     'beautifulsoup4>=4.9.1',
     'click>=7.1.0',
+    'watchdog>=0.10.3',
 ]
 
 setup(
