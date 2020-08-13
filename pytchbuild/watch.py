@@ -1,4 +1,5 @@
 from pathlib import Path
+from collections import defaultdict
 from dataclasses import dataclass
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
@@ -110,6 +111,35 @@ class IdeMessage:
         while True:
             path = await read_q.get()
             await write_q.put(cls.from_path(path))
+
+
+async def aggregate_modifies(read_q, write_q):
+    """Aggregate multiply temporally-close updates into one
+
+    When writing a big file, a handful of modify events are sometimes generated
+    in quick succession.  We want to hold off processing the new file until it's
+    been fully written.  (On Linux this could be done with the IN_CLOSE_WRITE
+    inotify event but we're trying to be cross-platform.)  Delay passing on a
+    message until we know it was the last one in its 'group', defined by a
+    hard-coded delay of 125ms here.
+    """
+
+    seqnum_from_path = defaultdict(int)
+
+    async def delayed_handle(path, seqnum):
+        print('delayed_handle():', path, seqnum, 'entering')
+        await asyncio.sleep(0.125)
+        print('delayed_handle():', path, seqnum, 'waking', seqnum_from_path[path])
+        if seqnum == seqnum_from_path[path]:
+            print('delayed_handle(): sending', path)
+            await write_q.put(path)
+
+    while True:
+        print("aggregate_modifies(): waiting for path msg")
+        path = await read_q.get()
+        print(f'aggregate_modifies(): processing path "{path}"')
+        seqnum_from_path[path] += 1
+        asyncio.create_task(delayed_handle(path, seqnum_from_path[path]))
 
 
 class MessageBroker:
