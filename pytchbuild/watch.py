@@ -3,6 +3,12 @@ from collections import defaultdict
 from dataclasses import dataclass
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
+from pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history import (
+    ProjectHistory,
+)
+from pytchbuild.tutorialcompiler.fromgitrepo.tutorial_html_fragment import (
+    div_from_project_history,
+)
 import json
 import janus
 import asyncio
@@ -145,6 +151,36 @@ async def aggregate_modifies(read_q, write_q):
         print(f'aggregate_modifies(): processing path "{path}"')
         seqnum_from_path[path] += 1
         asyncio.create_task(delayed_handle(path, seqnum_from_path[path]))
+
+
+async def rebuild_tutorial(
+        read_q,
+        write_q,
+        repository_path,
+        tip_revision
+):
+    # TODO: Don't keep rebuilding the entire ProjectHistory if all that's
+    # changed is the tutorial text markdown file.  Would require some rework of
+    # the ProjectHistory and some check that the HEAD (say) hasn't moved on
+    # between last time we processed the repo.
+    while True:
+        print("rebuild_tutorial(): waiting for IDE msg")
+        msg = await read_q.get()
+        print(f'rebuild_tutorial(): got {msg}')
+        if msg.kind == "tutorial":
+            print("rebuild_tutorial(): rebuilding html-fragment")
+            project_history = ProjectHistory(
+                repository_path,
+                tip_revision,
+                ProjectHistory.TutorialTextSource.WORKING_DIRECTORY
+            )
+            html_fragment = div_from_project_history(project_history)
+            html_msg = msg.with_new_text(str(html_fragment))
+            print(f'rebuild_tutorial(): forwarding transformed {html_msg}')
+            await write_q.put(html_msg)
+        elif msg.kind == "code":
+            print(f'rebuild_tutorial(): forwarding {msg} as-is')
+            await write_q.put(msg)
 
 
 class MessageBroker:
