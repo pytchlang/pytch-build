@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 import json
+import janus
 import asyncio
 import websockets
 
@@ -223,3 +224,55 @@ class ReloadServer:
         finally:
             self.message_broker.unregister(qid)
             print(f"serve_client() [{qid}]: unregistered; leaving")
+
+
+async def async_main(dirname):
+    """Connect all the above together
+
+    We launch a ``PytchFilesHandler``, which feeds into a ``MessageBroker``.
+    This needs us to bridge the threaded and asyncio worlds, which we do via a
+    ``Janus`` queue.  A ``ReloadServer`` accepts connections from browsers, each
+    of which becomes a consumer of the ``MessageBroker``.
+
+        [PytchFilesHandler]
+            |
+            | [sync side]
+        (paths via Janus queue)
+            | [async side]
+            v
+        [IdeMessage.transform_paths()]
+            |
+            |
+        (IdeMessage instances via asyncio queue)
+            |
+            v
+        [MessageBroker.relay_messages()]
+            |
+            +---------------------------------+
+            |                                 |
+        (IdeMessages via asyncio queue)    (IdeMessages via asyncio queue)
+            |                                 |
+            v                                 v
+        [ReloadServer.serve_client()]      [ReloadServer.serve_client()]
+            |                                 |
+            v                                 v
+        [browser]                          [browser]
+    """
+
+    paths_q = janus.Queue()
+    file_monitor = PytchFilesHandler(paths_q.sync_q)
+    file_monitor.launch(dirname)
+
+    aggregated_paths_q = asyncio.Queue()
+    asyncio.create_task(aggregate_modifies(paths_q.async_q, aggregated_paths_q))
+
+    ide_msgs_q = asyncio.Queue()
+    asyncio.create_task(IdeMessage.transform_paths(aggregated_paths_q, ide_msgs_q))
+
+    message_broker = MessageBroker(ide_msgs_q)
+    asyncio.create_task(message_broker.relay_messages())
+
+    reload_server = ReloadServer(message_broker)
+    server = await websockets.serve(reload_server.serve_client, "127.0.0.1", 4111)
+
+    await server.wait_closed()
