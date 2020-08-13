@@ -33,6 +33,7 @@ setup(
     entry_points={
         'console_scripts': [
             'pytchbuild=pytchbuild.cli:main',
+            'pytchbuild-watch=pytchbuild.watch:main',
         ],
     },
     install_requires=requirements,
