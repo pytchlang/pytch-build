@@ -108,6 +108,9 @@ class IdeMessage:
             "text": self.text,
         })
 
+    def with_new_text(self, new_text):
+        return IdeMessage(self.dir, self.kind, new_text)
+
     @classmethod
     async def transform_paths(cls, read_q, write_q):
         while True:
