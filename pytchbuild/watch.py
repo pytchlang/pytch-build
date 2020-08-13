@@ -1,6 +1,8 @@
 from pathlib import Path
+from dataclasses import dataclass
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
+import json
 
 
 class PytchFilesHandler(FileSystemEventHandler):
@@ -56,3 +58,53 @@ class PytchFilesHandler(FileSystemEventHandler):
         observer = Observer()
         observer.schedule(self, dirname)
         observer.start()
+
+
+@dataclass
+class IdeMessage:
+    """A message to be sent to the web IDE
+
+    Contains information in a form helpful to the IDE: Which tutorial this file
+    belongs to, what kind of file it is (code or tutorial), and the actual
+    file contents as text.
+
+    Typically constructed from a path via
+
+        msg = IdeMessage.from_path(path)
+
+    and then used in its JSON representation via
+
+        do_something_with(msg.as_json())
+
+    Also provides a classmethod task which can transform paths read on one queue
+    to ``IdeMessage`` instances written on another:
+
+        asyncio.create_task(IdeMessage.transform_paths(read_q, write_q))
+    """
+
+    dir: str
+    kind: str
+    text: str
+
+    def __str__(self):
+        return f"<IdeMessage: {self.kind} / {len(self.text)} chars>"
+
+    @classmethod
+    def from_path(cls, path):
+        kind = path.stem
+        with path.open("rt") as f_in:
+            text = f_in.read()
+        return cls(path.parent.name, kind, text)
+
+    def as_json(self):
+        return json.dumps({
+            "tutorial_name": self.dir,
+            "kind": self.kind,
+            "text": self.text,
+        })
+
+    @classmethod
+    async def transform_paths(cls, read_q, write_q):
+        while True:
+            path = await read_q.get()
+            await write_q.put(cls.from_path(path))
