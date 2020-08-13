@@ -9,6 +9,7 @@ from pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history import (
 from pytchbuild.tutorialcompiler.fromgitrepo.tutorial_html_fragment import (
     div_from_project_history,
 )
+import pygit2
 import json
 import janus
 import asyncio
@@ -325,10 +326,31 @@ async def async_main(dirname, repository_path, tip_revision):
 
 
 @click.command()
+@click.option(
+    "-r", "--repository-path",
+    default=None,  # Depends on DIRNAME argument so compute inside function
+    envvar="GIT_DIR",
+    metavar="PATH",
+    help="path to root of git repository",
+)
+@click.option(
+    "-b", "--tip-revision",
+    default="HEAD",
+    metavar="REVISION",
+    help="revision (e.g., branch name) at tip of tutorial",
+)
 @click.argument(
     "dirname",
     type=click.Path(exists=True, file_okay=False),
     # Where does this go: help="the directory to watch for tutorial content changes"
 )
-def main(dirname):
-    asyncio.run(async_main(dirname))
+def main(dirname, repository_path, tip_revision):
+    if repository_path is None:
+        repository_path = pygit2.discover_repository(dirname)
+    if repository_path is None:
+        raise click.UsageError(
+            "\nUnable to discover repository.  Please specify one\n"
+            "either with the -r/--repository-path option or via\n"
+            "the GIT_DIR environment variable.")
+
+    asyncio.run(async_main(dirname, repository_path, tip_revision))
