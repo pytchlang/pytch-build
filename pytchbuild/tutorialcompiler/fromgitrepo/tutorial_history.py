@@ -325,6 +325,11 @@ class ProjectHistory:
         return f"{dirname}/{TUTORIAL_TEXT_FILE_BASENAME}"
 
     @cached_property
+    def summary_text_path(self):
+        dirname = self.top_level_directory_name
+        return f"{dirname}/{SUMMARY_TEXT_FILE_BASENAME}"
+
+    @cached_property
     def tutorial_text(self):
         """The final tutorial text, depending on ``tutorial_text_source``
 
