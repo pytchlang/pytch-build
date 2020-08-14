@@ -211,7 +211,10 @@ class TestProjectHistory:
 
     def test_assets(self, project_history):
         got_paths = [a.path for a in project_history.all_project_assets]
-        assert got_paths == ["boing/project-assets/graphics/alien.png"]
+        assert got_paths == [
+            "boing/tutorial-assets/not-a-real-png.png",
+            "boing/project-assets/graphics/alien.png",
+        ]
 
     def test_code_text_from_slug(self, project_history):
         text = project_history.code_text_from_slug("add-Alien-skeleton")
