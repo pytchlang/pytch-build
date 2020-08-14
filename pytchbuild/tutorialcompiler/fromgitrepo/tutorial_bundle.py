@@ -12,7 +12,7 @@ from .tutorial_html_fragment import tutorial_div_from_project_history
 @dataclass
 class TutorialBundle:
     top_level_directory_name: Path
-    html_fragment: bs4.element.Tag
+    tutorial_html: bs4.element.Tag
     assets: List[Asset]
 
     @classmethod
@@ -31,7 +31,7 @@ class TutorialBundle:
         with closing(bare_zfile) as zfile:
             bundle_root_path = Path(self.top_level_directory_name)
             tutorial_html_path = bundle_root_path / "tutorial.html"
-            tutorial_html_bytes = self.html_fragment.encode("utf-8")
+            tutorial_html_bytes = self.tutorial_html.encode("utf-8")
             zfile.writestr(str(tutorial_html_path), tutorial_html_bytes)
 
             for asset in self.assets:
