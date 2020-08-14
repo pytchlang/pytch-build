@@ -20,6 +20,14 @@ Here it is.
 
 ## Make the alien
 
+{{< work-in-progress >}}
+
 Not sure how we ended up with an alien in Boing but never mind.
 
 {{< commit add-Alien-skeleton >}}
+
+
+## Move the Alien around
+
+A primitive AI moves the alien:
+
