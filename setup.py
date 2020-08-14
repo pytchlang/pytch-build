@@ -35,6 +35,7 @@ setup(
         'console_scripts': [
             'pytchbuild=pytchbuild.cli:main',
             'pytchbuild-watch=pytchbuild.watch:main',
+            'pytchbuild-gather-tutorials=pytchbuild.gather_tutorials:main',
         ],
     },
     install_requires=requirements,
