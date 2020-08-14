@@ -187,6 +187,32 @@ class ProjectCommit:
     def path_is_a_tutorial_asset(path_str):
         return pathlib.Path(path_str).parts[1] == TUTORIAL_ASSET_DIRNAME
 
+    def adds_assets(self, is_asset_fun, asset_kind_name):
+        # Special-case the BASE commit, which can add a whole lot of files in
+        # various places in the tree.  Treat it as not adding assets.
+        #
+        # TODO: Revisit this.  Maybe provide a helper script which sets up the
+        # first commit or two in a canonical way?
+        #
+        if self.is_base:
+            return False
+
+        deltas_adding_assets = []
+        other_deltas = []
+
+        for delta in self.diff_against_parent_or_empty.deltas:
+            if (delta.status == pygit2.GIT_DELTA_ADDED
+                    and is_asset_fun(delta.new_file.path)):
+                deltas_adding_assets.append(delta)
+            else:
+                other_deltas.append(delta)
+
+        if deltas_adding_assets and other_deltas:
+            raise ValueError(f"commit {self.oid} adds {asset_kind_name} assets"
+                             " but also has other deltas")
+
+        return bool(deltas_adding_assets)
+
     @cached_property
     def adds_project_assets(self):
         # Special-case the BASE commit, which can add a whole lot of files in
