@@ -21,6 +21,11 @@ def cloned_repo(tmpdir_factory):
     with open(tutorial_path, "wt") as f_tutorial:
         f_tutorial.write("Working copy of tutorial\n")
 
+    summary_path = clone_path / "boing/summary.md"
+
+    with open(summary_path, "wt") as f_summary:
+        f_summary.write("# Working summary for Boing\n")
+
     return repo
 
 
