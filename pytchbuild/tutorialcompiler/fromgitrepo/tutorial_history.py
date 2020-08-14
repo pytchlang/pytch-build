@@ -183,6 +183,10 @@ class ProjectCommit:
     def path_is_a_project_asset(path_str):
         return pathlib.Path(path_str).parts[1] == PROJECT_ASSET_DIRNAME
 
+    @staticmethod
+    def path_is_a_tutorial_asset(path_str):
+        return pathlib.Path(path_str).parts[1] == TUTORIAL_ASSET_DIRNAME
+
     @cached_property
     def adds_project_assets(self):
         # Special-case the BASE commit, which can add a whole lot of files in
