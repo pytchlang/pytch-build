@@ -14,6 +14,7 @@ requirements = [
     'watchdog>=0.10.3',
     'websockets>=8.1',
     'janus>=0.5.0',
+    'pyyaml>=5.3.1',
 ]
 
 setup(
