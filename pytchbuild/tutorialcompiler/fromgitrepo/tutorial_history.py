@@ -358,6 +358,18 @@ class ProjectHistory:
             raise ValueError("unknown tutorial_text_source")
 
     @cached_property
+    def summary_text(self):
+        if self.tutorial_text_source == self.TutorialTextSource.TIP_REVISION:
+            tip_commit = self.project_commits[0]
+            return tip_commit.text_file_contents(self.summary_text_path)
+        elif self.tutorial_text_source == self.TutorialTextSource.WORKING_DIRECTORY:
+            full_path = self.workdir_path / self.summary_text_path
+            with full_path.open("rt") as f_in:
+                return f_in.read()
+        else:
+            raise ValueError("unknown tutorial_text_source")
+
+    @cached_property
     def initial_code_text(self):
         """The initial Python code
 
