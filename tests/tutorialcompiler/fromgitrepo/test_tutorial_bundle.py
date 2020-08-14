@@ -14,7 +14,11 @@ def test_bundle_zipfile(project_history):
     bundle.write_zipfile(round_trip_file)
     zfile = zipfile.ZipFile(round_trip_file, "r")
     paths = [i.filename for i in zfile.infolist()]
+
+    # Asset sequence is like this because we gather assets from tip
+    # commit back to base:
     assert paths == [
         'boing/tutorial.html',
+        'boing/tutorial-assets/not-a-real-png.png',
         'boing/project-assets/graphics/alien.png',
     ]
