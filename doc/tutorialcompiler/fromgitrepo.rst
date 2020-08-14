@@ -257,7 +257,8 @@ Major pieces are:
         do :py:attr:`added_assets` on any :py:class:`ProjectCommit`?
         Should this return an empty list if there are no added assets?
         Emit a warning if it adds assets but doesn't include the
-        ``add-project-assets`` tag (or vice versa)?
+        ``add-project-assets`` tag (or vice versa)?  TODO: That tag is
+        no longer used I think?
 
     .. py:attribute:: maybe_identifying_slug
 
