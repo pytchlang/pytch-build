@@ -28,7 +28,7 @@ class TutorialBundle:
             project_history.all_project_assets
         )
 
-    def write_zipfile(self, out_file):
+    def write_new_zipfile(self, out_file):
         bare_zfile = zipfile.ZipFile(out_file,
                                      mode="w",
                                      compression=zipfile.ZIP_DEFLATED)
