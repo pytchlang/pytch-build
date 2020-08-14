@@ -7,7 +7,7 @@ from pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history import (
     ProjectHistory,
 )
 from pytchbuild.tutorialcompiler.fromgitrepo.tutorial_html_fragment import (
-    div_from_project_history,
+    tutorial_div_from_project_history,
 )
 import pygit2
 import json
@@ -171,8 +171,8 @@ async def rebuild_tutorial(
                 tip_revision,
                 ProjectHistory.TutorialTextSource.WORKING_DIRECTORY
             )
-            html_fragment = div_from_project_history(project_history)
-            html_msg = msg.with_new_text(str(html_fragment))
+            tutorial_html = tutorial_div_from_project_history(project_history)
+            html_msg = msg.with_new_text(str(tutorial_html))
             print(f'rebuild_tutorial(): forwarding transformed {html_msg}')
             await write_q.put(html_msg)
         elif msg.kind == "code":

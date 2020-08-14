@@ -134,7 +134,7 @@ def augment_patch_elt(soup, elt, project_history):
     elt.append(tables_div_from_patch(soup, patch))
 
 
-def div_from_project_history(project_history):
+def tutorial_div_from_project_history(project_history):
     soup = soup_from_markdown_text(project_history.tutorial_text)
 
     chapters = []
@@ -188,3 +188,22 @@ def div_from_project_history(project_history):
         tutorial_div.append(div_from_chapter(soup, chapter))
 
     return tutorial_div
+
+
+def summary_div_from_project_history(project_history):
+    soup = soup_from_markdown_text(project_history.summary_text)
+
+    # Give all paragraphs holding images (which there should probably only be
+    # one of, being the screenshot) an identifiable class.  The front-end is
+    # going to have to patch the SRC to be within the tutorials/whatever
+    # directory anyway, so it also may as well be the front-end's job to make it
+    # relative to "tutorial-assets".
+
+    for img in soup.findAll("img"):
+        img.parent.attrs["class"] = "image-container"
+
+    summary_div = soup.new_tag("div", attrs={"class": "tutorial-summary"})
+    for elt in soup:
+        summary_div.append(elt)
+
+    return summary_div

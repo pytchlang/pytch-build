@@ -198,6 +198,13 @@ class TestProjectHistory:
                        else "Working copy")
         assert project_history.tutorial_text.startswith(target_text)
 
+    def test_summary_text(self, project_history):
+        TTS = TH.ProjectHistory.TutorialTextSource
+        text_source = project_history.tutorial_text_source
+        target_text = ("# Summary for Boing" if text_source == TTS.TIP_REVISION
+                       else "# Working summary for Boing")
+        assert project_history.summary_text.startswith(target_text)
+
     def test_initial_code_text(self, project_history):
         assert project_history.initial_code_text == ""
 
