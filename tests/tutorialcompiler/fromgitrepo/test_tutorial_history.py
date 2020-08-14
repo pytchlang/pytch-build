@@ -90,6 +90,23 @@ class TestProjectCommit:
         with pytest.raises(ValueError, match="but also has"):
             pc.adds_project_assets
 
+    def test_whether_adds_tutorial_assets_yes(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "bf0e5cfa4b44")
+        assert pc.adds_tutorial_assets
+
+    def test_whether_adds_tutorial_assets_no(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "e41e02c9be03")
+        assert not pc.adds_tutorial_assets
+
+    def test_whether_adds_tutorial_assets_root_commit(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "156e4b616fce")
+        assert not pc.adds_tutorial_assets
+
+    def test_whether_adds_tutorial_assets_error(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "6b71bac9f1c1")
+        with pytest.raises(ValueError, match="but also has"):
+            pc.adds_tutorial_assets
+
     def test_modifies_tutorial_text_yes(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "e1655214c662")
         assert pc.modifies_tutorial_text
