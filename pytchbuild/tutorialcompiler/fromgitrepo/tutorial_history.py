@@ -15,12 +15,16 @@ structure should be::
          sounds/
             squish.mp3
             ...etc...
+      tutorial-assets/
+         screenshot.png
+         some-diagram.png
 
 Internally, the relevant piece of Git history is represented by a
 :py:class:`ProjectHistory` instance.  The commits within that history are
 represented by :py:class:`ProjectCommit` instances, which should be of one of a
 handful of particular forms.  The project's assets (images or sounds) are
-represented by :py:class:`ProjectAsset` instances.
+represented by :py:class:`Asset` instances.  Likewise any assets required for
+the tutorial itself, such as screenshots or diagrams.
 """
 
 import re
@@ -35,6 +39,7 @@ from cached_property import cached_property
 ################################################################################
 
 PROJECT_ASSET_DIRNAME = "project-assets"
+TUTORIAL_ASSET_DIRNAME = "tutorial-assets"
 CODE_FILE_BASENAME = "code.py"
 TUTORIAL_TEXT_FILE_BASENAME = "tutorial.md"
 
@@ -42,7 +47,7 @@ TUTORIAL_TEXT_FILE_BASENAME = "tutorial.md"
 ################################################################################
 
 @dataclass
-class ProjectAsset:
+class Asset:
     """An asset (graphics or sound) used in the tutorial's project
     """
 
@@ -50,12 +55,12 @@ class ProjectAsset:
     data: bytes
 
     def __str__(self):
-        return ('<ProjectAsset "{}": {} bytes>'
+        return ('<Asset "{}": {} bytes>'
                 .format(self.path, len(self.data)))
 
     @classmethod
     def from_delta(cls, repo, delta):
-        """Construct a :py:class:`ProjectAsset` from a Git delta
+        """Construct a :py:class:`Asset` from a Git delta
         """
         if delta.status != pygit2.GIT_DELTA_ADDED:
             raise ValueError("delta is not of type ADDED")
@@ -108,7 +113,7 @@ class ProjectCommit:
             return "untagged-Python-change"
         if self.is_base:
             return "BASE"
-        if self.adds_project_assets:
+        if self.adds_project_assets or self.adds_tutorial_assets:
             asset_paths = ", ".join(f'"{a.path}"' for a in self.added_assets)
             return f"assets({asset_paths})"
         if self.modifies_tutorial_text:
@@ -182,8 +187,11 @@ class ProjectCommit:
     def path_is_a_project_asset(path_str):
         return pathlib.Path(path_str).parts[1] == PROJECT_ASSET_DIRNAME
 
-    @cached_property
-    def adds_project_assets(self):
+    @staticmethod
+    def path_is_a_tutorial_asset(path_str):
+        return pathlib.Path(path_str).parts[1] == TUTORIAL_ASSET_DIRNAME
+
+    def adds_assets(self, is_asset_fun, asset_kind_name):
         # Special-case the BASE commit, which can add a whole lot of files in
         # various places in the tree.  Treat it as not adding assets.
         #
@@ -198,16 +206,24 @@ class ProjectCommit:
 
         for delta in self.diff_against_parent_or_empty.deltas:
             if (delta.status == pygit2.GIT_DELTA_ADDED
-                    and self.path_is_a_project_asset(delta.new_file.path)):
+                    and is_asset_fun(delta.new_file.path)):
                 deltas_adding_assets.append(delta)
             else:
                 other_deltas.append(delta)
 
         if deltas_adding_assets and other_deltas:
-            raise ValueError(f"commit {self.oid} adds project assets but also"
-                             f" has other deltas")
+            raise ValueError(f"commit {self.oid} adds {asset_kind_name} assets"
+                             " but also has other deltas")
 
         return bool(deltas_adding_assets)
+
+    @cached_property
+    def adds_project_assets(self):
+        return self.adds_assets(self.path_is_a_project_asset, "project")
+
+    @cached_property
+    def adds_tutorial_assets(self):
+        return self.adds_assets(self.path_is_a_tutorial_asset, "tutorial")
 
     @cached_property
     def sole_modify_against_parent(self):
@@ -221,8 +237,8 @@ class ProjectCommit:
 
     @cached_property
     def added_assets(self):
-        if self.adds_project_assets:
-            return [ProjectAsset.from_delta(self.repo, delta)
+        if self.adds_project_assets or self.adds_tutorial_assets:
+            return [Asset.from_delta(self.repo, delta)
                     for delta in self.diff_against_parent_or_empty.deltas]
         else:
             return []

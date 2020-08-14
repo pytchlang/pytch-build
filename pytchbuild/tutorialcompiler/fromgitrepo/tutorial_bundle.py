@@ -5,7 +5,7 @@ from pathlib import Path
 import zipfile
 import bs4
 
-from .tutorial_history import ProjectAsset
+from .tutorial_history import Asset
 from .tutorial_html_fragment import div_from_project_history
 
 
@@ -13,7 +13,7 @@ from .tutorial_html_fragment import div_from_project_history
 class TutorialBundle:
     top_level_directory_name: Path
     html_fragment: bs4.element.Tag
-    assets: List[ProjectAsset]
+    assets: List[Asset]
 
     @classmethod
     def from_project_history(cls, project_history):

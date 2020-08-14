@@ -219,7 +219,7 @@ Outline design
 
 Major pieces are:
 
-.. py:class:: ProjectAsset
+.. py:class:: Asset
 
     Graphics or sound asset belonging to project
 
@@ -248,7 +248,7 @@ Major pieces are:
 
     .. py:attribute:: added_assets
 
-        A list of :py:class:`ProjectAsset` instances.
+        A list of :py:class:`Asset` instances.
 
         QN: A given ProjectCommit might add more than one asset.  We
         also have an explicit (but possibly redundant) tag in the
@@ -257,7 +257,8 @@ Major pieces are:
         do :py:attr:`added_assets` on any :py:class:`ProjectCommit`?
         Should this return an empty list if there are no added assets?
         Emit a warning if it adds assets but doesn't include the
-        ``add-project-assets`` tag (or vice versa)?
+        ``add-project-assets`` tag (or vice versa)?  TODO: That tag is
+        no longer used I think?
 
     .. py:attribute:: maybe_identifying_slug
 
