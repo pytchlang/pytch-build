@@ -15,12 +15,16 @@ structure should be::
          sounds/
             squish.mp3
             ...etc...
+      tutorial-assets/
+         screenshot.png
+         some-diagram.png
 
 Internally, the relevant piece of Git history is represented by a
 :py:class:`ProjectHistory` instance.  The commits within that history are
 represented by :py:class:`ProjectCommit` instances, which should be of one of a
 handful of particular forms.  The project's assets (images or sounds) are
-represented by :py:class:`Asset` instances.
+represented by :py:class:`Asset` instances.  Likewise any assets required for
+the tutorial itself, such as screenshots or diagrams.
 """
 
 import re
