@@ -6,7 +6,7 @@ import zipfile
 import bs4
 
 from .tutorial_history import Asset
-from .tutorial_html_fragment import div_from_project_history
+from .tutorial_html_fragment import tutorial_div_from_project_history
 
 
 @dataclass
@@ -19,7 +19,7 @@ class TutorialBundle:
     def from_project_history(cls, project_history):
         return cls(
             Path(project_history.top_level_directory_name),
-            div_from_project_history(project_history),
+            tutorial_div_from_project_history(project_history),
             project_history.all_project_assets
         )
 

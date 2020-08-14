@@ -134,7 +134,7 @@ def augment_patch_elt(soup, elt, project_history):
     elt.append(tables_div_from_patch(soup, patch))
 
 
-def div_from_project_history(project_history):
+def tutorial_div_from_project_history(project_history):
     soup = soup_from_markdown_text(project_history.tutorial_text)
 
     chapters = []
