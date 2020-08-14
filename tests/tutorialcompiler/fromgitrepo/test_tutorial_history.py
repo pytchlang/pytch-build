@@ -13,7 +13,7 @@ class TestProjectAsset:
         assert str(pa) == '<ProjectAsset "alien.png": 19 bytes>'
 
     def test_from_delta(self, this_raw_repo):
-        commit_adding_file = this_raw_repo["d8496bd73702"]
+        commit_adding_file = this_raw_repo["9b40818176"]
         parent_commit = this_raw_repo[commit_adding_file.parent_ids[0]]
         diff = this_raw_repo.diff(a=parent_commit.tree,
                                   b=commit_adding_file.tree)
@@ -53,24 +53,24 @@ class TestProjectCommit:
         assert pc.message_subject == "{base} Add empty code file"
 
     def test_identifier_slug_with(self, this_raw_repo):
-        pc = TH.ProjectCommit(this_raw_repo, "c936f83f")
+        pc = TH.ProjectCommit(this_raw_repo, "e41e02c9be")
         assert pc.has_identifier_slug
         assert pc.maybe_identifier_slug == "add-Alien-skeleton"
         assert pc.identifier_slug == "add-Alien-skeleton"
 
     def test_identifier_slug_without(self, this_raw_repo):
-        pc = TH.ProjectCommit(this_raw_repo, "84f5bb76")
+        pc = TH.ProjectCommit(this_raw_repo, "ae1fea2c9f21")
         assert not pc.has_identifier_slug
         assert pc.maybe_identifier_slug is None
         with pytest.raises(ValueError, match="commit .* has no identifier"):
             pc.identifier_slug
 
     def test_base_detection_yes(self, this_raw_repo):
-        pc = TH.ProjectCommit(this_raw_repo, "84f5bb76")
+        pc = TH.ProjectCommit(this_raw_repo, "ae1fea2c9f21")
         assert pc.is_base
 
     def test_base_detection_no(self, this_raw_repo):
-        pc = TH.ProjectCommit(this_raw_repo, "c936f83f")
+        pc = TH.ProjectCommit(this_raw_repo, "e41e02c9be")
         assert not pc.is_base
 
     def test_whether_adds_project_assets_yes(self, this_raw_repo):
@@ -132,7 +132,7 @@ class TestProjectCommit:
             pc.sole_modify_against_parent
 
     def test_added_assets_one_asset(self, this_raw_repo):
-        pc = TH.ProjectCommit(this_raw_repo, "d8496bd7")
+        pc = TH.ProjectCommit(this_raw_repo, "9b40818176")
         got_assets = pc.added_assets
         assert len(got_assets) == 1
         assert got_assets[0].path == "boing/project-assets/graphics/alien.png"
@@ -143,14 +143,14 @@ class TestProjectCommit:
         assert pc.added_assets == []
 
     def test_code_patch(self, this_raw_repo):
-        pc = TH.ProjectCommit(this_raw_repo, "c936f83fa49b")
+        pc = TH.ProjectCommit(this_raw_repo, "e41e02c9be")
         patch = pc.code_patch_against_parent
         context, n_adds, n_dels = patch.line_stats
         assert n_adds == 4
         assert n_dels == 0
 
     def test_code_patch_error(self, this_raw_repo):
-        pc = TH.ProjectCommit(this_raw_repo, "d8496bd7")
+        pc = TH.ProjectCommit(this_raw_repo, "9b40818176")
         with pytest.raises(ValueError, match="does not modify the Python code"):
             pc.code_patch_against_parent
 
