@@ -3,9 +3,11 @@ from typing import Dict
 import yaml
 import bs4
 from pathlib import Path
+import copy
 
 from .fromgitrepo import git_repository
 from .fromgitrepo.tutorial_history import ProjectHistory
+from .fromgitrepo.tutorial_bundle import TutorialBundle
 
 
 @dataclass
@@ -28,3 +30,20 @@ class TutorialCollection:
         tutorials = {d["name"]: ProjectHistory(repo_path, d["tip-commit"])
                      for d in tutorial_dicts}
         return cls(tutorials)
+
+    def write_to_zipfile(self, zfile):
+        bundles = [TutorialBundle.from_project_history(project_history)
+                   for project_history in self.tutorials.values()]
+
+        for bundle in bundles:
+            bundle.write_to_zipfile(zfile)
+
+        index_soup = bs4.BeautifulSoup('<div class="tutorial-index"></div>',
+                                       "html.parser")
+        index_div = index_soup.find("div")
+        for bundle in bundles:
+            summary_div = copy.deepcopy(bundle.summary_html)
+            summary_div["data-tutorial-name"] = bundle.top_level_directory_name
+            index_div.append(summary_div)
+
+        zfile.writestr("tutorial-index.html", index_soup.encode("utf-8"))
