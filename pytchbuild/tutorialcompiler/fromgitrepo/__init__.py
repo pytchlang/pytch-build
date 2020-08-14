@@ -26,7 +26,7 @@ def compile_html_only(
     project_history = ProjectHistory(git_repo_path,
                                      tip_revision,
                                      tutorial_text_source)
-    html_fragment = tutorial_div_from_project_history(project_history)
+    tutorial_html = tutorial_div_from_project_history(project_history)
 
     # We have this file as binary; explicitly encode.
-    html_fragment_out.write(html_fragment.encode("utf-8"))
+    html_fragment_out.write(tutorial_html.encode("utf-8"))
