@@ -35,9 +35,14 @@ class TutorialBundle:
 
         with closing(bare_zfile) as zfile:
             bundle_root_path = Path(self.top_level_directory_name)
+
             tutorial_html_path = bundle_root_path / "tutorial.html"
             tutorial_html_bytes = self.tutorial_html.encode("utf-8")
             zfile.writestr(str(tutorial_html_path), tutorial_html_bytes)
+
+            summary_html_path = bundle_root_path / "summary.html"
+            summary_html_bytes = self.summary_html.encode("utf-8")
+            zfile.writestr(str(summary_html_path), summary_html_bytes)
 
             for asset in self.assets:
                 zfile.writestr(asset.path, asset.data)
