@@ -3,7 +3,9 @@ from typing import Dict
 import yaml
 import bs4
 from pathlib import Path
+import zipfile
 import copy
+from contextlib import closing
 
 from .fromgitrepo import git_repository
 from .fromgitrepo.tutorial_history import ProjectHistory
@@ -47,3 +49,11 @@ class TutorialCollection:
             index_div.append(summary_div)
 
         zfile.writestr("tutorial-index.html", index_soup.encode("utf-8"))
+
+    def write_new_zipfile(self, out_file):
+        bare_zfile = zipfile.ZipFile(out_file,
+                                     mode="w",
+                                     compression=zipfile.ZIP_DEFLATED)
+
+        with closing(bare_zfile) as zfile:
+            self.write_to_zipfile(zfile)
