@@ -215,51 +215,11 @@ class ProjectCommit:
 
     @cached_property
     def adds_project_assets(self):
-        # Special-case the BASE commit, which can add a whole lot of files in
-        # various places in the tree.  Treat it as not adding assets.
-        #
-        # TODO: Revisit this.  Maybe provide a helper script which sets up the
-        # first commit or two in a canonical way?
-        #
-        if self.is_base:
-            return False
-
-        deltas_adding_assets = []
-        other_deltas = []
-
-        for delta in self.diff_against_parent_or_empty.deltas:
-            if (delta.status == pygit2.GIT_DELTA_ADDED
-                    and self.path_is_a_project_asset(delta.new_file.path)):
-                deltas_adding_assets.append(delta)
-            else:
-                other_deltas.append(delta)
-
-        if deltas_adding_assets and other_deltas:
-            raise ValueError(f"commit {self.oid} adds project assets but also"
-                             f" has other deltas")
-
-        return bool(deltas_adding_assets)
+        return self.adds_assets(self.path_is_a_project_asset, "project")
 
     @cached_property
     def adds_tutorial_assets(self):
-        if self.is_base:
-            return False
-
-        deltas_adding_assets = []
-        other_deltas = []
-
-        for delta in self.diff_against_parent_or_empty.deltas:
-            if (delta.status == pygit2.GIT_DELTA_ADDED
-                    and self.path_is_a_tutorial_asset(delta.new_file.path)):
-                deltas_adding_assets.append(delta)
-            else:
-                other_deltas.append(delta)
-
-        if deltas_adding_assets and other_deltas:
-            raise ValueError(f"commit {self.oid} adds tutorial assets but also"
-                             f" has other deltas")
-
-        return bool(deltas_adding_assets)
+        return self.adds_assets(self.path_is_a_tutorial_asset, "tutorial")
 
     @cached_property
     def sole_modify_against_parent(self):
