@@ -20,7 +20,7 @@ Internally, the relevant piece of Git history is represented by a
 :py:class:`ProjectHistory` instance.  The commits within that history are
 represented by :py:class:`ProjectCommit` instances, which should be of one of a
 handful of particular forms.  The project's assets (images or sounds) are
-represented by :py:class:`ProjectAsset` instances.
+represented by :py:class:`Asset` instances.
 """
 
 import re
@@ -42,7 +42,7 @@ TUTORIAL_TEXT_FILE_BASENAME = "tutorial.md"
 ################################################################################
 
 @dataclass
-class ProjectAsset:
+class Asset:
     """An asset (graphics or sound) used in the tutorial's project
     """
 
@@ -50,12 +50,12 @@ class ProjectAsset:
     data: bytes
 
     def __str__(self):
-        return ('<ProjectAsset "{}": {} bytes>'
+        return ('<Asset "{}": {} bytes>'
                 .format(self.path, len(self.data)))
 
     @classmethod
     def from_delta(cls, repo, delta):
-        """Construct a :py:class:`ProjectAsset` from a Git delta
+        """Construct a :py:class:`Asset` from a Git delta
         """
         if delta.status != pygit2.GIT_DELTA_ADDED:
             raise ValueError("delta is not of type ADDED")
@@ -222,7 +222,7 @@ class ProjectCommit:
     @cached_property
     def added_assets(self):
         if self.adds_project_assets:
-            return [ProjectAsset.from_delta(self.repo, delta)
+            return [Asset.from_delta(self.repo, delta)
                     for delta in self.diff_against_parent_or_empty.deltas]
         else:
             return []

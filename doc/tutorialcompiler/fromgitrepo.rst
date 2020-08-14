@@ -219,7 +219,7 @@ Outline design
 
 Major pieces are:
 
-.. py:class:: ProjectAsset
+.. py:class:: Asset
 
     Graphics or sound asset belonging to project
 
@@ -248,7 +248,7 @@ Major pieces are:
 
     .. py:attribute:: added_assets
 
-        A list of :py:class:`ProjectAsset` instances.
+        A list of :py:class:`Asset` instances.
 
         QN: A given ProjectCommit might add more than one asset.  We
         also have an explicit (but possibly redundant) tag in the

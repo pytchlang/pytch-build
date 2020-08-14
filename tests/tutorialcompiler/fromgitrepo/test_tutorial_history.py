@@ -5,12 +5,12 @@ import pygit2
 import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history as TH
 
 
-class TestProjectAsset:
+class TestAsset:
     def test_str(self):
         fname = "alien.png"
         data = b"not-a-real-PNG-file"
-        pa = TH.ProjectAsset(fname, data)
-        assert str(pa) == '<ProjectAsset "alien.png": 19 bytes>'
+        pa = TH.Asset(fname, data)
+        assert str(pa) == '<Asset "alien.png": 19 bytes>'
 
     def test_from_delta(self, this_raw_repo):
         commit_adding_file = this_raw_repo["9b40818176"]
@@ -21,7 +21,7 @@ class TestProjectAsset:
         assert len(deltas) == 1
         delta = deltas[0]
 
-        pa = TH.ProjectAsset.from_delta(this_raw_repo, delta)
+        pa = TH.Asset.from_delta(this_raw_repo, delta)
         assert pa.path == "boing/project-assets/graphics/alien.png"
         assert pa.data == b"This is not a real PNG file!"
 
