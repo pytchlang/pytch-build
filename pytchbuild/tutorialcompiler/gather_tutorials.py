@@ -60,13 +60,13 @@ class TutorialCollection:
 
         zfile.writestr("tutorial-index.html", index_soup.encode("utf-8"))
 
-    def write_new_zipfile(self, out_file):
+    def write_new_zipfile(self, maybe_collection_oid, out_file):
         bare_zfile = zipfile.ZipFile(out_file,
                                      mode="w",
                                      compression=zipfile.ZIP_DEFLATED)
 
         with closing(bare_zfile) as zfile:
-            self.write_to_zipfile(zfile)
+            self.write_to_zipfile(maybe_collection_oid, zfile)
 
     @property
     def gathered_tip_oids(self):
