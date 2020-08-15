@@ -76,3 +76,17 @@ def sole_tree_entry(commit):
     if len(entries) != 1:
         raise ValueError(f"expecting just one entry in tree for {commit.oid}")
     return entries[0]
+
+
+def verify_entry_type(idx, entry):
+    """Verify type of entry is as expected given its index
+
+    Special-purpose for the list of contributing commits used to create a
+    release.  The first one is the recipe branch, which should have just the
+    "index.yaml" file.  The rest should be tutorial branches, which should have
+    just one top-level subdirectory for the tutorial code and data.
+    """
+    if idx == 0 and entry.filemode != pygit2.GIT_FILEMODE_BLOB:
+        raise ValueError(f"expecting tree-entry to be BLOB for {entry.id}")
+    if idx > 0 and entry.filemode != pygit2.GIT_FILEMODE_TREE:
+        raise ValueError(f"expecting tree-entry to be TREE for {entry.id}")
