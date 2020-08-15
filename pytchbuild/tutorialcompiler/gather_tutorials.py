@@ -5,6 +5,8 @@ import bs4
 from pathlib import Path
 import zipfile
 import copy
+import pygit2
+import time
 from contextlib import closing
 
 from .fromgitrepo import git_repository
@@ -61,3 +63,9 @@ class TutorialCollection:
     @property
     def gathered_tip_oids(self):
         return [t.tip_oid_string for t in self.tutorials.values()]
+
+
+def create_signature(repo):
+    return pygit2.Signature(repo.config['user.name'],
+                            repo.config['user.email'],
+                            time=int(time.time()))
