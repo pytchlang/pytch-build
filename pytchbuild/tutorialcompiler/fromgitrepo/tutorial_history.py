@@ -285,6 +285,10 @@ class ProjectHistory:
         return project_commits
 
     @cached_property
+    def tip_oid_string(self):
+        return str(self.project_commits[0].oid)
+
+    @cached_property
     def all_project_assets(self):
         """List of all assets added during the history of the project
         """
