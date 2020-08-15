@@ -14,6 +14,10 @@ from .fromgitrepo.tutorial_history import ProjectHistory
 from .fromgitrepo.tutorial_bundle import TutorialBundle
 
 
+RELEASES_BRANCH_NAME = "releases"
+RELEASE_RECIPES_BRANCH_NAME = "release-recipes"
+
+
 @dataclass
 class TutorialSummary:
     name: str  # Currently just for human readers
