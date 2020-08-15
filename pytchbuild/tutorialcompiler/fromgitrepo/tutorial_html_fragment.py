@@ -172,7 +172,10 @@ def tutorial_div_from_project_history(project_history):
 
     chapters.append(current_chapter)
 
-    tutorial_div = soup.new_tag("div", attrs={"class": "tutorial-bundle"})
+    tutorial_div = soup.new_tag("div", attrs={
+        "class": "tutorial-bundle",
+        "data-tip-sha1": project_history.tip_oid_string,
+    })
 
     tutorial_div.append(div_from_front_matter(
         soup,
