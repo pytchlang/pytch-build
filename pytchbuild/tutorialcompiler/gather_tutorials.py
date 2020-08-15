@@ -57,3 +57,7 @@ class TutorialCollection:
 
         with closing(bare_zfile) as zfile:
             self.write_to_zipfile(zfile)
+
+    @property
+    def gathered_tip_oids(self):
+        return [t.tip_oid_string for t in self.tutorials.values()]
