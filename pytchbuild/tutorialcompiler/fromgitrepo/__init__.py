@@ -3,6 +3,10 @@
 TODO: Complete these docs.
 """
 
+from contextlib import contextmanager
+import pygit2
+
+
 from .tutorial_history import ProjectHistory
 from .tutorial_bundle import TutorialBundle
 from .tutorial_html_fragment import tutorial_div_from_project_history
@@ -30,3 +34,11 @@ def compile_html_only(
 
     # We have this file as binary; explicitly encode.
     html_fragment_out.write(tutorial_html.encode("utf-8"))
+
+
+@contextmanager
+def git_repository(path):
+    """Context manager which calls .free() on exiting context"""
+    repo = pygit2.Repository(path)
+    yield repo
+    repo.free()
