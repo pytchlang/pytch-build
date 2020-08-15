@@ -104,3 +104,20 @@ def verify_index_yaml_clean(repo):
         raise ValueError('file "index.yaml" in working directory'
                          ' does not match version at tip of branch'
                          f' "{RELEASE_RECIPES_BRANCH_NAME}"')
+
+
+def create_union_tree(repo, commit_oid_strs):
+    """Create and write the union of the trees of the given commits as a new tree
+
+    Return the OID of the resulting new tree.
+    """
+    tree_builder = repo.TreeBuilder()
+    names_already_added = set()
+    for idx, oid in enumerate(commit_oid_strs):
+        entry = sole_tree_entry(repo[oid])
+        verify_entry_type(idx, entry)
+        if entry.name in names_already_added:
+            raise ValueError(f'duplicate name "{entry.name}"')
+        tree_builder.insert(entry.name, entry.id, entry.filemode)
+        names_already_added.add(entry.name)
+    return tree_builder.write()
