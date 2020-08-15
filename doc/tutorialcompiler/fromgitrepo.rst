@@ -11,8 +11,8 @@ Unzip into the web content directory.
 
 Currently, such a tutorial is produced from a *git repository* which
 develops the project in a readable fashion.  The Python code lives in
-a file called ``code.py``, and the tutorial text lives in a file
-called ``tutorial.md``
+a file called ``code.py``, the tutorial text lives in a file called
+``tutorial.md``, and a summary lives in a file ``summary.md``.
 
 Command-line compiler
 ^^^^^^^^^^^^^^^^^^^^^
@@ -155,6 +155,23 @@ unchanged.  Is there a use-case for modifying the graphics as part of
 the tutorial?  If so, how to encode version information in the code?
 Connected with the general 'project namespace' or 'base url' question;
 could that include a revision number?
+
+
+Tutorial summary file
+---------------------
+
+The tutorial directory should also include a ``summary.md`` file at
+top-level (so next to the ``tutorial.md`` file).  It should start with
+a screenshot image, created along the lines of::
+
+  ![Screenshot](summary-screenshot.png)
+
+and after that should have a H1 line, such as::
+
+  # Boing — a Pong-like game
+
+and after that is free-form, but should be kept fairly short.  One
+paragraph of a few lines is enough.
 
 
 Output from compiler
