@@ -125,3 +125,35 @@ def create_union_tree(repo, commit_oid_strs):
         tree_builder.insert(entry.name, entry.id, entry.filemode)
         names_already_added.add(entry.name)
     return tree_builder.write()
+
+
+def commit_to_releases(repo, tutorial_tip_oid_strs):
+    """First commit_oid_strs should have just 'index.yaml' in its tree.
+
+    Others are tutorial tips, which should each have just one
+    top-level tree entry, which should be a directory
+
+    Can undo a release like this by doing
+
+        git branch -f releases 'releases^'
+
+    but this is a history-altering change so don't do this if you've
+    already pushed.
+    """
+    verify_index_yaml_clean(repo)
+
+    sig = create_signature(repo)
+
+    release_recipes_tip = str(repo.revparse_single(RELEASE_RECIPES_BRANCH_NAME).oid)
+    contributing_commit_oids = [release_recipes_tip] + tutorial_tip_oid_strs
+    tree_oid = create_union_tree(repo, contributing_commit_oids)
+
+    releases_tip = str(repo.revparse_single(RELEASES_BRANCH_NAME).oid)
+    parent_oids = [releases_tip] + contributing_commit_oids
+
+    new_oid = repo.create_commit(f"refs/heads/{RELEASES_BRANCH_NAME}",
+                                 sig, sig,
+                                 "Release new versions of tutorials\n",
+                                 tree_oid,
+                                 parent_oids)
+    return new_oid
