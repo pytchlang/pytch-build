@@ -28,21 +28,24 @@ class TutorialBundle:
             project_history.all_project_assets
         )
 
-    def write_zipfile(self, out_file):
+    def write_to_zipfile(self, out_zipfile):
+        bundle_root_path = Path(self.top_level_directory_name)
+
+        tutorial_html_path = bundle_root_path / "tutorial.html"
+        tutorial_html_bytes = self.tutorial_html.encode("utf-8")
+        out_zipfile.writestr(str(tutorial_html_path), tutorial_html_bytes)
+
+        summary_html_path = bundle_root_path / "summary.html"
+        summary_html_bytes = self.summary_html.encode("utf-8")
+        out_zipfile.writestr(str(summary_html_path), summary_html_bytes)
+
+        for asset in self.assets:
+            out_zipfile.writestr(asset.path, asset.data)
+
+    def write_new_zipfile(self, out_file):
         bare_zfile = zipfile.ZipFile(out_file,
                                      mode="w",
                                      compression=zipfile.ZIP_DEFLATED)
 
         with closing(bare_zfile) as zfile:
-            bundle_root_path = Path(self.top_level_directory_name)
-
-            tutorial_html_path = bundle_root_path / "tutorial.html"
-            tutorial_html_bytes = self.tutorial_html.encode("utf-8")
-            zfile.writestr(str(tutorial_html_path), tutorial_html_bytes)
-
-            summary_html_path = bundle_root_path / "summary.html"
-            summary_html_bytes = self.summary_html.encode("utf-8")
-            zfile.writestr(str(summary_html_path), summary_html_bytes)
-
-            for asset in self.assets:
-                zfile.writestr(asset.path, asset.data)
+            self.write_to_zipfile(zfile)

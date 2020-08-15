@@ -343,7 +343,9 @@ Major pieces are:
 
     Constructed from the above two things.
 
-    .. py:method:: write_zipfile(filename)
+    .. py:method:: write_new_zipfile(file_or_filename)
+
+    .. py:method:: write_to_zipfile(existing_open_zipfile)
 
 
 

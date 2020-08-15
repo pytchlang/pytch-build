@@ -49,7 +49,7 @@ fragment whose top-level element is a ``<div>``, which contains the
 
 The structure is::
 
-   <div class="tutorial-bundle">
+   <div class="tutorial-bundle" data-tip-sha1="...SHA1...">
      <div class="front-matter"
           data-complete-code-text="import pytch etc">
        <h1>Bunner!</h1>
@@ -89,6 +89,10 @@ into ``<tbody>>`` elements, grouping together each kind of hunk line —
 An *add* ``<tbody>`` has an attribute ``data-added-text`` whose value
 is the text added by that group of lines.  The IDE picks this up to
 allow the *copy* functionality to work.
+
+The ``data-tip-sha1`` attribute on the top-level ``div`` notes which
+commit the tutorial was generated from.  Currently it's not used but
+might one day be part of a 'technical details' report for diagnostics.
 
 
 TODOs
