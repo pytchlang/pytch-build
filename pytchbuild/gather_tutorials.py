@@ -26,8 +26,12 @@ from .tutorialcompiler.gather_tutorials import TutorialCollection, commit_to_rel
 )
 def main(output_file, repository_path, make_release):
     tutorials = TutorialCollection.from_repo_path(repository_path)
-    tutorials.write_new_zipfile(output_file)
+
+    releases_commit_oid = None
 
     if make_release:
         with git_repository(repository_path) as repo:
-            commit_to_releases(repo, tutorials.gathered_tip_oids)
+            releases_commit_oid = commit_to_releases(repo,
+                                                     tutorials.gathered_tip_oids)
+
+    tutorials.write_new_zipfile(releases_commit_oid, output_file)
