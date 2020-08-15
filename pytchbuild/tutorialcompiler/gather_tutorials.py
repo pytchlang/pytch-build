@@ -39,7 +39,7 @@ class TutorialCollection:
                      for d in tutorial_dicts}
         return cls(tutorials)
 
-    def write_to_zipfile(self, zfile):
+    def write_to_zipfile(self, maybe_collection_oid, zfile):
         bundles = [TutorialBundle.from_project_history(project_history)
                    for project_history in self.tutorials.values()]
 
@@ -49,6 +49,10 @@ class TutorialCollection:
         index_soup = bs4.BeautifulSoup('<div class="tutorial-index"></div>',
                                        "html.parser")
         index_div = index_soup.find("div")
+
+        if maybe_collection_oid is not None:
+            index_div.attrs["data-collection-sha1"] = str(maybe_collection_oid)
+
         for bundle in bundles:
             summary_div = copy.deepcopy(bundle.summary_html)
             summary_div["data-tutorial-name"] = bundle.top_level_directory_name
