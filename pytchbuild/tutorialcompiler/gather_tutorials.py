@@ -69,3 +69,10 @@ def create_signature(repo):
     return pygit2.Signature(repo.config['user.name'],
                             repo.config['user.email'],
                             time=int(time.time()))
+
+
+def sole_tree_entry(commit):
+    entries = list(commit.tree)
+    if len(entries) != 1:
+        raise ValueError(f"expecting just one entry in tree for {commit.oid}")
+    return entries[0]
