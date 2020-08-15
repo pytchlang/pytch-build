@@ -182,6 +182,10 @@ class TestProjectHistory:
         # Fairly weak test, to avoid having to keep updating it.
         assert len(project_history.project_commits) >= 4
 
+    def test_tip_oid_string(self, this_raw_repo, project_history):
+        exp_oid = this_raw_repo.revparse_single("unit-tests-commits").oid
+        assert project_history.tip_oid_string == str(exp_oid)
+
     def test_top_level_directory_name(self, project_history):
         assert project_history.top_level_directory_name == "boing"
 
