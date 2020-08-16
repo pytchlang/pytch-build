@@ -289,7 +289,7 @@ class ProjectHistory:
         return str(self.project_commits[0].oid)
 
     @cached_property
-    def all_project_assets(self):
+    def all_assets(self):
         """List of all assets added during the history of the project
         """
         commits_assets = (c.added_assets for c in self.project_commits)

@@ -25,7 +25,7 @@ class TutorialBundle:
             Path(project_history.top_level_directory_name),
             tutorial_div_from_project_history(project_history),
             summary_div_from_project_history(project_history),
-            project_history.all_project_assets
+            project_history.all_assets
         )
 
     def write_to_zipfile(self, out_zipfile):
