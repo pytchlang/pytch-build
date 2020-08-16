@@ -32,6 +32,7 @@ import pathlib
 import pygit2
 import itertools
 import enum
+from pathlib import Path
 from dataclasses import dataclass
 from cached_property import cached_property
 
@@ -67,6 +68,10 @@ class Asset:
             raise ValueError("delta is not of type ADDED")
 
         return cls(delta.new_file.path, repo[delta.new_file.id].data)
+
+    @cached_property
+    def is_project_asset(self):
+        return Path(self.path).parts[1] == 'project-assets'
 
 
 ################################################################################
