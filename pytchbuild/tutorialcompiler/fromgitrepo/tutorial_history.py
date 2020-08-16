@@ -301,6 +301,10 @@ class ProjectHistory:
         return list(itertools.chain.from_iterable(commits_assets))
 
     @cached_property
+    def all_project_assets(self):
+        return [a for a in self.all_assets if a.is_project_asset]
+
+    @cached_property
     def top_level_directory_name(self):
         """The sole directory at top level of the repo
 
