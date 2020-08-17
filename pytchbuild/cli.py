@@ -6,15 +6,20 @@ import click
 
 import pygit2
 
-from .tutorialcompiler.fromgitrepo import compile as compile_fromgitrepo
+from .tutorialcompiler.fromgitrepo import (
+    compile as compile_fromgitrepo,
+    compile_html_only as compile_html_only_fromgitrepo,
+)
+from .tutorialcompiler.fromgitrepo.tutorial_history import ProjectHistory
 
 
 @click.command()
 @click.option(
-    "-o", "output_file",
+    "-o", "--output-file",
     type=click.File(mode="wb"),
     required=True,
-    help="where to write the zipfile containing the tutorial content",
+    help=("where to write the zipfile containing the tutorial content"
+          " (or, under \"--html-only\", the HTML fragment)"),
 )
 @click.option(
     "-r", "--repository-path",
@@ -29,14 +34,41 @@ from .tutorialcompiler.fromgitrepo import compile as compile_fromgitrepo
     metavar="REVISION",
     help="revision (e.g., branch name) at tip of tutorial",
 )
-def main(output_file, repository_path, tip_revision):
+@click.option(
+    "-t", "--tutorial-text-source",
+    type=click.Choice([x.name for x in ProjectHistory.TutorialTextSource],
+                      case_sensitive=False),
+    default=ProjectHistory.TutorialTextSource.TIP_REVISION.name,
+    help="what source to use for the tutorial text",
+)
+@click.option(
+    "-f", "--output-format",
+    type=click.Choice(["bundle-zipfile", "html-only"]),
+    default="bundle-zipfile",
+    help="what to write: the full bundle zipfile, or just the HTML fragment",
+)
+def main(output_file, repository_path, tip_revision, tutorial_text_source, output_format):
     if repository_path is None:
         raise click.UsageError(
             "\nUnable to discover repository.  Please specify one\n"
             "either with the -r/--repository-path option or via\n"
             "the GIT_DIR environment variable.")
 
-    compile_fromgitrepo(output_file, repository_path, tip_revision)
+    # Convert string to enumerator:
+    tutorial_text_source = getattr(ProjectHistory.TutorialTextSource,
+                                   tutorial_text_source)
+
+    if output_format == "bundle-zipfile":
+        compile_fun = compile_fromgitrepo
+    elif output_format == "html-only":
+        compile_fun = compile_html_only_fromgitrepo
+    else:
+        raise ValueError(f"unknown output_format \"{output_format}\"")
+
+    compile_fun(output_file,
+                repository_path,
+                tip_revision,
+                tutorial_text_source)
 
     return 0
 

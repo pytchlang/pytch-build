@@ -154,26 +154,39 @@ class TestHtmlFragment:
             '</div>'
         )
 
-    def test_div_from_front_matter(self, soup):
+    @pytest.mark.parametrize("wip_idx", [None, 3])
+    def test_div_from_front_matter(self, soup, wip_idx):
         front_matter = [
             self.paragraph(soup, "hello"),
             self.paragraph(soup, "world"),
         ]
         code_0 = 'bar()'
         code = 'foo()'
+
         # It's possible this will fail one day if I'm making unwarranted
         # assumptions about the order in which attributes are represented
         # in the string form of an HTML fragment.
-        got_div = THF.div_from_front_matter(soup, front_matter, code_0, code)
+
+        got_div = THF.div_from_front_matter(soup, front_matter, wip_idx, code_0, code)
         assert str(got_div) == (
             '<div class="front-matter"'
             ' data-complete-code-text="foo()"'
             ' data-initial-code-text="bar()"'
+            '{}'
             '>'
             '<p>hello</p>'
             '<p>world</p>'
-            '</div>'
+            '</div>'.format(' data-seek-to-chapter="3"' if wip_idx
+                            else "")
         )
+
+    def test_work_in_progress_marker(self, project_history):
+        got_div = THF.tutorial_div_from_project_history(project_history)
+        front_matter = got_div.find("div", class_="front-matter")
+        if project_history.tutorial_text.startswith("Working copy"):
+            assert "data-seek-to-chapter" not in front_matter.attrs
+        else:
+            assert front_matter.attrs["data-seek-to-chapter"] == "2"
 
 
 class TestPredicates:

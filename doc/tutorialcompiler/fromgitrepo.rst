@@ -11,8 +11,8 @@ Unzip into the web content directory.
 
 Currently, such a tutorial is produced from a *git repository* which
 develops the project in a readable fashion.  The Python code lives in
-a file called ``code.py``, and the tutorial text lives in a file
-called ``tutorial.md``
+a file called ``code.py``, the tutorial text lives in a file called
+``tutorial.md``, and a summary lives in a file ``summary.md``.
 
 Command-line compiler
 ^^^^^^^^^^^^^^^^^^^^^
@@ -28,6 +28,10 @@ In general, ``pytchbuild`` can be told:
   variable (TODO: which takes precedence?);
 
 * which revision is the tip of the tutorial; by default, ``HEAD``.
+
+* whether to use the current working directory's version of the
+  tutorial text markdown file (or use the default, which is the
+  content as of the tip revision).
 
 Typical development workflow, then, is to be working in the
 ``pytch-tutorials`` repo on a branch named for your tutorial.  When
@@ -153,6 +157,23 @@ Connected with the general 'project namespace' or 'base url' question;
 could that include a revision number?
 
 
+Tutorial summary file
+---------------------
+
+The tutorial directory should also include a ``summary.md`` file at
+top-level (so next to the ``tutorial.md`` file).  It should start with
+a screenshot image, created along the lines of::
+
+  ![Screenshot](summary-screenshot.png)
+
+and after that should have a H1 line, such as::
+
+  # Boing — a Pong-like game
+
+and after that is free-form, but should be kept fairly short.  One
+paragraph of a few lines is enough.
+
+
 Output from compiler
 --------------------
 
@@ -215,7 +236,7 @@ Outline design
 
 Major pieces are:
 
-.. py:class:: ProjectAsset
+.. py:class:: Asset
 
     Graphics or sound asset belonging to project
 
@@ -244,7 +265,7 @@ Major pieces are:
 
     .. py:attribute:: added_assets
 
-        A list of :py:class:`ProjectAsset` instances.
+        A list of :py:class:`Asset` instances.
 
         QN: A given ProjectCommit might add more than one asset.  We
         also have an explicit (but possibly redundant) tag in the
@@ -253,7 +274,8 @@ Major pieces are:
         do :py:attr:`added_assets` on any :py:class:`ProjectCommit`?
         Should this return an empty list if there are no added assets?
         Emit a warning if it adds assets but doesn't include the
-        ``add-project-assets`` tag (or vice versa)?
+        ``add-project-assets`` tag (or vice versa)?  TODO: That tag is
+        no longer used I think?
 
     .. py:attribute:: maybe_identifying_slug
 
@@ -284,6 +306,10 @@ Major pieces are:
       process.  (QN: Might one day want to support more than one
       'final' branch, to support 'now you try this', or 'alternatively
       we could have implemented this feature like this.)
+
+    - Tip revision.
+
+    - Which source to use for the tutorial text.
 
 
 .. py:class:: TutorialRawText
@@ -317,7 +343,9 @@ Major pieces are:
 
     Constructed from the above two things.
 
-    .. py:method:: write_zipfile(filename)
+    .. py:method:: write_new_zipfile(file_or_filename)
+
+    .. py:method:: write_to_zipfile(existing_open_zipfile)
 
 
 
