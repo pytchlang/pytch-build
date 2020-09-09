@@ -10,14 +10,14 @@ def discovered_repository_path():
 
 
 @pytest.fixture(scope="session")
-def this_raw_repo():
-    return pygit2.Repository(".")
+def this_raw_repo(discovered_repository_path):
+    return pygit2.Repository(discovered_repository_path)
 
 
 @pytest.fixture(scope="session")
-def cloned_repo(tmpdir_factory):
+def cloned_repo(tmpdir_factory, discovered_repository_path):
     clone_path = tmpdir_factory.mktemp("tutorials-")
-    repo = pygit2.clone_repository(".",
+    repo = pygit2.clone_repository(discovered_repository_path,
                                    clone_path,
                                    checkout_branch="unit-tests-commits")
 
