@@ -20,6 +20,7 @@ def test_bundle_zipfile(project_history):
     assert paths == [
         'boing/tutorial.html',
         'boing/summary.html',
+        'boing/project-assets.json',
         'boing/tutorial-assets/not-a-real-png.png',
         'boing/project-assets/graphics/alien.png',
     ]
