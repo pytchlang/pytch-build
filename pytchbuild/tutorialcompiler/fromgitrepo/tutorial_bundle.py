@@ -4,6 +4,7 @@ from contextlib import closing
 from pathlib import Path
 import zipfile
 import bs4
+import json
 
 from .tutorial_history import Asset
 from .tutorial_html_fragment import (
@@ -38,6 +39,11 @@ class TutorialBundle:
         summary_html_path = bundle_root_path / "summary.html"
         summary_html_bytes = self.summary_html.encode("utf-8")
         out_zipfile.writestr(str(summary_html_path), summary_html_bytes)
+
+        project_asset_paths = [a.path for a in self.assets if a.is_project_asset]
+        assets_manifest_path = bundle_root_path / "project-assets.json"
+        assets_manifest_bytes = json.dumps(project_asset_paths).encode("utf-8")
+        out_zipfile.writestr(str(assets_manifest_path), assets_manifest_bytes)
 
         for asset in self.assets:
             out_zipfile.writestr(asset.path, asset.data)
