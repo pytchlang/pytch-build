@@ -16,9 +16,9 @@ def test_bundle_zipfile(project_history):
     paths = [i.filename for i in zfile.infolist()]
 
     assert sorted(paths) == [
-        'boing/project-assets.json',
-        'boing/project-assets/graphics/alien.png',
-        'boing/summary.html',
-        'boing/tutorial-assets/not-a-real-png.png',
-        'boing/tutorial.html',
+        "boing/project-assets.json",
+        "boing/project-assets/graphics/alien.png",
+        "boing/summary.html",
+        "boing/tutorial-assets/not-a-real-png.png",
+        "boing/tutorial.html",
     ]
