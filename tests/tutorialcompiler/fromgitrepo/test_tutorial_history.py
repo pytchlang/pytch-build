@@ -221,10 +221,16 @@ class TestProjectHistory:
         exp_oid = "e41e02c9be0398f0a89e275da6edf5d3110add54"
         assert str(got_oid) == exp_oid
 
-    def test_assets(self, project_history):
-        got_paths = [a.path for a in project_history.all_project_assets]
+    def test_all_assets(self, project_history):
+        got_paths = [a.path for a in project_history.all_assets]
         assert got_paths == [
             "boing/tutorial-assets/not-a-real-png.png",
+            "boing/project-assets/graphics/alien.png",
+        ]
+
+    def test_all_project_assets(self, project_history):
+        got_paths = [a.path for a in project_history.all_project_assets]
+        assert got_paths == [
             "boing/project-assets/graphics/alien.png",
         ]
 
