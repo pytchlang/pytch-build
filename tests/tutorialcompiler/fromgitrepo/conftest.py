@@ -5,6 +5,11 @@ import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history as TH
 
 
 @pytest.fixture(scope="session")
+def discovered_repository_path():
+    return pygit2.discover_repository(".")
+
+
+@pytest.fixture(scope="session")
 def this_raw_repo():
     return pygit2.Repository(".")
 
