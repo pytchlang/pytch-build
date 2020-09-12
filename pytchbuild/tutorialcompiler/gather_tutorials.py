@@ -46,11 +46,10 @@ class TutorialCollection:
             raise ValueError("unknown source")
 
     @classmethod
-    def from_repo_path(cls, repo_path):
+    def from_repo_path(cls, repo_path, index_source):
         with git_repository(repo_path) as repo:
-            index_path = Path(repo.workdir) / "index.yaml"
-            with index_path.open("rt") as yaml_file:
-                tutorial_dicts = yaml.load(yaml_file, yaml.Loader)
+            content = cls.index_yaml_content(repo, index_source)
+            tutorial_dicts = yaml.load(content, yaml.Loader)
 
         tutorials = {d["name"]: ProjectHistory(repo_path, d["tip-commit"])
                      for d in tutorial_dicts}
