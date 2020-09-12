@@ -3,6 +3,7 @@ from typing import Dict
 import yaml
 import bs4
 from pathlib import Path
+import enum
 import zipfile
 import copy
 import pygit2
@@ -27,6 +28,10 @@ class TutorialSummary:
 @dataclass
 class TutorialCollection:
     tutorials: Dict[str, ProjectHistory]
+
+    class IndexSource(enum.Enum):
+        RECIPES_TIP = enum.auto()
+        WORKING_DIRECTORY = enum.auto()
 
     @classmethod
     def from_repo_path(cls, repo_path):
