@@ -31,8 +31,11 @@ from .tutorialcompiler.gather_tutorials import TutorialCollection, commit_to_rel
     default=False,
     help="make a commit to the 'releases' branch",
 )
-def main(output_file, repository_path, make_release):
-    tutorials = TutorialCollection.from_repo_path(repository_path)
+def main(output_file, repository_path, index_source, make_release):
+    # Convert string to enumerator:
+    index_source = getattr(TutorialCollection.IndexSource, index_source)
+
+    tutorials = TutorialCollection.from_repo_path(repository_path, index_source)
 
     releases_commit_oid = None
 
