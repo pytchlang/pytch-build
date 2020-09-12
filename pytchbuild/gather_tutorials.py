@@ -20,12 +20,22 @@ from .tutorialcompiler.gather_tutorials import TutorialCollection, commit_to_rel
     help="path to root of git repository",
 )
 @click.option(
+    "--index-source",
+    type=click.Choice([x.name for x in TutorialCollection.IndexSource],
+                      case_sensitive=False),
+    default=TutorialCollection.IndexSource.WORKING_DIRECTORY.name,
+    help='what source to use for the "index.yaml" file of tutorials',
+)
+@click.option(
     "--make-release/--no-make-release",
     default=False,
     help="make a commit to the 'releases' branch",
 )
-def main(output_file, repository_path, make_release):
-    tutorials = TutorialCollection.from_repo_path(repository_path)
+def main(output_file, repository_path, index_source, make_release):
+    # Convert string to enumerator:
+    index_source = getattr(TutorialCollection.IndexSource, index_source)
+
+    tutorials = TutorialCollection.from_repo_path(repository_path, index_source)
 
     releases_commit_oid = None
 

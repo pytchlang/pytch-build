@@ -3,6 +3,7 @@ from typing import Dict
 import yaml
 import bs4
 from pathlib import Path
+import enum
 import zipfile
 import copy
 import pygit2
@@ -28,12 +29,27 @@ class TutorialSummary:
 class TutorialCollection:
     tutorials: Dict[str, ProjectHistory]
 
-    @classmethod
-    def from_repo_path(cls, repo_path):
-        with git_repository(repo_path) as repo:
+    class IndexSource(enum.Enum):
+        RECIPES_TIP = enum.auto()
+        WORKING_DIRECTORY = enum.auto()
+
+    @staticmethod
+    def index_yaml_content(repo, source):
+        Source = TutorialCollection.IndexSource
+        if source == Source.WORKING_DIRECTORY:
             index_path = Path(repo.workdir) / "index.yaml"
             with index_path.open("rt") as yaml_file:
-                tutorial_dicts = yaml.load(yaml_file, yaml.Loader)
+                return yaml_file.read()
+        elif source == Source.RECIPES_TIP:
+            return index_data_at_recipes_tip(repo).decode("utf-8")
+        else:
+            raise ValueError("unknown source")
+
+    @classmethod
+    def from_repo_path(cls, repo_path, index_source):
+        with git_repository(repo_path) as repo:
+            content = cls.index_yaml_content(repo, index_source)
+            tutorial_dicts = yaml.load(content, yaml.Loader)
 
         tutorials = {d["name"]: ProjectHistory(repo_path, d["tip-commit"])
                      for d in tutorial_dicts}
@@ -100,13 +116,17 @@ def verify_entry_type(idx, entry):
         raise ValueError(f"expecting tree-entry to be TREE for {entry.id}")
 
 
-def verify_index_yaml_clean(repo):
-    working_path = Path(repo.workdir) / "index.yaml"
-    working_data = working_path.open("rb").read()
+def index_data_at_recipes_tip(repo):
     recipes_tip_commit = repo.revparse_single(RELEASE_RECIPES_BRANCH_NAME)
     recipes_tip_tree = recipes_tip_commit.tree
     recipes_tip_entry = recipes_tip_tree["index.yaml"]
-    recipes_tip_data = recipes_tip_entry.data
+    return recipes_tip_entry.data
+
+
+def verify_index_yaml_clean(repo):
+    working_path = Path(repo.workdir) / "index.yaml"
+    working_data = working_path.open("rb").read()
+    recipes_tip_data = index_data_at_recipes_tip(repo)
 
     if not working_data == recipes_tip_data:
         raise ValueError('file "index.yaml" in working directory'
