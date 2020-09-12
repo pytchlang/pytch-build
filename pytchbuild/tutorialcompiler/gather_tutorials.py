@@ -105,6 +105,13 @@ def verify_entry_type(idx, entry):
         raise ValueError(f"expecting tree-entry to be TREE for {entry.id}")
 
 
+def index_data_at_recipes_tip(repo):
+    recipes_tip_commit = repo.revparse_single(RELEASE_RECIPES_BRANCH_NAME)
+    recipes_tip_tree = recipes_tip_commit.tree
+    recipes_tip_entry = recipes_tip_tree["index.yaml"]
+    return recipes_tip_entry.data
+
+
 def verify_index_yaml_clean(repo):
     working_path = Path(repo.workdir) / "index.yaml"
     working_data = working_path.open("rb").read()
