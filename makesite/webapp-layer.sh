@@ -39,6 +39,7 @@ EOF
 
     env PUBLIC_URL="$DEPLOY_BASE_URL"/app \
         REACT_APP_SKULPT_BASE="$DEPLOY_BASE_URL"/skulpt \
+        REACT_APP_TUTORIALS_BASE="$DEPLOY_BASE_URL"/tutorials \
         npm run build
 
     mkdir "$WORKDIR"/zip-content
