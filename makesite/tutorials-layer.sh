@@ -28,6 +28,8 @@ mkdir "$WORKDIR"/tutorials
 unzip -d "$WORKDIR"/tutorials "$WORKDIR"/raw-"$ZIPFILE_BASENAME"
 (
     cd "$WORKDIR"
+    find tutorials -type d -print0 | xargs -0 chmod 755
+    find tutorials -type f -print0 | xargs -0 chmod 644
     zip -r "$ZIPFILE_BASENAME" tutorials
 )
 

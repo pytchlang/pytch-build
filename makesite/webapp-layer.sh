@@ -46,6 +46,8 @@ EOF
     (
         cd "$WORKDIR"/zip-content
         htaccess_content > app/.htaccess
+        find app -type d -print0 | xargs -0 chmod 755
+        find app -type f -print0 | xargs -0 chmod 644
         zip -r ../"$ZIPFILE_BASENAME" app
     )
 )

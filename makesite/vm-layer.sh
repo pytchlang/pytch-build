@@ -36,6 +36,8 @@ git clone --quiet --depth 1 "$SOURCE_REPO" "$REPODIR" -b "$SOURCE_BRANCH"
 
 (
     cd "$WORKDIR"
+    find skulpt -type d -print0 | xargs -0 chmod 755
+    find skulpt -type f -print0 | xargs -0 chmod 644
     zip -r "$ZIPFILE_BASENAME" skulpt
 )
 
