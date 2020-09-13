@@ -104,3 +104,11 @@ and then run with
       -v /tmp/local-pytch-deployment/:/usr/local/apache2/htdocs/ \
       pytch-local-server
 
+
+TODOs
+-----
+
+- Include commit SHA1s in build somewhere.
+
+- Create a build identifier automatically and store build info and
+  contributing SHA1s somewhere central.
