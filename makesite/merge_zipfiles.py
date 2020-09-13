@@ -28,9 +28,12 @@ def merge_zipfiles(out_path_prefix, out_filename):
         for in_filename in zipfilenames:
             with closing(zipfile.ZipFile(in_filename, mode="r")) as in_zipfile:
                 for info_entry in in_zipfile.infolist():
-                    data = in_zipfile.open(info_entry).read()
-                    out_path = Path(out_path_prefix) / info_entry.filename
-                    out_zipfile.writestr(str(out_path), data)
+                    if not info_entry.is_dir():
+                        data = in_zipfile.open(info_entry).read()
+                        out_path = Path(out_path_prefix) / info_entry.filename
+                        # Modify ZipInfo to keep permissions.
+                        info_entry.filename = str(out_path)
+                        out_zipfile.writestr(info_entry, data)
 
 
 if __name__ == "__main__":
