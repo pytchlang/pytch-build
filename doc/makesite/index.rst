@@ -72,11 +72,39 @@ then you can use
 .. code-block:: bash
 
   cd /home/somebody/dev/pytch-build/makesite
-  ./make-develop.sh ARGUMENTS
+  ./make-develop.sh SOURCE-BRANCHNAME DEPLOY-BASE-URL
 
-to build a zipfile.
+to build a zipfile.  Internally this script sets up some environment
+variables then ``exec``\ ’s ``make.sh``.
 
-Arguments (including via environment variables) to build script
+TODO: Deployment from production (GitHub) repo.
+
+Arguments to this script are:
+
+``SOURCE-BRANCHNAME``
+  The branch to check out for ``pytch-vm`` and ``pytch-webapp``
+  layers.  The tutorials layer is handled differently because of the
+  way it uses branches to represent the content.  TODO: More detail.
+
+``DEPLOY-BASE-URL``
+  The path component of the URL from which the site will be served.
+  Should start with a slash, to be an absolute path.
+
+for example:
+
+.. code-block:: bash
+
+  ./make-develop.sh develop /beta/1234
+
+The name of the zipfile is emitted to stdout, allowing usage like
+
+.. code-block:: bash
+
+  zipfilename=$(./make-develop.sh develop /beta/1234)
+  ( cd /tmp/local-pytch-deployment; unzip $zipfilename )
+
+See also next section for serving this content in the manner required
+for React apps.
 
 
 Local development
