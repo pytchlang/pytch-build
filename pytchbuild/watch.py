@@ -246,6 +246,8 @@ class ReloadServer:
 
     async def serve_client(self, websocket, path):
         print("serve_client(): entering")
+        await websocket.send(json.dumps({"kind": "info", "message": "connected"}))
+
         queue = asyncio.Queue()
         qid = self.message_broker.register(queue)
         print("serve_client(): registered and got qid", qid)
