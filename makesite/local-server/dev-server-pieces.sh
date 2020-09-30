@@ -9,6 +9,7 @@ tmux split-window -d -b -v \
      PUBLIC_URL="" \
      REACT_APP_SKULPT_BASE=http://localhost:8124 \
      REACT_APP_TUTORIALS_BASE=http://localhost:8125 \
+     REACT_APP_ENABLE_LIVE_RELOAD_WEBSOCKET=yes \
      "$PYTCH_LOCAL_SERVER_DIR"/dev-server-webapp.sh
 
 tmux split-window -h \
