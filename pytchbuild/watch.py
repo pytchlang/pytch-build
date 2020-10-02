@@ -166,15 +166,19 @@ async def rebuild_tutorial(
         print(f'rebuild_tutorial(): got {msg}')
         if msg.kind == "tutorial":
             print("rebuild_tutorial(): rebuilding html-fragment")
-            project_history = ProjectHistory(
-                repository_path,
-                tip_revision,
-                ProjectHistory.TutorialTextSource.WORKING_DIRECTORY
-            )
-            tutorial_html = tutorial_div_from_project_history(project_history)
-            html_msg = msg.with_new_text(str(tutorial_html))
-            print(f'rebuild_tutorial(): forwarding transformed {html_msg}')
-            await write_q.put(html_msg)
+            try:
+                project_history = ProjectHistory(
+                    repository_path,
+                    tip_revision,
+                    ProjectHistory.TutorialTextSource.WORKING_DIRECTORY
+                )
+                tutorial_html = tutorial_div_from_project_history(project_history)
+                html_msg = msg.with_new_text(str(tutorial_html))
+                print(f'rebuild_tutorial(): forwarding transformed {html_msg}')
+                await write_q.put(html_msg)
+            except Exception as err:
+                print("rebuild_tutorial(): ERROR rebuilding html-fragment:"
+                      f" {type(err).__name__}: {err}")
         elif msg.kind == "code":
             print(f'rebuild_tutorial(): forwarding {msg} as-is')
             await write_q.put(msg)
