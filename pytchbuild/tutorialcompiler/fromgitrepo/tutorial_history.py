@@ -411,6 +411,11 @@ class ProjectHistory:
             if pc.has_identifier_slug
         }
 
+    def slug_is_known(self, slug):
+        """Return whether the given *slug* is a valid commit slug
+        """
+        return slug in self.commit_from_slug
+
     def code_text_from_slug(self, slug):
         """The contents of ``code.py`` as of the commit tagged with the given *slug*
         """
