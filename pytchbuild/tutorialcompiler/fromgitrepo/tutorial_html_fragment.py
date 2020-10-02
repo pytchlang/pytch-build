@@ -171,6 +171,7 @@ def warn_if_slug_usage_mismatch(project_history, soup):
 
 def tutorial_div_from_project_history(project_history):
     soup = soup_from_markdown_text(project_history.tutorial_text)
+    warn_if_slug_usage_mismatch(project_history, soup)
 
     chapters = []
     current_chapter = []
