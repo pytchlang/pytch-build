@@ -221,6 +221,12 @@ class TestProjectHistory:
         assert project_history.slug_is_known("add-Alien-skeleton") is True
         assert project_history.slug_is_known("no-such-slug-in-repo") is False
 
+    def test_ordered_commit_slugs(self, project_history):
+        assert project_history.ordered_commit_slugs == [
+            "import-pytch",
+            "add-Alien-skeleton",
+        ]
+
     def test_commit_from_slug(self, project_history):
         assert len(project_history.commit_from_slug) == 2
         got_oid = project_history.commit_from_slug["add-Alien-skeleton"].oid
