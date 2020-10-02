@@ -8,8 +8,11 @@ just stacking two tables?
 
 import re
 import bs4
+import colorlog
 
 from .tutorial_markdown import soup_from_markdown_text
+
+logger = colorlog.getLogger(__name__)
 
 
 def line_classification(hunk_line):
@@ -134,6 +137,7 @@ def augment_patch_elt(soup, elt, project_history):
         patch = project_history.code_patch_against_parent(target_slug)
         elt.append(tables_div_from_patch(soup, patch))
     else:
+        logger.warning(f'slug "{target_slug}" not found; noting in output')
         warning_p = soup.new_tag(
             "p",
             attrs={"class": "tutorial-compiler-warning unknown-slug"})
