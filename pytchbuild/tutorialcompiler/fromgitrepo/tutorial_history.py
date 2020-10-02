@@ -411,6 +411,18 @@ class ProjectHistory:
             if pc.has_identifier_slug
         }
 
+    @cached_property
+    def ordered_commit_slugs(self):
+        """All slugs, in order as if playing FORWARDS through history
+        """
+        # Our 'project_commits' list goes backwards from HEAD to the '{base}'
+        # commit, so use reversed() to get forwards ordering.
+        return [
+            pc.identifier_slug
+            for pc in reversed(self.project_commits)
+            if pc.has_identifier_slug
+        ]
+
     def slug_is_known(self, slug):
         """Return whether the given *slug* is a valid commit slug
         """
