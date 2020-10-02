@@ -128,10 +128,17 @@ def node_is_work_in_progress_marker(elt):
 
 def augment_patch_elt(soup, elt, project_history):
     target_slug = elt.attrs["data-slug"]
-    code_text = project_history.code_text_from_slug(target_slug)
-    elt.attrs["data-code-as-of-commit"] = code_text
-    patch = project_history.code_patch_against_parent(target_slug)
-    elt.append(tables_div_from_patch(soup, patch))
+    if project_history.slug_is_known(target_slug):
+        code_text = project_history.code_text_from_slug(target_slug)
+        elt.attrs["data-code-as-of-commit"] = code_text
+        patch = project_history.code_patch_against_parent(target_slug)
+        elt.append(tables_div_from_patch(soup, patch))
+    else:
+        warning_p = soup.new_tag(
+            "p",
+            attrs={"class": "tutorial-compiler-warning unknown-slug"})
+        warning_p.append(f'Slug "{target_slug}" was not found.')
+        elt.append(warning_p)
 
 
 def tutorial_div_from_project_history(project_history):
