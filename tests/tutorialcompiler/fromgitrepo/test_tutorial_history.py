@@ -215,6 +215,12 @@ class TestProjectHistory:
     def test_final_code_text(self, project_history):
         assert re.match(r"import pytch", project_history.final_code_text)
 
+    def test_slug_is_known(self, project_history):
+        # Assert we get actual True and False, not just things which evaluate
+        # to True/False when converted to bool.
+        assert project_history.slug_is_known("add-Alien-skeleton") is True
+        assert project_history.slug_is_known("no-such-slug-in-repo") is False
+
     def test_commit_from_slug(self, project_history):
         assert len(project_history.commit_from_slug) == 2
         got_oid = project_history.commit_from_slug["add-Alien-skeleton"].oid
