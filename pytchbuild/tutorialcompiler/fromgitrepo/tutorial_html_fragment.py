@@ -8,8 +8,15 @@ just stacking two tables?
 
 import re
 import bs4
+import difflib
+import colorlog
 
-from .tutorial_markdown import soup_from_markdown_text
+from .tutorial_markdown import (
+    soup_from_markdown_text,
+    ordered_commit_slugs_in_soup,
+)
+
+logger = colorlog.getLogger(__name__)
 
 
 def line_classification(hunk_line):
@@ -128,14 +135,43 @@ def node_is_work_in_progress_marker(elt):
 
 def augment_patch_elt(soup, elt, project_history):
     target_slug = elt.attrs["data-slug"]
-    code_text = project_history.code_text_from_slug(target_slug)
-    elt.attrs["data-code-as-of-commit"] = code_text
-    patch = project_history.code_patch_against_parent(target_slug)
-    elt.append(tables_div_from_patch(soup, patch))
+    if project_history.slug_is_known(target_slug):
+        code_text = project_history.code_text_from_slug(target_slug)
+        elt.attrs["data-code-as-of-commit"] = code_text
+        patch = project_history.code_patch_against_parent(target_slug)
+        elt.append(tables_div_from_patch(soup, patch))
+    else:
+        logger.warning(f'slug "{target_slug}" not found; noting in output')
+        warning_p = soup.new_tag(
+            "p",
+            attrs={"class": "tutorial-compiler-warning unknown-slug"})
+        warning_p.append(f'Slug "{target_slug}" was not found.')
+        elt.append(warning_p)
+
+
+def warn_if_slug_usage_mismatch(project_history, soup):
+    """Check all tagged commits are used, in order, in the tutorial
+
+    Emit a warning to the logger if not.
+    """
+    in_history = project_history.ordered_commit_slugs
+    in_tutorial = ordered_commit_slugs_in_soup(soup)
+    diff = list(difflib.unified_diff(
+        in_history,
+        in_tutorial,
+        fromfile="slugs-present-in-history",
+        tofile="slugs-used-in-tutorial",
+        lineterm=""))
+    if diff:
+        logger.warning("mismatch between commit-slugs present in history"
+                       " and commit-slugs used in tutorial; diff follows")
+        for diff_item in diff:
+            logger.warning("    " + diff_item)
 
 
 def tutorial_div_from_project_history(project_history):
     soup = soup_from_markdown_text(project_history.tutorial_text)
+    warn_if_slug_usage_mismatch(project_history, soup)
 
     chapters = []
     current_chapter = []

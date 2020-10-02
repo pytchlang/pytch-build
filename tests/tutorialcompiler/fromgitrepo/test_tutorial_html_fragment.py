@@ -193,11 +193,11 @@ class TestPredicates:
     @pytest.mark.parametrize(
         'html,exp_is_relevant',
         [
-            ('<p>Hello</p>', True),
-            ('   Hello', True),
-            ('Hello       ', True),
-            ('    ', False),
-            ('\n\nfoo\n', True),
+            pytest.param('<p>Hello</p>', True, id="P-element"),
+            pytest.param('   Hello', True, id="string-leading-spaces"),
+            pytest.param('Hello       ', True, id="string-trailing-spaces"),
+            pytest.param('    ', False, id="string-nonempty-all-spaces"),
+            pytest.param('\n\nfoo\n', True, id="string-leading-trailing-NLs"),
         ])
     def test_node_is_relevant(self, html, exp_is_relevant):
         soup = BeautifulSoup(html, "html.parser")

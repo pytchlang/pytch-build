@@ -3,6 +3,7 @@
 
 import sys
 import click
+import colorlog
 
 import pygit2
 
@@ -11,6 +12,14 @@ from .tutorialcompiler.fromgitrepo import (
     compile_html_only as compile_html_only_fromgitrepo,
 )
 from .tutorialcompiler.fromgitrepo.tutorial_history import ProjectHistory
+
+
+log_handler = colorlog.StreamHandler()
+log_handler.setFormatter(colorlog.ColoredFormatter(
+    "%(log_color)s%(levelname)s : %(message)s"))
+
+logger = colorlog.getLogger()  # Root logger
+logger.addHandler(log_handler)
 
 
 @click.command()

@@ -15,6 +15,7 @@ requirements = [
     'websockets>=8.1',
     'janus>=0.5.0',
     'pyyaml>=5.3.1',
+    'colorlog>=4.2.1',
 ]
 
 setup(

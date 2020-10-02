@@ -1,5 +1,7 @@
 #!/bin/bash
 
+tmux set-option -g mouse on
+
 PYTCH_REPO_BASE="$(realpath "$(dirname "$0")"/../../..)"
 PYTCH_LOCAL_SERVER_DIR="$(realpath "$(dirname "$0")")"
 
