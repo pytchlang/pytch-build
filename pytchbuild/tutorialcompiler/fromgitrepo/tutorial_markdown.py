@@ -46,3 +46,9 @@ def soup_from_markdown_text(markdown_text):
     html = markdown.markdown(markdown_text, extensions=[ShortcodeExtension()])
     soup = BeautifulSoup(html, "html.parser")
     return soup
+
+
+def ordered_commit_slugs_in_soup(soup):
+    return [elt.attrs["data-slug"]
+            for elt in soup.find_all("div",
+                                     attrs={"class": "patch-container"})]
