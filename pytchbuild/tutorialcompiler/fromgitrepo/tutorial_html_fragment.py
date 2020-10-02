@@ -10,7 +10,9 @@ import re
 import bs4
 import colorlog
 
-from .tutorial_markdown import soup_from_markdown_text
+from .tutorial_markdown import (
+    soup_from_markdown_text,
+)
 
 logger = colorlog.getLogger(__name__)
 
