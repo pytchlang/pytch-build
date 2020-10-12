@@ -10,6 +10,11 @@ if [ "$2" = "${2#/}" ]; then
     exit 1
 fi
 
+if [ "$2" != "${2%/}" ]; then
+    echo "DEPLOY-BASE-URL should not end with a '/' character"
+    exit 1
+fi
+
 if [ -z "$PYTCH_REPOS_BASE" ]; then
     echo "need PYTCH_REPOS_BASE env to be set"
     exit 1
@@ -39,9 +44,12 @@ env SOURCE_REPO="$PYTCH_REPOS_BASE"/pytch-webapp \
 
 wait
 
+ZIPFILE_STEM=$(basename "$2")
+ZIPFILE_PATH="$WORKDIR"/"$ZIPFILE_STEM".zip
+
 grep ________LAYER_ZIPFILE________ "$WORKDIR"/*.out \
     | python "$MAKESITE_DIR"/merge_zipfiles.py \
              --out-path-prefix="${2#/}" \
-             "$WORKDIR"/site.zip
+             "$ZIPFILE_PATH"
 
-echo "$WORKDIR"/site.zip
+echo "$ZIPFILE_PATH"
