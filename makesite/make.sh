@@ -10,6 +10,11 @@ if [ "$2" = "${2#/}" ]; then
     exit 1
 fi
 
+if [ "$2" != "${2%/}" ]; then
+    echo "DEPLOY-BASE-URL should not end with a '/' character"
+    exit 1
+fi
+
 if [ -z "$PYTCH_REPOS_BASE" ]; then
     echo "need PYTCH_REPOS_BASE env to be set"
     exit 1
