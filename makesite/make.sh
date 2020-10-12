@@ -39,9 +39,11 @@ env SOURCE_REPO="$PYTCH_REPOS_BASE"/pytch-webapp \
 
 wait
 
+ZIPFILE_PATH="$WORKDIR"/site.zip
+
 grep ________LAYER_ZIPFILE________ "$WORKDIR"/*.out \
     | python "$MAKESITE_DIR"/merge_zipfiles.py \
              --out-path-prefix="${2#/}" \
-             "$WORKDIR"/site.zip
+             "$ZIPFILE_PATH"
 
-echo "$WORKDIR"/site.zip
+echo "$ZIPFILE_PATH"
