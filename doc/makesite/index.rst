@@ -16,8 +16,7 @@ unzipped under a particular subdirectory.
 Virtual Machine
 ^^^^^^^^^^^^^^^
 
-Comes from the ``pytch-ide`` repo.  TODO: Rename to ``pytch-vm``?
-Produces files in::
+Comes from the ``pytch-vm`` repo.  Produces files in::
 
   skulpt/...
 
@@ -47,9 +46,9 @@ knowing where it will get its Skulpt files from
 Informational content
 ^^^^^^^^^^^^^^^^^^^^^
 
-When this exists, will come from ``pytch-web`` repo, and go to::
+Comes from the ``pytch-website`` repo, and produces content in::
 
-  info/...
+  doc/...
 
 
 Assembly method
@@ -107,30 +106,22 @@ See also next section for serving this content in the manner required
 for React apps.
 
 
-Local development
------------------
+Local testing of deployment zipfile
+-----------------------------------
 
 Can be done via a Docker container running Apache2 with mod-rewrite
-enabled.  There is a ``Dockerfile`` in::
-
-   makesite/local-server
-
-which can be built with, e.g.,
+enabled.  There is a script which launches a Docker container serving
+the contents of a deployment zipfile, which can be used as in:
 
 .. code-block:: bash
 
-   cd makesite/local-server
-   docker build --tag pytch-local-server .
+  cd makesite/local-server
+  ./serve-zipfile.sh "$zipfilename"
 
-and then run with
+where the shell variable ``zipfilename`` has been set as in the
+previous section.
 
-.. code-block:: bash
-
-    docker run -dit \
-      --name pytch-beta \
-      -p 5888:80 \
-      -v /tmp/local-pytch-deployment/:/usr/local/apache2/htdocs/ \
-      pytch-local-server
+See the contents of ``serve-zipfile.sh`` for details of what happens.
 
 
 TODOs

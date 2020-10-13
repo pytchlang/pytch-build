@@ -42,6 +42,12 @@ env SOURCE_REPO="$PYTCH_REPOS_BASE"/pytch-webapp \
     > "$WORKDIR"/webapp-layer.out \
     2> "$WORKDIR"/webapp-layer.err &
 
+env SOURCE_REPO="$PYTCH_REPOS_BASE"/pytch-website \
+    SOURCE_BRANCH="$1" \
+    "$MAKESITE_DIR"/website-layer.sh \
+    > "$WORKDIR"/website-layer.out \
+    2> "$WORKDIR"/website-layer.err &
+
 wait
 
 ZIPFILE_STEM=$(basename "$2")
