@@ -9,6 +9,7 @@ tmux split-window -d -b -v \
      env \
      PYTCH_REPO_BASE="$PYTCH_REPO_BASE" \
      PUBLIC_URL="" \
+     REACT_APP_DEPLOY_BASE_URL="" \
      REACT_APP_SKULPT_BASE=http://localhost:8124 \
      REACT_APP_TUTORIALS_BASE=http://localhost:8125 \
      REACT_APP_ENABLE_LIVE_RELOAD_WEBSOCKET=yes \
