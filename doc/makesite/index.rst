@@ -16,8 +16,7 @@ unzipped under a particular subdirectory.
 Virtual Machine
 ^^^^^^^^^^^^^^^
 
-Comes from the ``pytch-ide`` repo.  TODO: Rename to ``pytch-vm``?
-Produces files in::
+Comes from the ``pytch-vm`` repo.  Produces files in::
 
   skulpt/...
 
