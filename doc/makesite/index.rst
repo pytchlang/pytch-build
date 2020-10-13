@@ -107,8 +107,8 @@ See also next section for serving this content in the manner required
 for React apps.
 
 
-Local development
------------------
+Local testing of deployment zipfile
+-----------------------------------
 
 Can be done via a Docker container running Apache2 with mod-rewrite
 enabled.  There is a script which launches a Docker container serving
