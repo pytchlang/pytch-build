@@ -47,9 +47,9 @@ knowing where it will get its Skulpt files from
 Informational content
 ^^^^^^^^^^^^^^^^^^^^^
 
-When this exists, will come from ``pytch-web`` repo, and go to::
+Comes from the ``pytch-website`` repo, and produces content in::
 
-  info/...
+  doc/...
 
 
 Assembly method
