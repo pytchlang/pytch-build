@@ -124,25 +124,6 @@ previous section.
 
 See the contents of ``serve-zipfile.sh`` for details of what happens.
 
-   makesite/local-server
-
-which can be built with, e.g.,
-
-.. code-block:: bash
-
-   cd makesite/local-server
-   docker build --tag pytch-local-server .
-
-and then run with
-
-.. code-block:: bash
-
-    docker run -dit \
-      --name pytch-beta \
-      -p 5888:80 \
-      -v /tmp/local-pytch-deployment/:/usr/local/apache2/htdocs/ \
-      pytch-local-server
-
 
 TODOs
 -----
