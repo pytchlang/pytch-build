@@ -53,6 +53,19 @@ class TestProjectCommit:
         pc = TH.ProjectCommit(this_raw_repo, "ae1fea2c9f21")
         assert pc.message_subject == "{base} Add empty code file"
 
+    def test_message_body(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "2f1f4fb")
+        assert pc.message_body.startswith("This sound")
+
+    def test_message_body_empty(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "9b40818")
+        assert pc.message_body == ""
+
+    def test_message_body_rejects(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "d5f7ae0")
+        with pytest.raises(ValueError, match="malformed commit message"):
+            pc.message_body
+
     def test_identifier_slug_with(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "e41e02c9be")
         assert pc.has_identifier_slug
