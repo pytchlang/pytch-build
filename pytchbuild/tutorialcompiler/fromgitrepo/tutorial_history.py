@@ -139,6 +139,13 @@ class ProjectCommit:
         return self.commit.message.split('\n')[0]
 
     @cached_property
+    def message_body(self):
+        lines = self.commit.message.split('\n')
+        if lines[1] != "":
+            raise ValueError(f"commit {self.oid} has malformed commit message")
+        return "\n".join(lines[2:] + [""])
+
+    @cached_property
     def maybe_identifier_slug(self):
         m = re.match(r'\{\#([^ ]+)\}', self.message_subject)
         return m and m.group(1)
