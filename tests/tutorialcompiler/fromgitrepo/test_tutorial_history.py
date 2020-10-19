@@ -66,6 +66,14 @@ class TestProjectCommit:
         with pytest.raises(ValueError, match="malformed commit message"):
             pc.message_body
 
+    def test_asset_credits_with(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "2f1f4fb")
+        assert len(pc.assets_credits) == 1
+        credit = pc.assets_credits[0]
+        assert credit.asset_basenames == ["bell-ping.mp3"]
+        assert credit.asset_usage == "the project"
+        assert "candle damper" in credit.credit_markdown
+
     def test_identifier_slug_with(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "e41e02c9be")
         assert pc.has_identifier_slug
