@@ -133,6 +133,12 @@ def node_is_work_in_progress_marker(elt):
             and "work-in-progress" in elt.attrs["class"])
 
 
+def node_is_asset_credits_marker(elt):
+    return (elt.name == "div"
+            and elt.has_attr("class")
+            and "asset-credits" in elt.attrs["class"])
+
+
 def augment_patch_elt(soup, elt, project_history):
     target_slug = elt.attrs["data-slug"]
     if project_history.slug_is_known(target_slug):
