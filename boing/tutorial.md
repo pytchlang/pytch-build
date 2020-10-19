@@ -8,6 +8,8 @@ You can see how it turns out:
 
 Hope you enjoy making it!
 
+{{< asset-credits >}}
+
 
 ----------------------------------------------------------------
 
