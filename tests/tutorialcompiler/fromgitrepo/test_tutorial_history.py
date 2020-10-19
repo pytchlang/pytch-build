@@ -236,6 +236,7 @@ class TestProjectHistory:
     def test_all_assets(self, project_history):
         got_paths = [a.path for a in project_history.all_assets]
         assert got_paths == [
+            "boing/project-assets/bell-ping.mp3",
             "boing/tutorial-assets/not-a-real-png.png",
             "boing/project-assets/graphics/alien.png",
         ]
@@ -243,6 +244,7 @@ class TestProjectHistory:
     def test_all_project_assets(self, project_history):
         got_paths = [a.path for a in project_history.all_project_assets]
         assert got_paths == [
+            "boing/project-assets/bell-ping.mp3",
             "boing/project-assets/graphics/alien.png",
         ]
 
