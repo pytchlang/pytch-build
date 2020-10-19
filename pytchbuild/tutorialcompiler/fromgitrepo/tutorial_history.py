@@ -32,9 +32,12 @@ import pathlib
 import pygit2
 import itertools
 import enum
+import colorlog
 from pathlib import Path
 from dataclasses import dataclass
 from cached_property import cached_property
+
+logger = colorlog.getLogger(__name__)
 
 
 ################################################################################
@@ -265,6 +268,28 @@ class ProjectCommit:
         if self.adds_project_assets or self.adds_tutorial_assets:
             return [Asset.from_delta(self.repo, delta)
                     for delta in self.diff_against_parent_or_empty.deltas]
+        else:
+            return []
+
+    @cached_property
+    def assets_credits(self):
+        if self.adds_project_assets or self.adds_tutorial_assets:
+            credit_markdown = self.message_body
+            if re.match(r"^\s*$", credit_markdown):
+                logger.warning(f"commit {self.oid} adds assets but has no"
+                               " body containing Markdown for credits/licence")
+                return []
+
+            usage = ("the tutorial text" if self.adds_tutorial_assets
+                     else "the project")
+
+            return [
+                AssetsCreditsEntry(
+                    [Path(asset.path).name for asset in self.added_assets],
+                    usage,
+                    credit_markdown
+                )
+            ]
         else:
             return []
 
