@@ -155,6 +155,31 @@ def augment_patch_elt(soup, elt, project_history):
         elt.append(warning_p)
 
 
+def augment_asset_credits_elt(soup, elt, project_history):
+    for credit in project_history.all_asset_credits:
+        credit_intro_elt = soup.new_tag("p", attrs={"class": "credit-intro"})
+        credit_intro_elt.append("For ")
+        first_name = True
+        for name in credit.asset_basenames:
+            if not first_name:
+                credit_intro_elt.append(", ")
+            first_name = False
+            name_elt = soup.new_tag("code", attrs={"class": "asset-filename"})
+            name_elt.append(name)
+            credit_intro_elt.append(name_elt)
+        credit_intro_elt.append(f" (used in {credit.asset_usage}):")
+
+        elt.append(credit_intro_elt)
+
+        credit_body_elt = soup.new_tag("div", attrs={"class": "credits"})
+
+        credits_soup = soup_from_markdown_text(credit.credit_markdown)
+        for credit_elt in credits_soup.children:
+            credit_body_elt.append(credit_elt)
+
+        elt.append(credit_body_elt)
+
+
 def warn_if_slug_usage_mismatch(project_history, soup):
     """Check all tagged commits are used, in order, in the tutorial
 
