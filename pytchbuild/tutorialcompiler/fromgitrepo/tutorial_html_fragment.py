@@ -133,6 +133,12 @@ def node_is_work_in_progress_marker(elt):
             and "work-in-progress" in elt.attrs["class"])
 
 
+def node_is_asset_credits_marker(elt):
+    return (elt.name == "div"
+            and elt.has_attr("class")
+            and "asset-credits" in elt.attrs["class"])
+
+
 def augment_patch_elt(soup, elt, project_history):
     target_slug = elt.attrs["data-slug"]
     if project_history.slug_is_known(target_slug):
@@ -147,6 +153,31 @@ def augment_patch_elt(soup, elt, project_history):
             attrs={"class": "tutorial-compiler-warning unknown-slug"})
         warning_p.append(f'Slug "{target_slug}" was not found.')
         elt.append(warning_p)
+
+
+def augment_asset_credits_elt(soup, elt, project_history):
+    for credit in project_history.all_asset_credits:
+        credit_intro_elt = soup.new_tag("p", attrs={"class": "credit-intro"})
+        credit_intro_elt.append("For ")
+        first_name = True
+        for name in credit.asset_basenames:
+            if not first_name:
+                credit_intro_elt.append(", ")
+            first_name = False
+            name_elt = soup.new_tag("code", attrs={"class": "asset-filename"})
+            name_elt.append(name)
+            credit_intro_elt.append(name_elt)
+        credit_intro_elt.append(f" (used in {credit.asset_usage}):")
+
+        elt.append(credit_intro_elt)
+
+        credit_body_elt = soup.new_tag("div", attrs={"class": "credits"})
+
+        credits_soup = soup_from_markdown_text(credit.credit_markdown)
+        for credit_elt in credits_soup.children:
+            credit_body_elt.append(credit_elt)
+
+        elt.append(credit_body_elt)
 
 
 def warn_if_slug_usage_mismatch(project_history, soup):
@@ -188,6 +219,8 @@ def tutorial_div_from_project_history(project_history):
         if elt.name == "hr":
             past_front_matter = True
         elif not past_front_matter:
+            if node_is_asset_credits_marker(elt):
+                augment_asset_credits_elt(soup, elt, project_history)
             front_matter.append(elt)
         elif node_is_work_in_progress_marker(elt):
             if not past_front_matter:

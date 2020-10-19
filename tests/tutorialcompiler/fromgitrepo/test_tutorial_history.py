@@ -1,5 +1,6 @@
 import pytest
 import re
+import logging
 
 import pygit2
 import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history as TH
@@ -52,6 +53,33 @@ class TestProjectCommit:
     def test_message_subject(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "ae1fea2c9f21")
         assert pc.message_subject == "{base} Add empty code file"
+
+    def test_message_body(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "2f1f4fb")
+        assert pc.message_body.startswith("This sound")
+
+    def test_message_body_empty(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "9b40818")
+        assert pc.message_body == ""
+
+    def test_message_body_rejects(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "d5f7ae0")
+        with pytest.raises(ValueError, match="malformed commit message"):
+            pc.message_body
+
+    def test_asset_credits_with(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "2f1f4fb")
+        assert len(pc.assets_credits) == 1
+        credit = pc.assets_credits[0]
+        assert credit.asset_basenames == ["bell-ping.mp3"]
+        assert credit.asset_usage == "the project"
+        assert "candle damper" in credit.credit_markdown
+
+    def test_asset_credits_without(self, this_raw_repo, caplog):
+        with caplog.at_level(logging.WARNING):
+            pc = TH.ProjectCommit(this_raw_repo, "9b40818")
+            assert len(pc.assets_credits) == 0
+            assert "has no body" in caplog.text
 
     def test_identifier_slug_with(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "e41e02c9be")
@@ -236,13 +264,22 @@ class TestProjectHistory:
     def test_all_assets(self, project_history):
         got_paths = [a.path for a in project_history.all_assets]
         assert got_paths == [
+            "boing/project-assets/bell-ping.mp3",
             "boing/tutorial-assets/not-a-real-png.png",
             "boing/project-assets/graphics/alien.png",
         ]
 
+    def test_all_asset_credits(self, fresh_project_history, caplog):
+        with caplog.at_level(logging.WARNING):
+            credits = fresh_project_history.all_asset_credits
+            assert len(credits) == 1
+            assert "bf0e5cf" in caplog.text
+            assert "9b40818" in caplog.text
+
     def test_all_project_assets(self, project_history):
         got_paths = [a.path for a in project_history.all_project_assets]
         assert got_paths == [
+            "boing/project-assets/bell-ping.mp3",
             "boing/project-assets/graphics/alien.png",
         ]
 

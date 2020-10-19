@@ -32,9 +32,12 @@ import pathlib
 import pygit2
 import itertools
 import enum
+import colorlog
 from pathlib import Path
 from dataclasses import dataclass
 from cached_property import cached_property
+
+logger = colorlog.getLogger(__name__)
 
 
 ################################################################################
@@ -72,6 +75,18 @@ class Asset:
     @cached_property
     def is_project_asset(self):
         return Path(self.path).parts[1] == 'project-assets'
+
+
+################################################################################
+
+@dataclass
+class AssetsCreditsEntry:
+    """A credit which applies to some of the assets in a tutorial
+    """
+
+    asset_basenames: [str]
+    asset_usage: str
+    credit_markdown: str
 
 
 ################################################################################
@@ -137,6 +152,13 @@ class ProjectCommit:
     @cached_property
     def message_subject(self):
         return self.commit.message.split('\n')[0]
+
+    @cached_property
+    def message_body(self):
+        lines = self.commit.message.split('\n')
+        if lines[1] != "":
+            raise ValueError(f"commit {self.oid} has malformed commit message")
+        return "\n".join(lines[2:] + [""])
 
     @cached_property
     def maybe_identifier_slug(self):
@@ -250,6 +272,28 @@ class ProjectCommit:
             return []
 
     @cached_property
+    def assets_credits(self):
+        if self.adds_project_assets or self.adds_tutorial_assets:
+            credit_markdown = self.message_body
+            if re.match(r"^\s*$", credit_markdown):
+                logger.warning(f"commit {self.oid} adds assets but has no"
+                               " body containing Markdown for credits/licence")
+                return []
+
+            usage = ("the tutorial text" if self.adds_tutorial_assets
+                     else "the project")
+
+            return [
+                AssetsCreditsEntry(
+                    [Path(asset.path).name for asset in self.added_assets],
+                    usage,
+                    credit_markdown
+                )
+            ]
+        else:
+            return []
+
+    @cached_property
     def code_patch_against_parent(self):
         if not self.modifies_python_code:
             raise ValueError(f"commit {self.oid} does not modify the Python code")
@@ -303,6 +347,17 @@ class ProjectHistory:
     @cached_property
     def all_project_assets(self):
         return [a for a in self.all_assets if a.is_project_asset]
+
+    @cached_property
+    def all_asset_credits(self):
+        """List of all AssetsCreditsEntry objects
+        """
+        commits_credits = (c.assets_credits for c in self.project_commits)
+
+        # Provide the credits entries such that the earliest one in the list
+        # is for the earliest (nearest the root) commit in the history.
+        all_credits = list(itertools.chain.from_iterable(commits_credits))
+        return list(reversed(all_credits))
 
     @cached_property
     def top_level_directory_name(self):

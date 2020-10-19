@@ -24,7 +24,9 @@ def cloned_repo(tmpdir_factory, discovered_repository_path):
     tutorial_path = clone_path / "boing/tutorial.md"
 
     with open(tutorial_path, "wt") as f_tutorial:
-        f_tutorial.write("Working copy of tutorial\n")
+        f_tutorial.write("Working copy of tutorial\n"
+                         "\n\n{{< commit import-pytch >}}\n"
+                         "\n\n{{< commit add-Alien-skeleton >}}\n")
 
     summary_path = clone_path / "boing/summary.md"
 
@@ -42,6 +44,15 @@ def project_history(cloned_repo, request):
     return TH.ProjectHistory(cloned_repo.workdir,
                              "unit-tests-commits",
                              request.param)
+
+
+# To ensure we perform fresh computation of cached properties, and get
+# expected warnings, allow a test to request a clean freshly-made instance
+# of the history.
+@pytest.fixture
+def fresh_project_history(cloned_repo, request):
+    return TH.ProjectHistory(cloned_repo.workdir,
+                             "unit-tests-commits")
 
 
 @pytest.fixture(scope="session")
