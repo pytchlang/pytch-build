@@ -269,6 +269,13 @@ class TestProjectHistory:
             "boing/project-assets/graphics/alien.png",
         ]
 
+    def test_all_asset_credits(self, fresh_project_history, caplog):
+        with caplog.at_level(logging.WARNING):
+            credits = fresh_project_history.all_asset_credits
+            assert len(credits) == 1
+            assert "bf0e5cf" in caplog.text
+            assert "9b40818" in caplog.text
+
     def test_all_project_assets(self, project_history):
         got_paths = [a.path for a in project_history.all_project_assets]
         assert got_paths == [
