@@ -46,6 +46,15 @@ def project_history(cloned_repo, request):
                              request.param)
 
 
+# To ensure we perform fresh computation of cached properties, and get
+# expected warnings, allow a test to request a clean freshly-made instance
+# of the history.
+@pytest.fixture
+def fresh_project_history(cloned_repo, request):
+    return TH.ProjectHistory(cloned_repo.workdir,
+                             "unit-tests-commits")
+
+
 @pytest.fixture(scope="session")
 def tutorial_md_text(project_history):
     return project_history.tutorial_text
