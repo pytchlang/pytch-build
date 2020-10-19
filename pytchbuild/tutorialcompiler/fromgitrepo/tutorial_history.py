@@ -349,6 +349,17 @@ class ProjectHistory:
         return [a for a in self.all_assets if a.is_project_asset]
 
     @cached_property
+    def all_asset_credits(self):
+        """List of all AssetsCreditsEntry objects
+        """
+        commits_credits = (c.assets_credits for c in self.project_commits)
+
+        # Provide the credits entries such that the earliest one in the list
+        # is for the earliest (nearest the root) commit in the history.
+        all_credits = list(itertools.chain.from_iterable(commits_credits))
+        return list(reversed(all_credits))
+
+    @cached_property
     def top_level_directory_name(self):
         """The sole directory at top level of the repo
 
