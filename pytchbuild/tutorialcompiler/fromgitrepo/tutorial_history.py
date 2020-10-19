@@ -76,6 +76,18 @@ class Asset:
 
 ################################################################################
 
+@dataclass
+class AssetsCreditsEntry:
+    """A credit which applies to some of the assets in a tutorial
+    """
+
+    asset_basenames: [str]
+    asset_usage: str
+    credit_markdown: str
+
+
+################################################################################
+
 class ProjectCommit:
     """An individual commit within a tutorial's history
 
