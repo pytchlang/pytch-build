@@ -28,6 +28,9 @@ class ShortcodeProcessor(markdown.blockprocessors.BlockProcessor):
         elif kind == "work-in-progress":
             etree.SubElement(parent, "div",
                              {"class": "work-in-progress"})
+        elif kind == "asset-credits":
+            etree.SubElement(parent, "div",
+                             {"class": "asset-credits"})
         else:
             raise ValueError(f'unknown shortcode kind "{kind}"')
 
