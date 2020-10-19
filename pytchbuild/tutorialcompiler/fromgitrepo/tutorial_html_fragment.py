@@ -219,6 +219,8 @@ def tutorial_div_from_project_history(project_history):
         if elt.name == "hr":
             past_front_matter = True
         elif not past_front_matter:
+            if node_is_asset_credits_marker(elt):
+                augment_asset_credits_elt(soup, elt, project_history)
             front_matter.append(elt)
         elif node_is_work_in_progress_marker(elt):
             if not past_front_matter:
