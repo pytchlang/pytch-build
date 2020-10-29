@@ -14,9 +14,21 @@ fi
 WORKDIR=$(mktemp -d -t pytch-tmp-XXXXXXXXXXXX)
 REPODIR="$WORKDIR"/repo
 
+# TODO: It seems a bit perverse to work back to the 'repos base' variable
+# we started from.  Maybe re-do this bundle of scripts so that it clones
+# all repos at once, in the top-level script?
+
+PYTCH_REPOS_BASE=$(dirname "$SOURCE_REPO")
+
 ZIPFILE_BASENAME=website-layer.zip
 
 git clone --quiet --depth 1 "$SOURCE_REPO" "$REPODIR" -b "$SOURCE_BRANCH"
+for sibling in pytch-vm pytch-webapp; do
+    git clone --quiet --depth 1 \
+        "$PYTCH_REPOS_BASE"/$sibling \
+        "$WORKDIR"/$sibling \
+        -b "$SOURCE_BRANCH"
+done
 
 (
     cd "$REPODIR"
