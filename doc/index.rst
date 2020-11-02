@@ -1,6 +1,16 @@
 Pytch Build Tools
 =================
 
+Standalone build of docs
+------------------------
+
+Run::
+
+  tox -e doc
+
+from top-level.
+
+
 Tutorial compiler
 -----------------
 
