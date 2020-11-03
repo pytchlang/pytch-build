@@ -30,6 +30,11 @@ for sibling in pytch-vm pytch-webapp; do
         -b "$SOURCE_BRANCH"
 done
 
+
+########################################################################
+#
+# Create layer zipfile
+
 (
     cd "$REPODIR"
 
