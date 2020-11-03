@@ -33,6 +33,18 @@ done
 
 ########################################################################
 #
+# Generate contents of build-info file.
+
+BUILDINFOFILE="$REPODIR"/source/build-info.txt
+
+if [ ! -e "$BUILDINFOFILE" ]; then
+    echo Could not find source/build-info.txt in clone
+    exit 1;
+fi
+
+
+########################################################################
+#
 # Create layer zipfile
 
 (
