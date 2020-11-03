@@ -30,6 +30,37 @@ for sibling in pytch-vm pytch-webapp; do
         -b "$SOURCE_BRANCH"
 done
 
+
+########################################################################
+#
+# Generate contents of build-info file.
+
+BUILDINFOFILE="$REPODIR"/source/build-info.txt
+
+if [ ! -e "$BUILDINFOFILE" ]; then
+    echo Could not find source/build-info.txt in clone
+    exit 1;
+fi
+
+cat /dev/null > $BUILDINFOFILE
+
+for sibling in \
+        pytch-build \
+        pytch-vm \
+        pytch-webapp \
+        pytch-website \
+; do
+    sibling_repo="$PYTCH_REPOS_BASE"/$sibling
+    sibling_branch=refs/heads/"$SOURCE_BRANCH"
+    sha=$(git ls-remote $sibling_repo $sibling_branch | cut -f 1)
+    printf "%-19s %s\n" $sibling $sha >> $BUILDINFOFILE
+done
+
+
+########################################################################
+#
+# Create layer zipfile
+
 (
     cd "$REPODIR"
 
