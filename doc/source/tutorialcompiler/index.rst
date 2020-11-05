@@ -1,5 +1,5 @@
-Pytch tutorials
-===============
+Tools for writing a tutorial
+============================
 
 A 'tutorial', as presented by the IDE, consists of text divided into
 *chapters*.  Each chapter consists of text interspersed with headings
