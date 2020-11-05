@@ -12,7 +12,7 @@ docker build --tag pytch-local-server .
 CONTENTDIR=$(mktemp -d -t pytch-local-server-content-XXXXXXXXXXXX)
 CONTAINERNAME=$(basename "$CONTENTDIR")
 
-unzip -d "$CONTENTDIR" "$1"
+unzip -q -d "$CONTENTDIR" "$1"
 chmod 755 "$CONTENTDIR"
 
 docker run -it --rm \
