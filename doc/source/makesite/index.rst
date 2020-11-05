@@ -1,3 +1,12 @@
+Tools for building and deploying the site
+=========================================
+
+.. toctree::
+
+   making-deployment-zipfile
+   testing-deployment-zipfile
+   deploying-to-hosting
+
 
 TODOs
 -----
