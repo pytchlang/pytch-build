@@ -8,8 +8,7 @@ Tools for building and deploying the site
    deploying-to-hosting
 
 
-TODOs
------
+Possible TODOs:
 
-- Create a build identifier automatically and store build info and
+* Create a build identifier automatically and store build info and
   contributing SHA1s somewhere central.
