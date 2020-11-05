@@ -1,4 +1,4 @@
-Pytch Build Tools
+Pytch build tools
 =================
 
 Standalone build of docs
