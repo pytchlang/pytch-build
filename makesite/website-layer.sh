@@ -23,7 +23,7 @@ PYTCH_REPOS_BASE=$(dirname "$SOURCE_REPO")
 ZIPFILE_BASENAME=website-layer.zip
 
 git clone --quiet --depth 1 "$SOURCE_REPO" "$REPODIR" -b "$SOURCE_BRANCH"
-for sibling in pytch-vm pytch-webapp; do
+for sibling in pytch-vm pytch-webapp pytch-build; do
     git clone --quiet --depth 1 \
         "$PYTCH_REPOS_BASE"/$sibling \
         "$WORKDIR"/$sibling \
