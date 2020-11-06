@@ -31,6 +31,16 @@ class TutorialInfo:
     branch_name: str
     project_history: ProjectHistory
 
+    @property
+    def summary_dict(self):
+        history = self.project_history
+        return {
+            "name": self.name,
+            "branch_name": self.branch_name,
+            "dir_name": history.top_level_directory_name,
+            "commit_id": history.tip_oid_string,
+        }
+
 
 @dataclass
 class TutorialCollection:
