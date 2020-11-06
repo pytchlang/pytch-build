@@ -289,6 +289,12 @@ async def async_main(dirname, repository_path, tip_revision):
         (paths via Janus queue)
             | [async side]
             v
+        [aggregate_modifies()]
+            |
+            |
+        (paths via asyncio queue)
+            |
+            v
         [IdeMessage.transform_paths()]
             |
             |
