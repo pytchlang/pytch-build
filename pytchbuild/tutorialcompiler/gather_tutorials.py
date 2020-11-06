@@ -213,9 +213,14 @@ def commit_to_releases(repo, tutorials):
 
     sig = create_signature(repo)
 
+    build_sources = tutorials.build_sources_dicts
+    build_sources_yaml = yaml.dump(build_sources, sort_keys=False).encode()
+
+    extra_files = { "build-sources.yaml": build_sources_yaml }
+
     release_recipes_tip = str(repo.revparse_single(RELEASE_RECIPES_BRANCH_NAME).oid)
     contributing_commit_oids = [release_recipes_tip] + tutorials.gathered_tip_oids
-    tree_oid = create_union_tree(repo, contributing_commit_oids)
+    tree_oid = create_union_tree(repo, contributing_commit_oids, extra_files)
 
     releases_tip = str(repo.revparse_single(RELEASES_BRANCH_NAME).oid)
     parent_oids = [releases_tip] + contributing_commit_oids
