@@ -34,7 +34,7 @@ class TutorialInfo:
 
 @dataclass
 class TutorialCollection:
-    tutorials: Dict[str, ProjectHistory]
+    tutorials: Dict[str, TutorialInfo]
 
     class IndexSource(enum.Enum):
         RECIPES_TIP = enum.auto()
@@ -58,7 +58,10 @@ class TutorialCollection:
             content = cls.index_yaml_content(repo, index_source)
             tutorial_dicts = yaml.load(content, yaml.Loader)
 
-        tutorials = {d["name"]: ProjectHistory(repo_path, d["tip-commit"])
+        tutorials = {d["name"]: TutorialInfo(d["name"],
+                                             d["tip-commit"],
+                                             ProjectHistory(repo_path,
+                                                            d["tip-commit"]))
                      for d in tutorial_dicts}
         return cls(tutorials)
 
