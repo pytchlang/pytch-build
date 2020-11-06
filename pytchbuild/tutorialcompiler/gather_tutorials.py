@@ -166,8 +166,12 @@ def verify_index_yaml_clean(repo):
                          f' "{RELEASE_RECIPES_BRANCH_NAME}"')
 
 
-def create_union_tree(repo, commit_oid_strs):
+def create_union_tree(repo, commit_oid_strs, extra_files):
     """Create and write the union of the trees of the given commits as a new tree
+
+    The ``extra_files`` dictionary gives additional top-level files which should
+    be included in the tree.  The keys should be strings (containing no
+    path-separator characters), and the values should be ``bytes`` objects.
 
     Return the OID of the resulting new tree.
     """
@@ -180,6 +184,15 @@ def create_union_tree(repo, commit_oid_strs):
             raise ValueError(f'duplicate name "{entry.name}"')
         tree_builder.insert(entry.name, entry.id, entry.filemode)
         names_already_added.add(entry.name)
+
+    for filename, filebytes in extra_files.items():
+        # TODO: Check for no "/" chars in filename.
+        if filename in names_already_added:
+            raise ValueError(f'duplicate name "{entry.name}" from extra_files')
+        blob_id = repo.create_blob(filebytes)
+        tree_builder.insert(filename, blob_id, pygit2.GIT_FILEMODE_BLOB)
+        names_already_added.add(filename)
+
     return tree_builder.write()
 
 
