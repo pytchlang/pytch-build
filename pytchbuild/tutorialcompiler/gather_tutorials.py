@@ -109,6 +109,10 @@ class TutorialCollection:
         return [info.project_history.tip_oid_string
                 for info in self.tutorials.values()]
 
+    @property
+    def build_sources_dicts(self):
+        return [info.summary_dict for info in self.tutorials.values()]
+
 
 def create_signature(repo):
     return pygit2.Signature(repo.config['user.name'],
