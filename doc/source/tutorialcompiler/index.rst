@@ -19,3 +19,5 @@ workflow based on the *git* version control system.
    tutorial-structure
    fromgitrepo
    tutorial-collection
+
+And see also :doc:`../live-reload/index`.
