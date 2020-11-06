@@ -150,6 +150,13 @@ def index_data_at_recipes_tip(repo):
 
 def verify_index_yaml_clean(repo):
     working_path = Path(repo.workdir) / "index.yaml"
+
+    if not working_path.exists():
+        # If we have got this far, we must be working from the "recipes tip"
+        # version of the index file, in which case it's OK for it to not exist
+        # in the working directory.
+        return
+
     working_data = working_path.open("rb").read()
     recipes_tip_data = index_data_at_recipes_tip(repo)
 
