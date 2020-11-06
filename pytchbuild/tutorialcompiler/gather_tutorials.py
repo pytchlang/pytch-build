@@ -96,7 +96,8 @@ class TutorialCollection:
 
     @property
     def gathered_tip_oids(self):
-        return [t.tip_oid_string for t in self.tutorials.values()]
+        return [info.project_history.tip_oid_string
+                for info in self.tutorials.values()]
 
 
 def create_signature(repo):
