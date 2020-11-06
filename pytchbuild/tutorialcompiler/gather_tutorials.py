@@ -196,7 +196,7 @@ def create_union_tree(repo, commit_oid_strs, extra_files):
     return tree_builder.write()
 
 
-def commit_to_releases(repo, tutorial_tip_oid_strs):
+def commit_to_releases(repo, tutorials):
     """First commit_oid_strs should have just 'index.yaml' in its tree.
 
     Others are tutorial tips, which should each have just one
@@ -214,7 +214,7 @@ def commit_to_releases(repo, tutorial_tip_oid_strs):
     sig = create_signature(repo)
 
     release_recipes_tip = str(repo.revparse_single(RELEASE_RECIPES_BRANCH_NAME).oid)
-    contributing_commit_oids = [release_recipes_tip] + tutorial_tip_oid_strs
+    contributing_commit_oids = [release_recipes_tip] + tutorials.gathered_tip_oids
     tree_oid = create_union_tree(repo, contributing_commit_oids)
 
     releases_tip = str(repo.revparse_single(RELEASES_BRANCH_NAME).oid)

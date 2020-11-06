@@ -42,6 +42,6 @@ def main(output_file, repository_path, index_source, make_release):
     if make_release:
         with git_repository(repository_path) as repo:
             releases_commit_oid = commit_to_releases(repo,
-                                                     tutorials.gathered_tip_oids)
+                                                     tutorials)
 
     tutorials.write_new_zipfile(releases_commit_oid, output_file)
