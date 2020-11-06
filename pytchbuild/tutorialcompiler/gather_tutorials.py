@@ -26,6 +26,13 @@ class TutorialSummary:
 
 
 @dataclass
+class TutorialInfo:
+    name: str
+    branch_name: str
+    project_history: ProjectHistory
+
+
+@dataclass
 class TutorialCollection:
     tutorials: Dict[str, ProjectHistory]
 
