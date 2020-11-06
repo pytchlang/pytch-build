@@ -24,7 +24,6 @@ Tutorial compiler and related tools
    :maxdepth: 2
    :caption: Contents:
 
-   introduction
    tutorialcompiler/index
    live-reload/index
 
