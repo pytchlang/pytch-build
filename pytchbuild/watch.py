@@ -278,10 +278,11 @@ class ReloadServer:
 async def async_main(dirname, repository_path, tip_revision):
     """Connect all the above together
 
-    We launch a ``PytchFilesHandler``, which feeds into a ``MessageBroker``.
-    This needs us to bridge the threaded and asyncio worlds, which we do via a
-    ``Janus`` queue.  A ``ReloadServer`` accepts connections from browsers, each
-    of which becomes a consumer of the ``MessageBroker``.
+    We launch a ``PytchFilesHandler``, which feeds (via some processing steps)
+    into a ``MessageBroker``.  This needs us to bridge the threaded and asyncio
+    worlds, which we do via a ``Janus`` queue.  A ``ReloadServer`` accepts
+    connections from browsers, each of which becomes a consumer of the
+    ``MessageBroker``.
 
         [PytchFilesHandler]
             |
