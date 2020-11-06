@@ -66,8 +66,8 @@ class TutorialCollection:
         return cls(tutorials)
 
     def write_to_zipfile(self, maybe_collection_oid, zfile):
-        bundles = [TutorialBundle.from_project_history(project_history)
-                   for project_history in self.tutorials.values()]
+        bundles = [TutorialBundle.from_project_history(info.project_history)
+                   for info in self.tutorials.values()]
 
         for bundle in bundles:
             bundle.write_to_zipfile(zfile)
