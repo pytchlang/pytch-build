@@ -26,8 +26,25 @@ class TutorialSummary:
 
 
 @dataclass
+class TutorialInfo:
+    name: str
+    branch_name: str
+    project_history: ProjectHistory
+
+    @property
+    def summary_dict(self):
+        history = self.project_history
+        return {
+            "name": self.name,
+            "branch_name": self.branch_name,
+            "dir_name": history.top_level_directory_name,
+            "commit_id": history.tip_oid_string,
+        }
+
+
+@dataclass
 class TutorialCollection:
-    tutorials: Dict[str, ProjectHistory]
+    tutorials: Dict[str, TutorialInfo]
 
     class IndexSource(enum.Enum):
         RECIPES_TIP = enum.auto()
@@ -51,13 +68,16 @@ class TutorialCollection:
             content = cls.index_yaml_content(repo, index_source)
             tutorial_dicts = yaml.load(content, yaml.Loader)
 
-        tutorials = {d["name"]: ProjectHistory(repo_path, d["tip-commit"])
+        tutorials = {d["name"]: TutorialInfo(d["name"],
+                                             d["tip-commit"],
+                                             ProjectHistory(repo_path,
+                                                            d["tip-commit"]))
                      for d in tutorial_dicts}
         return cls(tutorials)
 
     def write_to_zipfile(self, maybe_collection_oid, zfile):
-        bundles = [TutorialBundle.from_project_history(project_history)
-                   for project_history in self.tutorials.values()]
+        bundles = [TutorialBundle.from_project_history(info.project_history)
+                   for info in self.tutorials.values()]
 
         for bundle in bundles:
             bundle.write_to_zipfile(zfile)
@@ -86,7 +106,12 @@ class TutorialCollection:
 
     @property
     def gathered_tip_oids(self):
-        return [t.tip_oid_string for t in self.tutorials.values()]
+        return [info.project_history.tip_oid_string
+                for info in self.tutorials.values()]
+
+    @property
+    def build_sources_dicts(self):
+        return [info.summary_dict for info in self.tutorials.values()]
 
 
 def create_signature(repo):
@@ -125,6 +150,13 @@ def index_data_at_recipes_tip(repo):
 
 def verify_index_yaml_clean(repo):
     working_path = Path(repo.workdir) / "index.yaml"
+
+    if not working_path.exists():
+        # If we have got this far, we must be working from the "recipes tip"
+        # version of the index file, in which case it's OK for it to not exist
+        # in the working directory.
+        return
+
     working_data = working_path.open("rb").read()
     recipes_tip_data = index_data_at_recipes_tip(repo)
 
@@ -134,8 +166,12 @@ def verify_index_yaml_clean(repo):
                          f' "{RELEASE_RECIPES_BRANCH_NAME}"')
 
 
-def create_union_tree(repo, commit_oid_strs):
+def create_union_tree(repo, commit_oid_strs, extra_files):
     """Create and write the union of the trees of the given commits as a new tree
+
+    The ``extra_files`` dictionary gives additional top-level files which should
+    be included in the tree.  The keys should be strings (containing no
+    path-separator characters), and the values should be ``bytes`` objects.
 
     Return the OID of the resulting new tree.
     """
@@ -148,10 +184,19 @@ def create_union_tree(repo, commit_oid_strs):
             raise ValueError(f'duplicate name "{entry.name}"')
         tree_builder.insert(entry.name, entry.id, entry.filemode)
         names_already_added.add(entry.name)
+
+    for filename, filebytes in extra_files.items():
+        # TODO: Check for no "/" chars in filename.
+        if filename in names_already_added:
+            raise ValueError(f'duplicate name "{entry.name}" from extra_files')
+        blob_id = repo.create_blob(filebytes)
+        tree_builder.insert(filename, blob_id, pygit2.GIT_FILEMODE_BLOB)
+        names_already_added.add(filename)
+
     return tree_builder.write()
 
 
-def commit_to_releases(repo, tutorial_tip_oid_strs):
+def commit_to_releases(repo, tutorials):
     """First commit_oid_strs should have just 'index.yaml' in its tree.
 
     Others are tutorial tips, which should each have just one
@@ -168,9 +213,14 @@ def commit_to_releases(repo, tutorial_tip_oid_strs):
 
     sig = create_signature(repo)
 
+    build_sources = tutorials.build_sources_dicts
+    build_sources_yaml = yaml.dump(build_sources, sort_keys=False).encode()
+
+    extra_files = { "build-sources.yaml": build_sources_yaml }
+
     release_recipes_tip = str(repo.revparse_single(RELEASE_RECIPES_BRANCH_NAME).oid)
-    contributing_commit_oids = [release_recipes_tip] + tutorial_tip_oid_strs
-    tree_oid = create_union_tree(repo, contributing_commit_oids)
+    contributing_commit_oids = [release_recipes_tip] + tutorials.gathered_tip_oids
+    tree_oid = create_union_tree(repo, contributing_commit_oids, extra_files)
 
     releases_tip = str(repo.revparse_single(RELEASES_BRANCH_NAME).oid)
     parent_oids = [releases_tip] + contributing_commit_oids

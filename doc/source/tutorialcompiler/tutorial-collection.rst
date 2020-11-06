@@ -87,6 +87,9 @@ releasing a new version of the tutorial collection because:
   tutorials in the collection.
 
 In the first case, the ``index.yaml`` file does not need to change.
+(Unless the author renamed the branch containing the tutorial in
+question.)
+
 In the second case, it does, and so the maintainer edits
 ``index.yaml`` and commits that change to the ``release-recipes``
 branch.
@@ -97,7 +100,16 @@ repo::
     pytchbuild-gather-tutorials --make-release -o /tmp/tutorials.zip
 
 This will produce the tutorials bundle zipfile as usual, but then also
-make a commit to the ``releases`` branch.
+make a commit to the ``releases`` branch.  The commit to ``releases``
+has a hard-coded generic commit message.  Ideally, the maintainer will
+check out the ``releases`` branch and reword its tip commit's message
+to something more meaningful.  This can be done with::
+
+    git commit --amend --only
+
+on the command line, or ``cw`` (Commit reWord) if using `Magit
+<https://magit.vc/>`_.  Rewording the commit's message must be done
+*before* pushing upstream, to avoiding rewriting upstream history.
 
 If the working copy of the ``index.yaml`` file differs from the
 version stored at the tip of ``release-recipes``, an error will be
@@ -114,3 +126,13 @@ branch, followed by the then-current tips of the tutorials' branches,
 i.e., as they were when they were used to build the tutorial
 collection.  In this way, tutorials' individual historical commit
 histories are preserved.
+
+To ease the reconstruction of the historical state of the tutorial
+bundle, the ``--make-release`` option also writes a file
+``build-sources.yaml`` into the root of the repository tree for the
+new commit to ``releases``.  This file contains information on each
+contribution to the tutorial bundle: its user-visible name, the name
+of the branch as it was when creating the bundle, the directory name
+containing the tutorial's files, and the commit oid of the tip of that
+branch.  To some extent this duplicates the information in the list of
+parents of the commit, but in a more convenient form.
