@@ -100,7 +100,16 @@ repo::
     pytchbuild-gather-tutorials --make-release -o /tmp/tutorials.zip
 
 This will produce the tutorials bundle zipfile as usual, but then also
-make a commit to the ``releases`` branch.
+make a commit to the ``releases`` branch.  The commit to ``releases``
+has a hard-coded generic commit message.  Ideally, the maintainer will
+check out the ``releases`` branch and reword its tip commit's message
+to something more meaningful.  This can be done with::
+
+    git commit --amend --only
+
+on the command line, or ``cw`` (Commit reWord) if using `Magit
+<https://magit.vc/>`_.  Rewording the commit's message must be done
+*before* pushing upstream, to avoiding rewriting upstream history.
 
 If the working copy of the ``index.yaml`` file differs from the
 version stored at the tip of ``release-recipes``, an error will be
