@@ -118,7 +118,13 @@ class IdeMessage:
     async def transform_paths(cls, read_q, write_q):
         while True:
             path = await read_q.get()
-            await write_q.put(cls.from_path(path))
+            try:
+                message = cls.from_path(path)
+            except FileNotFoundError:
+                # Maybe the file was deleted?
+                print(f'transform_paths(): file "{path}" not found; skipping')
+            else:
+                await write_q.put(message)
 
 
 async def aggregate_modifies(read_q, write_q):
@@ -272,34 +278,41 @@ class ReloadServer:
 async def async_main(dirname, repository_path, tip_revision):
     """Connect all the above together
 
-    We launch a ``PytchFilesHandler``, which feeds into a ``MessageBroker``.
-    This needs us to bridge the threaded and asyncio worlds, which we do via a
-    ``Janus`` queue.  A ``ReloadServer`` accepts connections from browsers, each
-    of which becomes a consumer of the ``MessageBroker``.
+    We launch a ``PytchFilesHandler``, which feeds (via some processing steps)
+    into a ``MessageBroker``.  This needs us to bridge the threaded and asyncio
+    worlds, which we do via a ``Janus`` queue.  A ``ReloadServer`` accepts
+    connections from browsers, each of which becomes a consumer of the
+    ``MessageBroker``.
 
         [PytchFilesHandler]
             |
             | [sync side]
-        (paths via Janus queue)
+            (paths via Janus queue)
             | [async side]
+            v
+        [aggregate_modifies()]
+            |
+            |
+            (paths via asyncio queue)
+            |
             v
         [IdeMessage.transform_paths()]
             |
             |
-        (IdeMessage instances via asyncio queue)
+            (IdeMessage instances via asyncio queue)
             |
             v
         [rebuild_tutorial()]
             |
             |
-        (IdeMessage instances via asyncio queue)
+            (IdeMessage instances via asyncio queue)
             |
             v
         [MessageBroker.relay_messages()]
             |
             +---------------------------------+
             |                                 |
-        (IdeMessages via asyncio queue)    (IdeMessages via asyncio queue)
+            (IdeMessages via asyncio queue)   (IdeMessages via asyncio queue)
             |                                 |
             v                                 v
         [ReloadServer.serve_client()]      [ReloadServer.serve_client()]

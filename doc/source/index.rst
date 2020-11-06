@@ -17,15 +17,15 @@ from top-level.
    for standalone development of the webapp docs.
 
 
-Tutorial compiler
------------------
+Tutorial compiler and related tools
+-----------------------------------
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   introduction
    tutorialcompiler/index
+   live-reload/index
 
 
 Assembly of website bundle
