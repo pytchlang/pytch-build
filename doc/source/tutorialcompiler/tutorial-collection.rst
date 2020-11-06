@@ -87,6 +87,9 @@ releasing a new version of the tutorial collection because:
   tutorials in the collection.
 
 In the first case, the ``index.yaml`` file does not need to change.
+(Unless the author renamed the branch containing the tutorial in
+question.)
+
 In the second case, it does, and so the maintainer edits
 ``index.yaml`` and commits that change to the ``release-recipes``
 branch.
