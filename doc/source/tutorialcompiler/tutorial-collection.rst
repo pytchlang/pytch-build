@@ -126,3 +126,13 @@ branch, followed by the then-current tips of the tutorials' branches,
 i.e., as they were when they were used to build the tutorial
 collection.  In this way, tutorials' individual historical commit
 histories are preserved.
+
+To ease the reconstruction of the historical state of the tutorial
+bundle, the ``--make-release`` option also writes a file
+``build-sources.yaml`` into the root of the repository tree for the
+new commit to ``releases``.  This file contains information on each
+contribution to the tutorial bundle: its user-visible name, the name
+of the branch as it was when creating the bundle, the directory name
+containing the tutorial's files, and the commit oid of the tip of that
+branch.  To some extent this duplicates the information in the list of
+parents of the commit, but in a more convenient form.
