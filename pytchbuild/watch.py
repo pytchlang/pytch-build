@@ -286,32 +286,32 @@ async def async_main(dirname, repository_path, tip_revision):
         [PytchFilesHandler]
             |
             | [sync side]
-        (paths via Janus queue)
+            (paths via Janus queue)
             | [async side]
             v
         [aggregate_modifies()]
             |
             |
-        (paths via asyncio queue)
+            (paths via asyncio queue)
             |
             v
         [IdeMessage.transform_paths()]
             |
             |
-        (IdeMessage instances via asyncio queue)
+            (IdeMessage instances via asyncio queue)
             |
             v
         [rebuild_tutorial()]
             |
             |
-        (IdeMessage instances via asyncio queue)
+            (IdeMessage instances via asyncio queue)
             |
             v
         [MessageBroker.relay_messages()]
             |
             +---------------------------------+
             |                                 |
-        (IdeMessages via asyncio queue)    (IdeMessages via asyncio queue)
+            (IdeMessages via asyncio queue)   (IdeMessages via asyncio queue)
             |                                 |
             v                                 v
         [ReloadServer.serve_client()]      [ReloadServer.serve_client()]
