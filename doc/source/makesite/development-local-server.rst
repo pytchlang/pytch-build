@@ -1,0 +1,36 @@
+Testing while developing
+========================
+
+A script
+
+.. code-block:: text
+
+  makesite/local-server/dev-server.sh
+
+is provided which launches a four-way ``tmux`` session.  The panes
+contain individual shell scripts for the following pieces:
+
+* ``dev-server-webapp.sh`` — An ``npm``-based server for the React
+  webapp itself.
+* ``dev-server-live-reload-watch.sh`` — A websocket server for
+  live-reload of code and tutorial content.  See
+  :doc:`../live-reload/index` for details of this mechanism.  This
+  piece only does anything if the environment variable
+  ``PYTCH_IN_PROGRESS_TUTORIAL`` is set.
+* ``dev-server-skulpt.sh`` — A Python-based web server for the
+  Skulpt-based VM.
+* ``dev-server-tutorials.sh`` — A Python-based web server for the
+  tutorial bundle and components.
+
+For example,
+
+.. code-block:: shell
+
+  cd makesite/local-server
+  PYTCH_IN_PROGRESS_TUTORIAL=space-invaders ./dev-server.sh
+
+will launch the required servers for working on a tutorial in a
+subdirectory ``space-invaders`` of the ``pytch-tutorials`` repo.
+
+Everything is tied together with a bundle of environment variables.
+See the individual scripts for details.
