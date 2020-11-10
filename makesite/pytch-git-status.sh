@@ -19,3 +19,5 @@ export PYTCH_REPOS_BASE=$(realpath "$THIS_DIR"/../..)
         )
     done
 )
+
+echo
