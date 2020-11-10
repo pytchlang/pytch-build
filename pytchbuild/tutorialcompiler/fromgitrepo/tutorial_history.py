@@ -147,8 +147,14 @@ class ProjectCommit:
         return self.commit.tree
 
     def text_file_contents(self, path):
-        text_blob = self.tree / path
-        return text_blob.data.decode("utf-8")
+        try:
+            text_blob = self.tree / path
+        except KeyError:
+            raise TutorialStructureError(
+                f"file \"{path}\" not found in tree of {self.oid}"
+            )
+        else:
+            return text_blob.data.decode("utf-8")
 
     @cached_property
     def message_subject(self):
