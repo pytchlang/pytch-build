@@ -330,7 +330,12 @@ class ProjectHistory:
         project_commits = [ProjectCommit(self.repo, tip_oid)]
         while not project_commits[-1].is_base:
             # TODO: Handle merges (more than one parent).
-            oid = project_commits[-1].commit.parent_ids[0]
+            parent_ids = project_commits[-1].commit.parent_ids
+            if not parent_ids:
+                raise TutorialStructureError(
+                    f"did not find {{base}} commit in ancestors of {tip_oid}"
+                )
+            oid = parent_ids[0]
             project_commits.append(ProjectCommit(self.repo, oid))
         return project_commits
 
