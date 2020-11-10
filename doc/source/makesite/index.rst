@@ -3,6 +3,7 @@ Tools for building and deploying the site
 
 .. toctree::
 
+   querying-repo-status
    development-local-server
    making-deployment-zipfile
    testing-deployment-zipfile
