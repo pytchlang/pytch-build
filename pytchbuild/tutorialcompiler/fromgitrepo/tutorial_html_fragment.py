@@ -219,6 +219,10 @@ def tutorial_div_from_project_history(project_history):
             raise InternalError(f"child {elt} not a tag")
 
         if elt.name == "hr":
+            if past_front_matter:
+                logger.warning(
+                    "multiple horizontal rules (thematic breaks) found"
+                )
             past_front_matter = True
         elif not past_front_matter:
             if node_is_asset_credits_marker(elt):
