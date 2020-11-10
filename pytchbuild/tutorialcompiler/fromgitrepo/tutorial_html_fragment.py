@@ -227,6 +227,11 @@ def tutorial_div_from_project_history(project_history):
         elif not past_front_matter:
             if node_is_asset_credits_marker(elt):
                 augment_asset_credits_elt(soup, elt, project_history)
+            if node_is_patch(elt):
+                slug = elt.attrs["data-slug"]
+                logger.warning(
+                    f"commit \"{slug}\" found in front matter; ignoring"
+                )
             front_matter.append(elt)
         elif node_is_work_in_progress_marker(elt):
             if not past_front_matter:
