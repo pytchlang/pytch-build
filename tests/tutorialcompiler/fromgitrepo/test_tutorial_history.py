@@ -212,6 +212,12 @@ class TestProjectCommit:
         pc = TH.ProjectCommit(this_raw_repo, "fd16634610de")
         assert pc.text_file_contents("boing/code.py") == "import pytch\n"
 
+    def test_text_file_contents_missing(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "fd16634610de")
+        with pytest.raises(TCE.TutorialStructureError,
+                           match="file .* not found"):
+            assert pc.text_file_contents("boing/no-such-file.txt")
+
 
 class TestProjectHistory:
     def test_project_commits(self, project_history):
