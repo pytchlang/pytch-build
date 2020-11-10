@@ -36,6 +36,7 @@ import colorlog
 from pathlib import Path
 from dataclasses import dataclass
 from cached_property import cached_property
+from .errors import InternalError, TutorialStructureError
 
 logger = colorlog.getLogger(__name__)
 
@@ -68,7 +69,7 @@ class Asset:
         """Construct a :py:class:`Asset` from a Git delta
         """
         if delta.status != pygit2.GIT_DELTA_ADDED:
-            raise ValueError("delta is not of type ADDED")
+            raise InternalError("delta is not of type ADDED")
 
         return cls(delta.new_file.path, repo[delta.new_file.id].data)
 
@@ -157,7 +158,7 @@ class ProjectCommit:
     def message_body(self):
         lines = self.commit.message.split('\n')
         if lines[1] != "":
-            raise ValueError(f"commit {self.oid} has malformed commit message")
+            raise TutorialStructureError(f"commit {self.oid} has malformed commit message")
         return "\n".join(lines[2:] + [""])
 
     @cached_property
@@ -172,7 +173,7 @@ class ProjectCommit:
     @cached_property
     def identifier_slug(self):
         if not self.has_identifier_slug:
-            raise ValueError(f"commit {self.oid} has no identifier-slug")
+            raise InternalError(f"commit {self.oid} has no identifier-slug")
         return self.maybe_identifier_slug
 
     @cached_property
@@ -182,7 +183,7 @@ class ProjectCommit:
     def modifies_single_file(self, target_basename):
         try:
             delta = self.sole_modify_against_parent
-        except ValueError:
+        except TutorialStructureError:
             return False
 
         path_of_modified_file = pathlib.Path(delta.old_file.path)
@@ -240,7 +241,7 @@ class ProjectCommit:
                 other_deltas.append(delta)
 
         if deltas_adding_assets and other_deltas:
-            raise ValueError(f"commit {self.oid} adds {asset_kind_name} assets"
+            raise TutorialStructureError(f"commit {self.oid} adds {asset_kind_name} assets"
                              " but also has other deltas")
 
         return bool(deltas_adding_assets)
@@ -257,10 +258,10 @@ class ProjectCommit:
     def sole_modify_against_parent(self):
         diff = self.diff_against_parent_or_empty
         if len(diff) != 1:
-            raise ValueError(f"commit {self.oid} does not have exactly one delta")
+            raise TutorialStructureError(f"commit {self.oid} does not have exactly one delta")
         delta = list(diff.deltas)[0]
         if delta.status != pygit2.GIT_DELTA_MODIFIED:
-            raise ValueError(f"commit {self.oid}'s delta is not of type MODIFIED")
+            raise TutorialStructureError(f"commit {self.oid}'s delta is not of type MODIFIED")
         return delta
 
     @cached_property
@@ -296,7 +297,7 @@ class ProjectCommit:
     @cached_property
     def code_patch_against_parent(self):
         if not self.modifies_python_code:
-            raise ValueError(f"commit {self.oid} does not modify the Python code")
+            raise TutorialStructureError(f"commit {self.oid} does not modify the Python code")
 
         delta = self.sole_modify_against_parent
         old_blob = self.repo[delta.old_file.id]
@@ -371,7 +372,7 @@ class ProjectHistory:
         entries = list(final_tree)
         n_entries = len(entries)
         if n_entries != 1:
-            raise ValueError(
+            raise TutorialStructureError(
                 f"top-level tree has {n_entries} entries (expecting just one)"
             )
         only_entry = entries[0]
@@ -423,7 +424,7 @@ class ProjectHistory:
             with full_path.open("rt") as f_in:
                 return f_in.read()
         else:
-            raise ValueError("unknown tutorial_text_source")
+            raise InternalError("unknown tutorial_text_source")
 
     @cached_property
     def summary_text(self):
@@ -435,7 +436,7 @@ class ProjectHistory:
             with full_path.open("rt") as f_in:
                 return f_in.read()
         else:
-            raise ValueError("unknown tutorial_text_source")
+            raise InternalError("unknown tutorial_text_source")
 
     @cached_property
     def initial_code_text(self):

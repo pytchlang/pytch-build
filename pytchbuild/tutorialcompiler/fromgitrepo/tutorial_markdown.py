@@ -3,6 +3,8 @@ import xml.etree.ElementTree as etree
 import markdown
 from bs4 import BeautifulSoup
 
+from .errors import InternalError, TutorialStructureError
+
 
 class ShortcodeProcessor(markdown.blockprocessors.BlockProcessor):
     RE_SHORTCODE = re.compile(r"^\s*\{\{< ([-\w]+)( (.*))? >\}\}\s*$")
@@ -32,7 +34,7 @@ class ShortcodeProcessor(markdown.blockprocessors.BlockProcessor):
             etree.SubElement(parent, "div",
                              {"class": "asset-credits"})
         else:
-            raise ValueError(f'unknown shortcode kind "{kind}"')
+            raise TutorialStructureError(f'unknown shortcode kind "{kind}"')
 
 
 class ShortcodeExtension(markdown.extensions.Extension):
