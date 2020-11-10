@@ -74,6 +74,7 @@ def main(output_file, repository_path, tip_revision, tutorial_text_source, outpu
         elif output_format == "html-only":
             compile_fun = compile_html_only_fromgitrepo
         else:
+            # (Shouldn't happen, because Click should enforce valid choice.)
             raise click.UsageError(f"unknown output_format \"{output_format}\"")
 
         compile_fun(output_file,
