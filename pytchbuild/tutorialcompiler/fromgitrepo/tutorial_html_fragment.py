@@ -226,7 +226,9 @@ def tutorial_div_from_project_history(project_history):
             front_matter.append(elt)
         elif node_is_work_in_progress_marker(elt):
             if not past_front_matter:
-                raise TutorialStructureError("unexpected WiP marker in front matter")
+                raise TutorialStructureError(
+                    "unexpected WiP marker in front matter"
+                )
             # Although we increment chapter_idx as soon as we see the <h2>, and
             # so the first real chapter gets index 1, this is correct because
             # the front-matter is treated as "chapter 0".

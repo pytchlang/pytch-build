@@ -124,7 +124,9 @@ def create_signature(repo):
 def sole_tree_entry(commit):
     entries = list(commit.tree)
     if len(entries) != 1:
-        raise TutorialStructureError(f"expecting just one entry in tree for {commit.oid}")
+        raise TutorialStructureError(
+            f"expecting just one entry in tree for {commit.oid}"
+        )
     return entries[0]
 
 
@@ -137,9 +139,13 @@ def verify_entry_type(idx, entry):
     just one top-level subdirectory for the tutorial code and data.
     """
     if idx == 0 and entry.filemode != pygit2.GIT_FILEMODE_BLOB:
-        raise TutorialStructureError(f"expecting tree-entry to be BLOB for {entry.id}")
+        raise TutorialStructureError(
+            f"expecting tree-entry to be BLOB for {entry.id}"
+        )
     if idx > 0 and entry.filemode != pygit2.GIT_FILEMODE_TREE:
-        raise TutorialStructureError(f"expecting tree-entry to be TREE for {entry.id}")
+        raise TutorialStructureError(
+            f"expecting tree-entry to be TREE for {entry.id}"
+        )
 
 
 def index_data_at_recipes_tip(repo):
@@ -162,9 +168,11 @@ def verify_index_yaml_clean(repo):
     recipes_tip_data = index_data_at_recipes_tip(repo)
 
     if not working_data == recipes_tip_data:
-        raise TutorialStructureError('file "index.yaml" in working directory'
-                         ' does not match version at tip of branch'
-                         f' "{RELEASE_RECIPES_BRANCH_NAME}"')
+        raise TutorialStructureError(
+            'file "index.yaml" in working directory'
+            ' does not match version at tip of branch'
+            f' "{RELEASE_RECIPES_BRANCH_NAME}"'
+        )
 
 
 def create_union_tree(repo, commit_oid_strs, extra_files):
@@ -189,7 +197,9 @@ def create_union_tree(repo, commit_oid_strs, extra_files):
     for filename, filebytes in extra_files.items():
         # TODO: Check for no "/" chars in filename.
         if filename in names_already_added:
-            raise TutorialStructureError(f'duplicate name "{entry.name}" from extra_files')
+            raise TutorialStructureError(
+                f'duplicate name "{entry.name}" from extra_files'
+            )
         blob_id = repo.create_blob(filebytes)
         tree_builder.insert(filename, blob_id, pygit2.GIT_FILEMODE_BLOB)
         names_already_added.add(filename)

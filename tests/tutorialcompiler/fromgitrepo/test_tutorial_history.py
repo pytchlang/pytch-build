@@ -65,7 +65,8 @@ class TestProjectCommit:
 
     def test_message_body_rejects(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "d5f7ae0")
-        with pytest.raises(TCE.TutorialStructureError, match="malformed commit message"):
+        with pytest.raises(TCE.TutorialStructureError,
+                           match="malformed commit message"):
             pc.message_body
 
     def test_asset_credits_with(self, this_raw_repo):
@@ -92,7 +93,8 @@ class TestProjectCommit:
         pc = TH.ProjectCommit(this_raw_repo, "ae1fea2c9f21")
         assert not pc.has_identifier_slug
         assert pc.maybe_identifier_slug is None
-        with pytest.raises(TCE.InternalError, match="commit .* has no identifier"):
+        with pytest.raises(TCE.InternalError,
+                           match="commit .* has no identifier"):
             pc.identifier_slug
 
     def test_base_detection_yes(self, this_raw_repo):
@@ -117,7 +119,8 @@ class TestProjectCommit:
 
     def test_whether_adds_project_assets_error(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "019fc857")
-        with pytest.raises(TCE.TutorialStructureError, match="project assets but also has"):
+        with pytest.raises(TCE.TutorialStructureError,
+                           match="project assets but also has"):
             pc.adds_project_assets
 
     def test_whether_adds_tutorial_assets_yes(self, this_raw_repo):
@@ -134,7 +137,8 @@ class TestProjectCommit:
 
     def test_whether_adds_tutorial_assets_error(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "6b71bac9f1c1")
-        with pytest.raises(TCE.TutorialStructureError, match="tutorial assets but also has"):
+        with pytest.raises(TCE.TutorialStructureError,
+                           match="tutorial assets but also has"):
             pc.adds_tutorial_assets
 
     def test_modifies_tutorial_text_yes(self, this_raw_repo):
@@ -170,12 +174,14 @@ class TestProjectCommit:
 
     def test_sole_modify_against_parent_not_sole(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "c2642880a6fc")
-        with pytest.raises(TCE.TutorialStructureError, match="not have exactly one"):
+        with pytest.raises(TCE.TutorialStructureError,
+                           match="not have exactly one"):
             pc.sole_modify_against_parent
 
     def test_sole_modify_against_parent_not_modified(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "ae1fea2")
-        with pytest.raises(TCE.TutorialStructureError, match="not of type MODIFIED"):
+        with pytest.raises(TCE.TutorialStructureError,
+                           match="not of type MODIFIED"):
             pc.sole_modify_against_parent
 
     def test_added_assets_one_asset(self, this_raw_repo):
@@ -198,7 +204,8 @@ class TestProjectCommit:
 
     def test_code_patch_error(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "9b40818176")
-        with pytest.raises(TCE.TutorialStructureError, match="does not modify the Python code"):
+        with pytest.raises(TCE.TutorialStructureError,
+                           match="does not modify the Python code"):
             pc.code_patch_against_parent
 
     def test_text_file_contents(self, this_raw_repo):

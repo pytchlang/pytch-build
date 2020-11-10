@@ -158,7 +158,9 @@ class ProjectCommit:
     def message_body(self):
         lines = self.commit.message.split('\n')
         if lines[1] != "":
-            raise TutorialStructureError(f"commit {self.oid} has malformed commit message")
+            raise TutorialStructureError(
+                f"commit {self.oid} has malformed commit message"
+            )
         return "\n".join(lines[2:] + [""])
 
     @cached_property
@@ -241,8 +243,10 @@ class ProjectCommit:
                 other_deltas.append(delta)
 
         if deltas_adding_assets and other_deltas:
-            raise TutorialStructureError(f"commit {self.oid} adds {asset_kind_name} assets"
-                             " but also has other deltas")
+            raise TutorialStructureError(
+                f"commit {self.oid} adds {asset_kind_name} assets"
+                " but also has other deltas"
+            )
 
         return bool(deltas_adding_assets)
 
@@ -258,10 +262,14 @@ class ProjectCommit:
     def sole_modify_against_parent(self):
         diff = self.diff_against_parent_or_empty
         if len(diff) != 1:
-            raise TutorialStructureError(f"commit {self.oid} does not have exactly one delta")
+            raise TutorialStructureError(
+                f"commit {self.oid} does not have exactly one delta"
+            )
         delta = list(diff.deltas)[0]
         if delta.status != pygit2.GIT_DELTA_MODIFIED:
-            raise TutorialStructureError(f"commit {self.oid}'s delta is not of type MODIFIED")
+            raise TutorialStructureError(
+                f"commit {self.oid}'s delta is not of type MODIFIED"
+            )
         return delta
 
     @cached_property
@@ -297,7 +305,9 @@ class ProjectCommit:
     @cached_property
     def code_patch_against_parent(self):
         if not self.modifies_python_code:
-            raise TutorialStructureError(f"commit {self.oid} does not modify the Python code")
+            raise TutorialStructureError(
+                f"commit {self.oid} does not modify the Python code"
+            )
 
         delta = self.sole_modify_against_parent
         old_blob = self.repo[delta.old_file.id]
