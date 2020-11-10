@@ -4,6 +4,7 @@ import logging
 
 import pygit2
 import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history as TH
+import pytchbuild.tutorialcompiler.fromgitrepo.errors as TCE
 
 
 class TestAsset:
@@ -64,7 +65,8 @@ class TestProjectCommit:
 
     def test_message_body_rejects(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "d5f7ae0")
-        with pytest.raises(ValueError, match="malformed commit message"):
+        with pytest.raises(TCE.TutorialStructureError,
+                           match="malformed commit message"):
             pc.message_body
 
     def test_asset_credits_with(self, this_raw_repo):
@@ -91,7 +93,8 @@ class TestProjectCommit:
         pc = TH.ProjectCommit(this_raw_repo, "ae1fea2c9f21")
         assert not pc.has_identifier_slug
         assert pc.maybe_identifier_slug is None
-        with pytest.raises(ValueError, match="commit .* has no identifier"):
+        with pytest.raises(TCE.InternalError,
+                           match="commit .* has no identifier"):
             pc.identifier_slug
 
     def test_base_detection_yes(self, this_raw_repo):
@@ -116,7 +119,8 @@ class TestProjectCommit:
 
     def test_whether_adds_project_assets_error(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "019fc857")
-        with pytest.raises(ValueError, match="project assets but also has"):
+        with pytest.raises(TCE.TutorialStructureError,
+                           match="project assets but also has"):
             pc.adds_project_assets
 
     def test_whether_adds_tutorial_assets_yes(self, this_raw_repo):
@@ -133,7 +137,8 @@ class TestProjectCommit:
 
     def test_whether_adds_tutorial_assets_error(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "6b71bac9f1c1")
-        with pytest.raises(ValueError, match="tutorial assets but also has"):
+        with pytest.raises(TCE.TutorialStructureError,
+                           match="tutorial assets but also has"):
             pc.adds_tutorial_assets
 
     def test_modifies_tutorial_text_yes(self, this_raw_repo):
@@ -169,12 +174,14 @@ class TestProjectCommit:
 
     def test_sole_modify_against_parent_not_sole(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "c2642880a6fc")
-        with pytest.raises(ValueError, match="not have exactly one"):
+        with pytest.raises(TCE.TutorialStructureError,
+                           match="not have exactly one"):
             pc.sole_modify_against_parent
 
     def test_sole_modify_against_parent_not_modified(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "ae1fea2")
-        with pytest.raises(ValueError, match="not of type MODIFIED"):
+        with pytest.raises(TCE.TutorialStructureError,
+                           match="not of type MODIFIED"):
             pc.sole_modify_against_parent
 
     def test_added_assets_one_asset(self, this_raw_repo):
@@ -197,18 +204,30 @@ class TestProjectCommit:
 
     def test_code_patch_error(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "9b40818176")
-        with pytest.raises(ValueError, match="does not modify the Python code"):
+        with pytest.raises(TCE.TutorialStructureError,
+                           match="does not modify the Python code"):
             pc.code_patch_against_parent
 
     def test_text_file_contents(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "fd16634610de")
         assert pc.text_file_contents("boing/code.py") == "import pytch\n"
 
+    def test_text_file_contents_missing(self, this_raw_repo):
+        pc = TH.ProjectCommit(this_raw_repo, "fd16634610de")
+        with pytest.raises(TCE.TutorialStructureError,
+                           match="file .* not found"):
+            assert pc.text_file_contents("boing/no-such-file.txt")
+
 
 class TestProjectHistory:
     def test_project_commits(self, project_history):
         # Fairly weak test, to avoid having to keep updating it.
         assert len(project_history.project_commits) >= 4
+
+    def test_no_base_commit(self, cloned_repo):
+        with pytest.raises(TCE.TutorialStructureError,
+                           match=r"did not find \{base\}"):
+            TH.ProjectHistory(cloned_repo.workdir, "d5f7ae0")
 
     def test_tip_oid_string(self, this_raw_repo, project_history):
         exp_oid = this_raw_repo.revparse_single("unit-tests-commits").oid

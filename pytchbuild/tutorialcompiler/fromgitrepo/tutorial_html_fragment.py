@@ -16,6 +16,8 @@ from .tutorial_markdown import (
     ordered_commit_slugs_in_soup,
 )
 
+from .errors import InternalError, TutorialStructureError
+
 logger = colorlog.getLogger(__name__)
 
 
@@ -214,17 +216,28 @@ def tutorial_div_from_project_history(project_history):
 
     for elt in filter(node_is_relevant, soup.children):
         if not isinstance(elt, bs4.element.Tag):
-            raise ValueError(f"child {elt} not a tag")
+            raise InternalError(f"child {elt} not a tag")
 
         if elt.name == "hr":
+            if past_front_matter:
+                logger.warning(
+                    "multiple horizontal rules (thematic breaks) found"
+                )
             past_front_matter = True
         elif not past_front_matter:
             if node_is_asset_credits_marker(elt):
                 augment_asset_credits_elt(soup, elt, project_history)
+            if node_is_patch(elt):
+                slug = elt.attrs["data-slug"]
+                logger.warning(
+                    f"commit \"{slug}\" found in front matter; ignoring"
+                )
             front_matter.append(elt)
         elif node_is_work_in_progress_marker(elt):
             if not past_front_matter:
-                raise ValueError("unexpected WiP marker in front matter")
+                raise TutorialStructureError(
+                    "unexpected WiP marker in front matter"
+                )
             # Although we increment chapter_idx as soon as we see the <h2>, and
             # so the first real chapter gets index 1, this is correct because
             # the front-matter is treated as "chapter 0".

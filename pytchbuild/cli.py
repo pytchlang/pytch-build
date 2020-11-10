@@ -12,6 +12,7 @@ from .tutorialcompiler.fromgitrepo import (
     compile_html_only as compile_html_only_fromgitrepo,
 )
 from .tutorialcompiler.fromgitrepo.tutorial_history import ProjectHistory
+from .tutorialcompiler.fromgitrepo.errors import TutorialStructureError
 
 
 log_handler = colorlog.StreamHandler()
@@ -67,19 +68,24 @@ def main(output_file, repository_path, tip_revision, tutorial_text_source, outpu
     tutorial_text_source = getattr(ProjectHistory.TutorialTextSource,
                                    tutorial_text_source)
 
-    if output_format == "bundle-zipfile":
-        compile_fun = compile_fromgitrepo
-    elif output_format == "html-only":
-        compile_fun = compile_html_only_fromgitrepo
+    try:
+        if output_format == "bundle-zipfile":
+            compile_fun = compile_fromgitrepo
+        elif output_format == "html-only":
+            compile_fun = compile_html_only_fromgitrepo
+        else:
+            # (Shouldn't happen, because Click should enforce valid choice.)
+            raise click.UsageError(f"unknown output_format \"{output_format}\"")
+
+        compile_fun(output_file,
+                    repository_path,
+                    tip_revision,
+                    tutorial_text_source)
+    except TutorialStructureError as err:
+        colorlog.error(str(err))
+        return 1
     else:
-        raise ValueError(f"unknown output_format \"{output_format}\"")
-
-    compile_fun(output_file,
-                repository_path,
-                tip_revision,
-                tutorial_text_source)
-
-    return 0
+        return 0
 
 
 if __name__ == "__main__":
