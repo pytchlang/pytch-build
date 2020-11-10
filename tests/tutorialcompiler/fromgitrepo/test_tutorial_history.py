@@ -211,6 +211,11 @@ class TestProjectHistory:
         # Fairly weak test, to avoid having to keep updating it.
         assert len(project_history.project_commits) >= 4
 
+    def test_no_base_commit(self, cloned_repo):
+        with pytest.raises(TCE.TutorialStructureError,
+                           match=r"did not find \{base\}"):
+            TH.ProjectHistory(cloned_repo.workdir, "d5f7ae0")
+
     def test_tip_oid_string(self, this_raw_repo, project_history):
         exp_oid = this_raw_repo.revparse_single("unit-tests-commits").oid
         assert project_history.tip_oid_string == str(exp_oid)
