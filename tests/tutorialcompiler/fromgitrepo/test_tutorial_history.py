@@ -224,6 +224,14 @@ class TestProjectHistory:
         # Fairly weak test, to avoid having to keep updating it.
         assert len(project_history.project_commits) >= 4
 
+    def test_dupd_slugs_1(self, cloned_repo):
+        with pytest.raises(
+            TCE.TutorialStructureError,
+            match=r"duplicate .* \['greet-more'\]"
+        ):
+            TH.ProjectHistory(cloned_repo.workdir,
+                              "origin/unit-tests-dupd-slugs-1")
+
     def test_no_base_commit(self, cloned_repo):
         with pytest.raises(TCE.TutorialStructureError,
                            match=r"did not find \{base\}"):
