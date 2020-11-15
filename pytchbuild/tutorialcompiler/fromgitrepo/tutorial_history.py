@@ -343,6 +343,9 @@ class ProjectHistory:
         tip_oid = self.repo.revparse_single(tip_revision).oid
         self.project_commits = self.commit_linear_ancestors(tip_oid)
 
+    def validate_structure(self):
+        self.validate_slug_uniqueness()
+
     def validate_slug_uniqueness(self):
         occurrences_of_slug = Counter(self.ordered_commit_slugs)
         repeated_slugs = [
