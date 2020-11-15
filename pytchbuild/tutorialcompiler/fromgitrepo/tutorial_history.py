@@ -30,6 +30,7 @@ the tutorial itself, such as screenshots or diagrams.
 import re
 import pathlib
 import pygit2
+from collections import Counter
 import itertools
 import enum
 import colorlog
@@ -341,6 +342,23 @@ class ProjectHistory:
         self.tutorial_text_source = tutorial_text_source
         tip_oid = self.repo.revparse_single(tip_revision).oid
         self.project_commits = self.commit_linear_ancestors(tip_oid)
+
+        self.validate_structure()
+
+    def validate_structure(self):
+        self.validate_slug_uniqueness()
+
+    def validate_slug_uniqueness(self):
+        occurrences_of_slug = Counter(self.ordered_commit_slugs)
+        repeated_slugs = [
+            slug
+            for slug, n_occurrences in occurrences_of_slug.items()
+            if n_occurrences > 1
+        ]
+        if repeated_slugs:
+            raise TutorialStructureError(
+                f"duplicate commit-identifier slug/s {repeated_slugs}"
+            )
 
     def commit_linear_ancestors(self, tip_oid):
         project_commits = [ProjectCommit(self.repo, tip_oid)]
