@@ -232,6 +232,14 @@ class TestProjectHistory:
             TH.ProjectHistory(cloned_repo.workdir,
                               "origin/unit-tests-dupd-slugs-1")
 
+    def test_dupd_slugs_2(self, cloned_repo):
+        with pytest.raises(
+            TCE.TutorialStructureError,
+            match=r"duplicate .* \['greet-more', 'greet-less'\]"
+        ):
+            TH.ProjectHistory(cloned_repo.workdir,
+                              "origin/unit-tests-dupd-slugs-2")
+
     def test_no_base_commit(self, cloned_repo):
         with pytest.raises(TCE.TutorialStructureError,
                            match=r"did not find \{base\}"):
