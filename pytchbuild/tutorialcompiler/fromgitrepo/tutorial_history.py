@@ -343,6 +343,8 @@ class ProjectHistory:
         tip_oid = self.repo.revparse_single(tip_revision).oid
         self.project_commits = self.commit_linear_ancestors(tip_oid)
 
+        self.validate_structure()
+
     def validate_structure(self):
         self.validate_slug_uniqueness()
 
