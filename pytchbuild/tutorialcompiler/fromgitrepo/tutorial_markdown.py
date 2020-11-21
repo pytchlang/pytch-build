@@ -3,7 +3,7 @@ import xml.etree.ElementTree as etree
 import markdown
 from bs4 import BeautifulSoup
 
-from .errors import InternalError, TutorialStructureError
+from .errors import TutorialStructureError
 
 
 class ShortcodeProcessor(markdown.blockprocessors.BlockProcessor):
