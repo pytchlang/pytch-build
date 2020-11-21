@@ -13,4 +13,5 @@ if [ -z "$PYTCH_IN_PROGRESS_TUTORIAL" ]; then
 fi
 
 echo "Watching tutorial $PYTCH_IN_PROGRESS_TUTORIAL"
-exec pytchbuild-watch "$PYTCH_IN_PROGRESS_TUTORIAL"
+
+pytchbuild-watch "$PYTCH_IN_PROGRESS_TUTORIAL" || sleep 10

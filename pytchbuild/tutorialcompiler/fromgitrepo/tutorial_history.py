@@ -296,7 +296,7 @@ class ProjectCommit:
                                " body containing Markdown for credits/licence")
                 return []
 
-            usage = ("the tutorial text" if self.adds_tutorial_assets
+            usage = ("the tutorial text/summary" if self.adds_tutorial_assets
                      else "the project")
 
             return [

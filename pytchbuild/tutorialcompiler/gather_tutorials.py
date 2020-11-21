@@ -227,7 +227,9 @@ def commit_to_releases(repo, tutorials):
     build_sources = tutorials.build_sources_dicts
     build_sources_yaml = yaml.dump(build_sources, sort_keys=False).encode()
 
-    extra_files = { "build-sources.yaml": build_sources_yaml }
+    extra_files = {
+        "build-sources.yaml": build_sources_yaml,
+    }
 
     release_recipes_tip = str(repo.revparse_single(RELEASE_RECIPES_BRANCH_NAME).oid)
     contributing_commit_oids = [release_recipes_tip] + tutorials.gathered_tip_oids
