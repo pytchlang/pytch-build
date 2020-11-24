@@ -1,3 +1,5 @@
+.. _making_deployment_zipfile:
+
 Making a deployment zipfile
 ===========================
 

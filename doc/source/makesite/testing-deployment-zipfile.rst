@@ -1,3 +1,5 @@
+.. _testing_deployment_zipfile:
+
 Local testing of deployment zipfile
 ===================================
 

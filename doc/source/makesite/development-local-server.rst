@@ -1,3 +1,5 @@
+.. _local_development_server:
+
 Testing while developing
 ========================
 
