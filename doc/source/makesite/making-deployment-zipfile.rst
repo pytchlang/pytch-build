@@ -41,9 +41,17 @@ Comes from ``pytch-webapp`` repo.  This is a React app and so needs to
 be built with knowledge of where it will be deployed (via
 ``PUBLIC_URL``).  The Pytch app in particular also needs to be built
 knowing where it will get its Skulpt files from
-(``REACT_APP_SKULPT_BASE``).  The files from the webapp end up in::
+(``REACT_APP_SKULPT_BASE``), and where it will get tutorial
+information from (``REACT_APP_TUTORIALS_BASE``).  The files from the
+webapp end up in::
 
   app/...
+
+To allow a user to directly visit a URL within the app (for example,
+``/ide/3``), the web server must be directed to serve ``index.html``
+for all non-existent files.  This is done by a ``.htaccess`` file
+created inside ``webapp-layer.sh``.
+
 
 Informational content
 ^^^^^^^^^^^^^^^^^^^^^
