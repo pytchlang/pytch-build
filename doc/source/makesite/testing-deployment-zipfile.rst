@@ -16,3 +16,7 @@ where the shell variable ``zipfilename`` has been set as in the
 previous section.
 
 See the contents of ``serve-zipfile.sh`` for details of what happens.
+
+This local copy of Pytch can be explored interactively by going to
+``http://localhost:5888/``, or :ref:`tested via
+Cypress<testing_zipfile_with_Cypress>`.
