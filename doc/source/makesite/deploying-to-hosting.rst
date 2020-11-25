@@ -1,3 +1,5 @@
+.. _deploying_to_hosting:
+
 Deployment to hosting provider
 ==============================
 

@@ -1,3 +1,5 @@
+.. _making_deployment_zipfile:
+
 Making a deployment zipfile
 ===========================
 
@@ -39,9 +41,17 @@ Comes from ``pytch-webapp`` repo.  This is a React app and so needs to
 be built with knowledge of where it will be deployed (via
 ``PUBLIC_URL``).  The Pytch app in particular also needs to be built
 knowing where it will get its Skulpt files from
-(``REACT_APP_SKULPT_BASE``).  The files from the webapp end up in::
+(``REACT_APP_SKULPT_BASE``), and where it will get tutorial
+information from (``REACT_APP_TUTORIALS_BASE``).  The files from the
+webapp end up in::
 
   app/...
+
+To allow a user to directly visit a URL within the app (for example,
+``/ide/3``), the web server must be directed to serve ``index.html``
+for all non-existent files.  This is done by a ``.htaccess`` file
+created inside ``webapp-layer.sh``.
+
 
 Informational content
 ^^^^^^^^^^^^^^^^^^^^^
@@ -100,7 +110,13 @@ The name of the zipfile is emitted to stdout, allowing usage like
 .. code-block:: bash
 
   zipfilename=$(./make-develop.sh develop /beta/1234)
-  ( cd /tmp/local-pytch-deployment; unzip $zipfilename )
 
-See also :doc:`` for information regarding how to serve this content
-in the manner required for React apps.
+See also:
+
+* :ref:`Local testing of the deployment-ready
+  zipfile<testing_deployment_zipfile>` — before deploying, you can
+  serve the content exactly as it is in the zipfile.
+
+* :ref:`How to deploy the content to hosting<deploying_to_hosting>` —
+  there are some details regarding serving the content in a manner
+  required for React apps.
