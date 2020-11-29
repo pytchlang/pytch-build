@@ -20,6 +20,10 @@ RELEASES_BRANCH_NAME = "releases"
 RELEASE_RECIPES_BRANCH_NAME = "release-recipes"
 
 
+def yaml_load(yaml_content):
+    return yaml.load(yaml_content, yaml.Loader)
+
+
 @dataclass
 class TutorialSummary:
     name: str  # Currently just for human readers
@@ -67,13 +71,55 @@ class TutorialCollection:
     def from_repo_path(cls, repo_path, index_source):
         with git_repository(repo_path) as repo:
             content = cls.index_yaml_content(repo, index_source)
-            tutorial_dicts = yaml.load(content, yaml.Loader)
+            tutorial_dicts = yaml_load(content)
 
         tutorials = {d["name"]: TutorialInfo(d["name"],
                                              d["tip-commit"],
                                              ProjectHistory(repo_path,
                                                             d["tip-commit"]))
                      for d in tutorial_dicts}
+        return cls(tutorials)
+
+    @classmethod
+    def from_releases_commit(cls, repo_path, revision):
+        missing_files = []
+        with git_repository(repo_path) as repo:
+            try:
+                index_wrt_branches = yaml_load(
+                    file_contents_at_revision(repo, revision, "index.yaml")
+                )
+            except KeyError:
+                missing_files.append("index.yaml")
+
+            try:
+                build_info = yaml_load(
+                    file_contents_at_revision(repo, revision, "build-sources.yaml")
+                )
+            except KeyError:
+                missing_files.append("build-sources.yaml")
+
+        if missing_files:
+            raise RuntimeError(f'could not find {missing_files} in "{revision}"')
+
+        revision_from_branch_name = {
+            d["branch_name"]: d["commit_id"] for d in build_info
+        }
+
+        for descriptor in index_wrt_branches:
+            tip = descriptor["tip-commit"]
+            if tip not in revision_from_branch_name:
+                name = descriptor["name"]
+                raise RuntimeError(f'no tip-commit found for "{name}" (tip "{tip}")')
+
+        tutorials = {
+            d["name"]: TutorialInfo(
+                d["name"],
+                d["tip-commit"],
+                ProjectHistory(repo_path, revision_from_branch_name[d["tip-commit"]]),
+            )
+            for d in index_wrt_branches
+        }
+
         return cls(tutorials)
 
     def write_to_zipfile(self, maybe_collection_oid, zfile):
@@ -148,11 +194,13 @@ def verify_entry_type(idx, entry):
         )
 
 
+def file_contents_at_revision(repo, revision, file_path):
+    commit = repo.revparse_single(revision)
+    return commit.tree[file_path].data
+
+
 def index_data_at_recipes_tip(repo):
-    recipes_tip_commit = repo.revparse_single(RELEASE_RECIPES_BRANCH_NAME)
-    recipes_tip_tree = recipes_tip_commit.tree
-    recipes_tip_entry = recipes_tip_tree["index.yaml"]
-    return recipes_tip_entry.data
+    return file_contents_at_revision(repo, RELEASE_RECIPES_BRANCH_NAME, "index.yaml")
 
 
 def verify_index_yaml_clean(repo):
