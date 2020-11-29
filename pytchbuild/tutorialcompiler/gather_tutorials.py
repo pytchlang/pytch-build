@@ -80,6 +80,12 @@ class TutorialCollection:
                      for d in tutorial_dicts}
         return cls(tutorials)
 
+    @classmethod
+    def from_releases_commit(cls, repo_path, revision):
+        # TODO: Compute tutorials
+
+        return cls(tutorials)
+
     def write_to_zipfile(self, maybe_collection_oid, zfile):
         bundles = [TutorialBundle.from_project_history(info.project_history)
                    for info in self.tutorials.values()]
