@@ -116,6 +116,20 @@ version stored at the tip of ``release-recipes``, an error will be
 thrown.  This is to guard against creating an inconsistent release.
 
 
+Creating a bundle from a ``releases`` commit
+--------------------------------------------
+
+For full reproducibility of the tutorials bundle, the
+``pytchbuild-gather-tutorials`` tool can also build a zipfile from the
+information stored in a particular ``releases`` commit.  Supposing the
+commit of interest on ``releases`` is tagged ``v2.3.1``, a bundle
+matching that point can be made with:
+
+.. code-block:: bash
+
+  pytchbuild-gather-tutorials --from-release v2.3.1 -o /tmp/tuts-2.3.1.zip
+
+
 Details: Commits on ``releases``
 --------------------------------
 
