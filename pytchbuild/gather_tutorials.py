@@ -37,6 +37,16 @@ from .tutorialcompiler.gather_tutorials import TutorialCollection, commit_to_rel
     help='recreate the bundle as of a particular "releases" revision',
 )
 def main(output_file, repository_path, index_source, make_release, from_release):
+    if from_release is not None:
+        if make_release:
+            raise click.BadArgumentUsage(
+                "cannot make a new release from an old release"
+            )
+        if index_source is not None:
+            raise click.BadArgumentUsage(
+                "cannot specify index-source for an old release"
+            )
+
     # Set default, or convert from string to enumerator.
     index_source = (
         TutorialCollection.IndexSource.WORKING_DIRECTORY
