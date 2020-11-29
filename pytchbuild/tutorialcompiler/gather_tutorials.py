@@ -111,7 +111,14 @@ class TutorialCollection:
                 name = descriptor["name"]
                 raise RuntimeError(f'no tip-commit found for "{name}" (tip "{tip}")')
 
-        # TODO: Compute tutorials
+        tutorials = {
+            d["name"]: TutorialInfo(
+                d["name"],
+                d["tip-commit"],
+                ProjectHistory(repo_path, revision_from_branch_name[d["tip-commit"]]),
+            )
+            for d in index_wrt_branches
+        }
 
         return cls(tutorials)
 
