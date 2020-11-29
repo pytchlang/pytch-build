@@ -31,7 +31,12 @@ from .tutorialcompiler.gather_tutorials import TutorialCollection, commit_to_rel
     default=False,
     help="make a commit to the 'releases' branch",
 )
-def main(output_file, repository_path, index_source, make_release):
+@click.option(
+    "--from-release",
+    default=None,
+    help='recreate the bundle as of a particular "releases" revision',
+)
+def main(output_file, repository_path, index_source, make_release, from_release):
     # Convert string to enumerator:
     index_source = getattr(TutorialCollection.IndexSource, index_source)
 
