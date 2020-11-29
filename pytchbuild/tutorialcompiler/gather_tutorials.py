@@ -101,6 +101,16 @@ class TutorialCollection:
         if missing_files:
             raise RuntimeError(f'could not find {missing_files} in "{revision}"')
 
+        revision_from_branch_name = {
+            d["branch_name"]: d["commit_id"] for d in build_info
+        }
+
+        for descriptor in index_wrt_branches:
+            tip = descriptor["tip-commit"]
+            if tip not in revision_from_branch_name:
+                name = descriptor["name"]
+                raise RuntimeError(f'no tip-commit found for "{name}" (tip "{tip}")')
+
         # TODO: Compute tutorials
 
         return cls(tutorials)
