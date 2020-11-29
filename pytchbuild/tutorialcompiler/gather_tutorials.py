@@ -158,10 +158,7 @@ def file_contents_at_revision(repo, revision, file_path):
 
 
 def index_data_at_recipes_tip(repo):
-    recipes_tip_commit = repo.revparse_single(RELEASE_RECIPES_BRANCH_NAME)
-    recipes_tip_tree = recipes_tip_commit.tree
-    recipes_tip_entry = recipes_tip_tree["index.yaml"]
-    return recipes_tip_entry.data
+    return file_contents_at_revision(repo, RELEASE_RECIPES_BRANCH_NAME, "index.yaml")
 
 
 def verify_index_yaml_clean(repo):
