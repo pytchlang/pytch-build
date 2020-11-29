@@ -54,7 +54,11 @@ def main(output_file, repository_path, index_source, make_release, from_release)
         else getattr(TutorialCollection.IndexSource, index_source)
     )
 
-    tutorials = TutorialCollection.from_repo_path(repository_path, index_source)
+    tutorials = (
+        TutorialCollection.from_repo_path(repository_path, index_source)
+        if from_release is None
+        else TutorialCollection.from_releases_commit(repository_path, from_release)
+    )
 
     releases_commit_oid = None
 
