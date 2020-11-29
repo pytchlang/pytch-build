@@ -152,6 +152,11 @@ def verify_entry_type(idx, entry):
         )
 
 
+def file_contents_at_revision(repo, revision, file_path):
+    commit = repo.revparse_single(revision)
+    return commit.tree[file_path].data
+
+
 def index_data_at_recipes_tip(repo):
     recipes_tip_commit = repo.revparse_single(RELEASE_RECIPES_BRANCH_NAME)
     recipes_tip_tree = recipes_tip_commit.tree
