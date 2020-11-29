@@ -20,6 +20,10 @@ RELEASES_BRANCH_NAME = "releases"
 RELEASE_RECIPES_BRANCH_NAME = "release-recipes"
 
 
+def yaml_load(yaml_content):
+    return yaml.load(yaml_content, yaml.Loader)
+
+
 @dataclass
 class TutorialSummary:
     name: str  # Currently just for human readers
