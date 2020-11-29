@@ -71,7 +71,7 @@ class TutorialCollection:
     def from_repo_path(cls, repo_path, index_source):
         with git_repository(repo_path) as repo:
             content = cls.index_yaml_content(repo, index_source)
-            tutorial_dicts = yaml.load(content, yaml.Loader)
+            tutorial_dicts = yaml_load(content)
 
         tutorials = {d["name"]: TutorialInfo(d["name"],
                                              d["tip-commit"],
