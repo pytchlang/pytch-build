@@ -22,7 +22,7 @@ Running the command::
 
     pytchbuild-gather-tutorials -o /tmp/tutorials.zip
 
-will read the current working copy of the``index.yaml`` file, and use
+will read the current working copy of the ``index.yaml`` file, and use
 it to create the zipfile given by the ``-o`` argument.
 
 
