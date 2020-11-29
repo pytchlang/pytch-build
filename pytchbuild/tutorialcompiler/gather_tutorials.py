@@ -82,6 +82,25 @@ class TutorialCollection:
 
     @classmethod
     def from_releases_commit(cls, repo_path, revision):
+        missing_files = []
+        with git_repository(repo_path) as repo:
+            try:
+                index_wrt_branches = yaml_load(
+                    file_contents_at_revision(repo, revision, "index.yaml")
+                )
+            except KeyError:
+                missing_files.append("index.yaml")
+
+            try:
+                build_info = yaml_load(
+                    file_contents_at_revision(repo, revision, "build-sources.yaml")
+                )
+            except KeyError:
+                missing_files.append("build-sources.yaml")
+
+        if missing_files:
+            raise RuntimeError(f'could not find {missing_files} in "{revision}"')
+
         # TODO: Compute tutorials
 
         return cls(tutorials)
