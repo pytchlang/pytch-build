@@ -4,3 +4,6 @@
 __pycache__/
 venv/
 doc/build/
+website-layer/
+build/
+dist/
