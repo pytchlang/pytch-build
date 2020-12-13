@@ -19,3 +19,17 @@ an ``.htaccess`` file in the hosted ``beta/`` directory::
 
 which can be updated after unzipping the deployment bundle.  In future
 this mechanism will be automated or superseded.
+
+Redirecting to current release
+------------------------------
+
+A release zipfile contains a file
+
+.. code-block:: text
+
+  releases/X.Y.Z/toplevel-dot-htaccess
+
+ready to be used as a top-level ``.htaccess`` file.  This is copied
+manually on the host, to keep a human in the loop for final
+deployment.  This mechanism also allows rolling back to a previous
+release by re-copying an earlier release's htaccess file.
