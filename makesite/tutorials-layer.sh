@@ -1,36 +1,59 @@
 #!/bin/bash
 
-if [ -z "$SOURCE_REPO" ]; then
-    echo "need SOURCE_REPO env to be set"
+BUILD_DIR="$(realpath "$(dirname "$0")")"
+REPO_ROOT="$(realpath "$BUILD_DIR"/..)"
+
+cd "$REPO_ROOT"
+
+LAYER_WORKDIR="$REPO_ROOT"/website-layer
+CONTENT_DIR="$LAYER_WORKDIR"/layer-content
+
+if [ -e venv -o -e "$CONTENT_DIR" ]; then
+    echo "Must be run in a clean clone"
+    echo '(i.e., no "venv" or "website-layer/layer-content")'
     exit 1
 fi
 
-# TODO: Allow building from tip of "release".
+TUTORIALS_REPO_ROOT="$(realpath "$REPO_ROOT"/../pytch-tutorials)"
+if [ ! -e "$TUTORIALS_REPO_ROOT"/.git ]; then
+    echo No '"'pytch-tutorials'"' git repo found parallel to this one
+    exit 1
+fi
 
-WORKDIR=$(mktemp -d -t pytch-tmp-XXXXXXXXXXXX)
-REPODIR="$WORKDIR"/repo
+virtualenv -p python3 venv \
+    && source venv/bin/activate \
+    && pip install -r requirements_dev.txt \
+    && python setup.py install
 
-ZIPFILE_BASENAME=tutorials-layer.zip
-
-git clone --quiet --mirror "$SOURCE_REPO" "$REPODIR"
+LAYER_ZIPFILE="$LAYER_WORKDIR"/layer.zip
 
 (
-    cd "$REPODIR"
-    pytchbuild-gather-tutorials \
-        --index-source=RECIPES_TIP \
-        -o "$WORKDIR"/raw-"$ZIPFILE_BASENAME"
+    cd "$TUTORIALS_REPO_ROOT"
+
+    # Decide whether to build from a releases commit or the tip of
+    # release-recipes based on whether we're currently checked out at
+    # "release-recipes".
+
+    if [ "$(git rev-parse --abbrev-ref HEAD)" = release-recipes ]; then
+        pytchbuild-gather-tutorials \
+            --index-source=RECIPES_TIP \
+            -o "$LAYER_ZIPFILE"
+    else
+        pytchbuild-gather-tutorials \
+            --from-release HEAD \
+            -o "$LAYER_ZIPFILE"
+    fi
 )
 
-# Seems a bit annoying to unzip and then re-zip the contents but it
-# does the job.
+# We need the content in a "tutorials" directory.  Seems a bit
+# annoying to unzip and then re-zip the contents but it does the job.
 
-mkdir "$WORKDIR"/tutorials
-unzip -d "$WORKDIR"/tutorials "$WORKDIR"/raw-"$ZIPFILE_BASENAME"
+mkdir -p "$CONTENT_DIR"/tutorials
+unzip -q -d "$CONTENT_DIR"/tutorials "$LAYER_ZIPFILE"
+rm "$LAYER_ZIPFILE"
 (
-    cd "$WORKDIR"
+    cd "$CONTENT_DIR"
     find tutorials -type d -print0 | xargs -0 chmod 755
     find tutorials -type f -print0 | xargs -0 chmod 644
-    zip -r "$ZIPFILE_BASENAME" tutorials
+    zip -q -r "$LAYER_ZIPFILE" tutorials
 )
-
-echo ________LAYER_ZIPFILE________ "$WORKDIR"/"$ZIPFILE_BASENAME"

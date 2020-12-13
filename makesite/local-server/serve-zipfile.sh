@@ -17,6 +17,14 @@ echo Serving contents of "$1" from http://localhost:5888/
 unzip -q -d "$CONTENTDIR" "$1"
 chmod 755 "$CONTENTDIR"
 
+(
+    cd "$CONTENTDIR"
+    if [ -e releases ]; then
+        echo Release zipfile: setting up redirection
+        cp releases/*/toplevel-dot-htaccess .htaccess
+    fi
+)
+
 docker run -it --rm \
        --name "$CONTAINERNAME" \
        -p 5888:80 \
