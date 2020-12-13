@@ -11,6 +11,7 @@ versioned release deployments.  TODO: Finish this explanation.
    development-local-server
    making-deployment-zipfile
    testing-deployment-zipfile
+   committing-for-beta-or-release
    deploying-to-hosting
 
 
