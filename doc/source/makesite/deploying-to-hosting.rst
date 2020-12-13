@@ -6,8 +6,8 @@ Deployment to hosting provider
 The resulting zipfile can be ``scp``\ ’d to the hosting provider and
 unzipped there.
 
-Redirecting from ‘latest’
--------------------------
+Redirecting to latest beta
+----------------------------
 
 For cleaner links, we have a redirect in place from ``latest`` to the
 current beta deployment.  Currently this is done manually.  There is
