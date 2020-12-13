@@ -15,7 +15,7 @@ an ``.htaccess`` file in the hosted ``beta/`` directory::
 
   RewriteEngine   on
   RewriteBase     "/beta/"
-  RewriteRule     "^latest/?$"  "build-YYYYMMDDhhmmssZ/app/"  [R,L]
+  RewriteRule     "^latest/?$"  "build-gSHA/app/"  [R,L]
 
 which can be updated after unzipping the deployment bundle.  In future
 this mechanism will be automated or superseded.
