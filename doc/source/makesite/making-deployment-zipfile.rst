@@ -5,7 +5,19 @@ Making a deployment zipfile
 
 We want to be able to host different beta versions of the site at, e.g.,::
 
-  beta.pytch.org/SOME-BUILD-IDENTIFIER
+  pytch.org/beta/SOME-BUILD-IDENTIFIER
+
+with the latest beta available at::
+
+  pytch.org/beta/latest/
+
+We also want to make real versioned releases, such that the latest is
+available at::
+
+  pytch.org/
+
+This is achieved via a git 'superproject ``pytch-releases`` which has
+the contributing repos as git submodules.
 
 
 
@@ -13,7 +25,15 @@ Layout
 ------
 
 The various components of the site each contribute a 'layer', which is
-unzipped under a particular subdirectory.
+unzipped under a particular subdirectory.  Most repos are responsible
+for making their own layer, via a script
+
+.. code-block:: text
+
+  REPO-ROOT/website-layer/make.sh
+
+However, the tutorials layer is produced differently; see below.
+
 
 Virtual Machine
 ^^^^^^^^^^^^^^^
@@ -34,6 +54,13 @@ to be ``fetch()``\ ’d by the webapp.  Files end up in::
   tutorials/bunner/...
   tutorials/boing/...
 
+This layer is unusual in that it is built by a script in the
+``pytch-build`` repo:
+
+.. code-block:: text
+
+  pytch-build/makesite/tutorials-layer.sh
+
 WebApp / IDE
 ^^^^^^^^^^^^
 
@@ -50,7 +77,11 @@ webapp end up in::
 To allow a user to directly visit a URL within the app (for example,
 ``/ide/3``), the web server must be directed to serve ``index.html``
 for all non-existent files.  This is done by a ``.htaccess`` file
-created inside ``webapp-layer.sh``.
+created inside
+
+.. code-block:: text
+
+  pytch-webapp/website-layer/make.sh
 
 
 Informational content
@@ -65,51 +96,27 @@ Assembly method
 ---------------
 
 One script for each layer, which emits a zipfile suitable for
-unzipping inside the deployment directory.  The top-level script then
-merges these zipfiles into one.
+unzipping inside the deployment directory.  A top-level ``make.sh``
+script within ``pytch-releases`` calls those scripts, and then merges
+the resulting zipfiles into one.
 
-If you have the various repos in sibling directories, for
-example::
-
-  /home/somebody/dev/pytch-build
-  /home/somebody/dev/pytch-vm
-  /home/somebody/dev/pytch-webapp
-  /home/somebody/dev/pytch-tutorials
-
-then you can use
+With the superproject ``pytch-releases`` checked out at either
+``develop`` or a particular tagged release,
 
 .. code-block:: bash
 
-  cd /home/somebody/dev/pytch-build/makesite
-  ./make-develop.sh SOURCE-BRANCHNAME DEPLOY-BASE-URL
+  cd /home/somebody/dev/pytch-releases
+  ./make.sh
 
-to build a zipfile.  Internally this script sets up some environment
-variables then ``exec``\ ’s ``make.sh``.
-
-TODO: Deployment from production (GitHub) repo.
-
-Arguments to this script are:
-
-``SOURCE-BRANCHNAME``
-  The branch to check out for ``pytch-vm`` and ``pytch-webapp``
-  layers.  The tutorials layer is handled differently because of the
-  way it uses branches to represent the content.  TODO: More detail.
-
-``DEPLOY-BASE-URL``
-  The path component of the URL from which the site will be served.
-  Should start with a slash, to be an absolute path.
-
-for example:
-
-.. code-block:: bash
-
-  ./make-develop.sh develop /beta/1234
+will build the deployment zipfile.  If the repo is currently checked
+out at ``develop``, a beta zipfile is made, otherwise the repo should
+be at a tagged commit on ``releases``, and a release zipfile is made.
 
 The name of the zipfile is emitted to stdout, allowing usage like
 
 .. code-block:: bash
 
-  zipfilename=$(./make-develop.sh develop /beta/1234)
+  zipfilename=$(./make.sh)
 
 See also:
 
@@ -120,3 +127,5 @@ See also:
 * :ref:`How to deploy the content to hosting<deploying_to_hosting>` —
   there are some details regarding serving the content in a manner
   required for React apps.
+
+TODO: Explain how to get started with checkout out superproject.
