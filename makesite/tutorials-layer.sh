@@ -53,8 +53,8 @@ LAYER_ZIPFILE="$LAYER_WORKDIR"/layer.zip
 # We need the content in a "tutorials" directory.  Seems a bit
 # annoying to unzip and then re-zip the contents but it does the job.
 
-mkdir -p "$CONTENT_DIR"/tutorials
-unzip -q -d "$CONTENT_DIR"/tutorials "$LAYER_ZIPFILE"
+mkdir -p "$CONTENT_DIR"/tutorials/"$PYTCH_DEPLOYMENT_ID"
+unzip -q -d "$CONTENT_DIR"/tutorials/"$PYTCH_DEPLOYMENT_ID" "$LAYER_ZIPFILE"
 rm "$LAYER_ZIPFILE"
 (
     cd "$CONTENT_DIR"
