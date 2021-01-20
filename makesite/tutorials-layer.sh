@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ -z "$PYTCH_DEPLOYMENT_ID" ]; then
+    echo "PYTCH_DEPLOYMENT_ID must be set"
+    exit 1
+fi
+
 BUILD_DIR="$(realpath "$(dirname "$0")")"
 REPO_ROOT="$(realpath "$BUILD_DIR"/..)"
 
@@ -48,8 +53,8 @@ LAYER_ZIPFILE="$LAYER_WORKDIR"/layer.zip
 # We need the content in a "tutorials" directory.  Seems a bit
 # annoying to unzip and then re-zip the contents but it does the job.
 
-mkdir -p "$CONTENT_DIR"/tutorials
-unzip -q -d "$CONTENT_DIR"/tutorials "$LAYER_ZIPFILE"
+mkdir -p "$CONTENT_DIR"/tutorials/"$PYTCH_DEPLOYMENT_ID"
+unzip -q -d "$CONTENT_DIR"/tutorials/"$PYTCH_DEPLOYMENT_ID" "$LAYER_ZIPFILE"
 rm "$LAYER_ZIPFILE"
 (
     cd "$CONTENT_DIR"
