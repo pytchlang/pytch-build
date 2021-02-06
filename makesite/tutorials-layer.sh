@@ -30,6 +30,7 @@ virtualenv -p python3 venv \
     && pip install -r requirements_dev.txt \
     && python setup.py install
 
+mkdir -p "$LAYER_WORKDIR"
 LAYER_ZIPFILE="$LAYER_WORKDIR"/layer.zip
 
 (
