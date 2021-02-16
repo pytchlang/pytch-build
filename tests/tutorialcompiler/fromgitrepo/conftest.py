@@ -6,7 +6,11 @@ import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history as TH
 
 @pytest.fixture(scope="session")
 def discovered_repository_path():
-    return pygit2.discover_repository(".")
+    path = pygit2.discover_repository(".")
+    if path is None:
+        raise ValueError("containing git repository not found")
+
+    return path
 
 
 @pytest.fixture(scope="session")
