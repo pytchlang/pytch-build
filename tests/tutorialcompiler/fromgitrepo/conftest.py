@@ -10,6 +10,28 @@ def discovered_repository_path():
     if path is None:
         raise ValueError("containing git repository not found")
 
+    # Ensure we have all branches required for tests.  Any branch which
+    # already exists is left alone.
+
+    repo = pygit2.Repository(path)
+
+    for branch_name in [
+            "unit-tests-commits",
+            "unit-tests-bad-commits",
+            "unit-tests-commit-0",
+            "unit-tests-dupd-slugs-1",
+            "unit-tests-dupd-slugs-2",
+    ]:
+        if repo.lookup_branch(branch_name) is None:
+            remote_branch_name = f"refs/remotes/origin/{branch_name}"
+            try:
+                target_oid = repo.lookup_reference(remote_branch_name).target
+            except KeyError:
+                raise ValueError(f"remote branch {branch_name} not found")
+            repo.create_branch(branch_name, repo.get(target_oid))
+
+    repo.free()
+
     return path
 
 
