@@ -7,10 +7,10 @@ Releases are managed via the git superproject ``pytch-releases``.
 Committing a new beta/development version
 -----------------------------------------
 
-The process of gathering together the required versions of
-contributing subprojects into a beta release is as follows.
+The process of gathering together the required versions of the
+contributing git submodules into a beta release is as follows.
 
-The individual subprojects should be brought up to date with their
+The individual git submodules should be brought up to date with their
 origin repos, via, for example
 
 .. code-block:: bash
