@@ -2,4 +2,4 @@ import pytch
 
 
 class Bowl(pytch.Sprite):
-    Costumes = []
+    Costumes = ["bowl.png"]
