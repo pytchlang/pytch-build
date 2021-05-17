@@ -19,3 +19,7 @@ class Bowl(pytch.Sprite):
 
 class Apple(pytch.Sprite):
     Costumes = ["apple.png"]
+
+    @pytch.when_green_flag_clicked
+    def move_down_stage(self):
+        self.go_to_xy(100, 200)
