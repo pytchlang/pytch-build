@@ -31,3 +31,7 @@ class Apple(pytch.Sprite):
 
 class ScoreKeeper(pytch.Sprite):
     Costumes = ["Dani.png"]
+
+    @pytch.when_green_flag_clicked
+    def initialise(self):
+        self.go_to_xy(-215, -115)
