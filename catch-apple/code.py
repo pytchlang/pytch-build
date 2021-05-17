@@ -35,3 +35,4 @@ class ScoreKeeper(pytch.Sprite):
     @pytch.when_green_flag_clicked
     def initialise(self):
         self.go_to_xy(-215, -115)
+        self.score = 0
