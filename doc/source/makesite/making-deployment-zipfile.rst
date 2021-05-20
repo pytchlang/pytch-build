@@ -112,6 +112,10 @@ will build the deployment zipfile.  If the repo is currently checked
 out at ``releases``, there must also be a tag on that commit, and a
 release zipfile is made.  Otherwise a beta zipfile is made.
 
+Note that if the ``pytch-releases`` repo is checked out at the
+``releases`` branch, then the contained submodule ``pytch-tutorials``
+must also be checked out at its ``releases`` branch.
+
 The name of the zipfile is emitted to stdout, allowing usage like
 
 .. code-block:: bash
