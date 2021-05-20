@@ -16,7 +16,7 @@ available at::
 
   pytch.org/
 
-This is achieved via a git 'superproject ``pytch-releases`` which has
+This is achieved via a git 'superproject' ``pytch-releases`` which has
 the contributing repos as git submodules.
 
 
