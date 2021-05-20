@@ -100,8 +100,8 @@ unzipping inside the deployment directory.  A top-level ``make.sh``
 script within ``pytch-releases`` calls those scripts, and then merges
 the resulting zipfiles into one.
 
-With the superproject ``pytch-releases`` checked out at either
-``develop`` or a particular tagged release,
+With the superproject ``pytch-releases`` cleanly checked out at either
+a particular tagged release, or some other branch,
 
 .. code-block:: bash
 
@@ -109,8 +109,8 @@ With the superproject ``pytch-releases`` checked out at either
   ./make.sh
 
 will build the deployment zipfile.  If the repo is currently checked
-out at ``develop``, a beta zipfile is made, otherwise the repo should
-be at a tagged commit on ``releases``, and a release zipfile is made.
+out at ``releases``, there must also be a tag on that commit, and a
+release zipfile is made.  Otherwise a beta zipfile is made.
 
 The name of the zipfile is emitted to stdout, allowing usage like
 
