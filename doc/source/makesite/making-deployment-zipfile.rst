@@ -132,4 +132,4 @@ See also:
   there are some details regarding serving the content in a manner
   required for React apps.
 
-TODO: Explain how to get started with checkout out superproject.
+See also :doc:`../../../developer/development-setup`.
