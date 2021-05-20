@@ -16,7 +16,7 @@ available at::
 
   pytch.org/
 
-This is achieved via a git 'superproject ``pytch-releases`` which has
+This is achieved via a git 'superproject' ``pytch-releases`` which has
 the contributing repos as git submodules.
 
 
@@ -100,8 +100,8 @@ unzipping inside the deployment directory.  A top-level ``make.sh``
 script within ``pytch-releases`` calls those scripts, and then merges
 the resulting zipfiles into one.
 
-With the superproject ``pytch-releases`` checked out at either
-``develop`` or a particular tagged release,
+With the superproject ``pytch-releases`` cleanly checked out at either
+a particular tagged release, or some other branch,
 
 .. code-block:: bash
 
@@ -109,8 +109,12 @@ With the superproject ``pytch-releases`` checked out at either
   ./make.sh
 
 will build the deployment zipfile.  If the repo is currently checked
-out at ``develop``, a beta zipfile is made, otherwise the repo should
-be at a tagged commit on ``releases``, and a release zipfile is made.
+out at ``releases``, there must also be a tag on that commit, and a
+release zipfile is made.  Otherwise a beta zipfile is made.
+
+Note that if the ``pytch-releases`` repo is checked out at the
+``releases`` branch, then the contained submodule ``pytch-tutorials``
+must also be checked out at its ``releases`` branch.
 
 The name of the zipfile is emitted to stdout, allowing usage like
 
@@ -128,4 +132,4 @@ See also:
   there are some details regarding serving the content in a manner
   required for React apps.
 
-TODO: Explain how to get started with checkout out superproject.
+See also :doc:`../../../developer/development-setup`.
