@@ -10,6 +10,15 @@ REPO_ROOT="$(realpath "$BUILD_DIR"/..)"
 
 cd "$REPO_ROOT"
 
+if [ $(git status --porcelain | wc -l) -ne 0 ]; then
+    (
+        echo "Working directory not clean; abandoning build"
+        echo
+        git status
+    ) >&2
+    exit 1
+fi
+
 LAYER_WORKDIR="$REPO_ROOT"/website-layer
 CONTENT_DIR="$LAYER_WORKDIR"/layer-content
 
