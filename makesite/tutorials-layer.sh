@@ -10,6 +10,15 @@ REPO_ROOT="$(realpath "$BUILD_DIR"/..)"
 
 cd "$REPO_ROOT"
 
+if [ $(git status --porcelain | wc -l) -ne 0 ]; then
+    (
+        echo "Working directory not clean; abandoning build"
+        echo
+        git status
+    ) >&2
+    exit 1
+fi
+
 LAYER_WORKDIR="$REPO_ROOT"/website-layer
 CONTENT_DIR="$LAYER_WORKDIR"/layer-content
 
@@ -36,19 +45,12 @@ LAYER_ZIPFILE="$LAYER_WORKDIR"/layer.zip
 (
     cd "$TUTORIALS_REPO_ROOT"
 
-    # Decide whether to build from a releases commit or the tip of
-    # release-recipes based on whether we're currently checked out at
-    # "release-recipes".
-
-    if [ "$(git rev-parse --abbrev-ref HEAD)" = release-recipes ]; then
-        pytchbuild-gather-tutorials \
-            --index-source=RECIPES_TIP \
-            -o "$LAYER_ZIPFILE"
-    else
-        pytchbuild-gather-tutorials \
-            --from-release HEAD \
-            -o "$LAYER_ZIPFILE"
-    fi
+    # Always use the working copy (which we've checked is clean) of the
+    # tutorials index.  This is correct both for releases and for the
+    # case where we're on a (branch taken off) "release-recipes".
+    pytchbuild-gather-tutorials \
+        --index-source=WORKING_DIRECTORY \
+        -o "$LAYER_ZIPFILE"
 )
 
 # We need the content in a "tutorials" directory.  Seems a bit
