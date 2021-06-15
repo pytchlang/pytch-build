@@ -22,6 +22,18 @@ chmod 755 "$CONTENTDIR"
     if [ -e releases ]; then
         echo Release zipfile: setting up redirection
         cp releases/*/toplevel-dot-htaccess .htaccess
+    else
+        app_path=$(python -c "import zipfile; print(zipfile.ZipFile('$1').infolist()[0].filename)")
+        if [ -z "$app_path" ]; then
+            echo
+            echo Problem finding path within zipfile "$1"
+            echo
+        fi
+
+        echo
+        echo Cypress command within pytch-webapp directory:
+        echo CYPRESS_BASE_URL=http://localhost:5888/${app_path}app/ ./node_modules/.bin/cypress open
+        echo
     fi
 )
 
