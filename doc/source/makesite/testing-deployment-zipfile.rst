@@ -19,7 +19,9 @@ See the contents of ``serve-zipfile.sh`` for details of what happens.
 
 This local copy of Pytch can be explored interactively by going to
 ``http://localhost:5888/``, or :ref:`tested via
-Cypress<testing_zipfile_with_Cypress>`.
+Cypress<testing_zipfile_with_Cypress>`.  The ``serve-zipfile.sh``
+script writes (to stdout) a command-line which can be copy/pasted to
+launch Cypress with the correct ``CYPRESS_BASE_URL`` set.
 
 A *release* zipfile will have in place the redirect from the root to
 the app, but for a *beta* release, you will have to manually navigate
