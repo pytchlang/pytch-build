@@ -1,7 +1,9 @@
 #!/bin/bash
 
 if [ -z "$PYTCH_DEPLOYMENT_ID" ]; then
-    echo "PYTCH_DEPLOYMENT_ID must be set"
+    (
+        echo "PYTCH_DEPLOYMENT_ID must be set"
+    ) >&2
     exit 1
 fi
 
@@ -23,14 +25,18 @@ LAYER_WORKDIR="$REPO_ROOT"/website-layer
 CONTENT_DIR="$LAYER_WORKDIR"/layer-content
 
 if [ -e venv -o -e "$CONTENT_DIR" ]; then
-    echo "Must be run in a clean clone"
-    echo '(i.e., no "venv" or "website-layer/layer-content")'
+    (
+        echo "Must be run in a clean clone"
+        echo '(i.e., no "venv" or "website-layer/layer-content")'
+    ) >&2
     exit 1
 fi
 
 TUTORIALS_REPO_ROOT="$(realpath "$REPO_ROOT"/../pytch-tutorials)"
 if [ ! -e "$TUTORIALS_REPO_ROOT"/.git ]; then
-    echo No '"'pytch-tutorials'"' git repo found parallel to this one
+    (
+        echo No '"'pytch-tutorials'"' git repo found parallel to this one
+    ) >&2
     exit 1
 fi
 
