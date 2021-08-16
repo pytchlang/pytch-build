@@ -46,6 +46,7 @@ logger = colorlog.getLogger(__name__)
 
 PROJECT_ASSET_DIRNAME = "project-assets"
 TUTORIAL_ASSET_DIRNAME = "tutorial-assets"
+ASSET_SOURCE_DIRNAME = "asset-src"
 CODE_FILE_BASENAME = "code.py"
 TUTORIAL_TEXT_FILE_BASENAME = "tutorial.md"
 SUMMARY_TEXT_FILE_BASENAME = "summary.md"
