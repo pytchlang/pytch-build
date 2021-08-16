@@ -230,6 +230,10 @@ class ProjectCommit:
     def path_is_a_tutorial_asset(path_str):
         return pathlib.Path(path_str).parts[1] == TUTORIAL_ASSET_DIRNAME
 
+    @staticmethod
+    def path_is_an_asset_source(path_str):
+        return pathlib.Path(path_str).parts[1] == ASSET_SOURCE_DIRNAME
+
     def adds_assets(self, is_asset_fun, asset_kind_name):
         # Special-case the BASE commit, which can add a whole lot of files in
         # various places in the tree.  Treat it as not adding assets.
