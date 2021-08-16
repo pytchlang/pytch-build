@@ -46,6 +46,7 @@ logger = colorlog.getLogger(__name__)
 
 PROJECT_ASSET_DIRNAME = "project-assets"
 TUTORIAL_ASSET_DIRNAME = "tutorial-assets"
+ASSET_SOURCE_DIRNAME = "asset-src"
 CODE_FILE_BASENAME = "code.py"
 TUTORIAL_TEXT_FILE_BASENAME = "tutorial.md"
 SUMMARY_TEXT_FILE_BASENAME = "summary.md"
@@ -139,6 +140,8 @@ class ProjectCommit:
         if self.adds_project_assets or self.adds_tutorial_assets:
             asset_paths = ", ".join(f'"{a.path}"' for a in self.added_assets)
             return f"assets({asset_paths})"
+        if self.adds_asset_source:
+            return "asset-source"
         if self.modifies_tutorial_text:
             return "tutorial-text"
         return "?? unknown ??"
@@ -229,6 +232,10 @@ class ProjectCommit:
     def path_is_a_tutorial_asset(path_str):
         return pathlib.Path(path_str).parts[1] == TUTORIAL_ASSET_DIRNAME
 
+    @staticmethod
+    def path_is_an_asset_source(path_str):
+        return pathlib.Path(path_str).parts[1] == ASSET_SOURCE_DIRNAME
+
     def adds_assets(self, is_asset_fun, asset_kind_name):
         # Special-case the BASE commit, which can add a whole lot of files in
         # various places in the tree.  Treat it as not adding assets.
@@ -264,6 +271,10 @@ class ProjectCommit:
     @cached_property
     def adds_tutorial_assets(self):
         return self.adds_assets(self.path_is_a_tutorial_asset, "tutorial")
+
+    @cached_property
+    def adds_asset_source(self):
+        return self.adds_assets(self.path_is_an_asset_source, "asset-source")
 
     @cached_property
     def sole_modify_against_parent(self):
