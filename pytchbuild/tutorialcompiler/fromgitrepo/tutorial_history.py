@@ -271,6 +271,10 @@ class ProjectCommit:
         return self.adds_assets(self.path_is_a_tutorial_asset, "tutorial")
 
     @cached_property
+    def adds_asset_source(self):
+        return self.adds_assets(self.path_is_an_asset_source, "asset-source")
+
+    @cached_property
     def sole_modify_against_parent(self):
         diff = self.diff_against_parent_or_empty
         if len(diff) != 1:
