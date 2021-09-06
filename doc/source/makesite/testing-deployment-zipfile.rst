@@ -26,3 +26,12 @@ launch Cypress with the correct ``CYPRESS_BASE_URL`` set.
 A *release* zipfile will have in place the redirect from the root to
 the app, but for a *beta* release, you will have to manually navigate
 to the required subdirectory.
+
+
+Including demo zipfiles
+-----------------------
+
+An optional second argument can be provided to ``serve-zipfile.sh``.
+If given, it should name a zipfile containing demo zips within a
+build-id directory, which will be unzipped into a top-level directory
+``demos`` of the webroot.
