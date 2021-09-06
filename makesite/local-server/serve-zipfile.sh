@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-    echo "usage: $0 ZIP_FILENAME"
+    echo "usage: $0 ZIP_FILENAME [ DEMOS_ZIP_FILENAME ]"
     exit 1
 fi
 
@@ -15,6 +15,17 @@ CONTAINERNAME=$(basename "$CONTENTDIR")
 echo Serving contents of "$1" from http://localhost:5888/
 
 unzip -q -d "$CONTENTDIR" "$1"
+
+if [ -n "$2" ]; then
+    mkdir "$CONTENTDIR"/demos
+    unzip -q -d "$CONTENTDIR"/demos "$2"
+    (
+        cd "$CONTENTDIR"/demos
+        buildid=$(find . -name '????????????' -print)
+        ln -s $buildid fake-build-id-for-tests
+    )
+fi
+
 chmod 755 "$CONTENTDIR"
 
 (

@@ -36,3 +36,15 @@ subdirectory ``space-invaders`` of the ``pytch-tutorials`` repo.
 
 Everything is tied together with a bundle of environment variables.
 See the individual scripts for details.
+
+
+Serving demo zips
+-----------------
+
+Experimental: The local development server specifies that demo zips
+can be found at ``localhost:8126`` but does not launch a server at
+that port.  The companion repo ``pytch-demos`` has its own development
+server for this.  In live deployments, the demos are maintained
+separately from the release / beta process.  This arrangement might
+evolve as we gain experience with the mechanism for providing
+non-tutorial demos.
