@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-    echo "usage: $0 ZIP_FILENAME"
+    echo "usage: $0 ZIP_FILENAME [ DEMOS_ZIP_FILENAME ]"
     exit 1
 fi
 
