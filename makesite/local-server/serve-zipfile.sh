@@ -19,6 +19,11 @@ unzip -q -d "$CONTENTDIR" "$1"
 if [ -n "$2" ]; then
     mkdir "$CONTENTDIR"/demos
     unzip -q -d "$CONTENTDIR"/demos "$2"
+    (
+        cd "$CONTENTDIR"/demos
+        buildid=$(find . -name '????????????' -print)
+        ln -s $buildid fake-build-id-for-tests
+    )
 fi
 
 chmod 755 "$CONTENTDIR"
