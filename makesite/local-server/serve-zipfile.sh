@@ -15,6 +15,12 @@ CONTAINERNAME=$(basename "$CONTENTDIR")
 echo Serving contents of "$1" from http://localhost:5888/
 
 unzip -q -d "$CONTENTDIR" "$1"
+
+if [ -n "$2" ]; then
+    mkdir "$CONTENTDIR"/demos
+    unzip -q -d "$CONTENTDIR"/demos "$2"
+fi
+
 chmod 755 "$CONTENTDIR"
 
 (
