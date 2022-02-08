@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd_or_fail() { cd "$1" || exit 1; }
+
 THIS_DIR=$(dirname "$0")
 export PYTCH_REPOS_BASE=$(realpath "$THIS_DIR"/../..)
 

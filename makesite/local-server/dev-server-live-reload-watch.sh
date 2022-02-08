@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd_or_fail() { cd "$1" || exit 1; }
+
 # Use 'true' from PATH instead of shell builtin
 enable -n true
 
