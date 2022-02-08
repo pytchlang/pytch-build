@@ -37,6 +37,7 @@ if [ ! -e "$TUTORIALS_REPO_ROOT"/.git ]; then
     exit 1
 fi
 
+# shellcheck disable=SC1091
 virtualenv -p python3 venv \
     && source venv/bin/activate \
     && pip install --upgrade pip \
