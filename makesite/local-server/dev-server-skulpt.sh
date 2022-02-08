@@ -1,7 +1,9 @@
 #!/bin/bash
 
-cd $PYTCH_REPO_BASE/pytch-vm/dist
+cd_or_fail() { cd "$1" || exit 1; }
 
-echo Serving Skulpt layer from $(pwd)
+cd_or_fail "$PYTCH_REPO_BASE"/pytch-vm/dist
 
-python3 $PYTCH_LOCAL_SERVER_DIR/cors_server.py 8124
+echo Serving Skulpt layer from "$(pwd)"
+
+python3 "$PYTCH_LOCAL_SERVER_DIR"/cors_server.py 8124
