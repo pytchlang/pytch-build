@@ -5,7 +5,7 @@ cd_or_fail() { cd "$1" || exit 1; }
 # Use 'true' from PATH instead of shell builtin
 enable -n true
 
-. "$PYTCH_REPO_BASE"/pytch-build/venv/bin/activate
+. "$PYTCH_REPO_BASE"/pytch-build/venv/bin/activate || exit 1
 
 cd_or_fail "$PYTCH_REPO_BASE"/pytch-tutorials
 
