@@ -3,7 +3,8 @@
 cd_or_fail() { cd "$1" || exit 1; }
 
 THIS_DIR=$(dirname "$0")
-export PYTCH_REPOS_BASE=$(realpath "$THIS_DIR"/../..)
+PYTCH_REPOS_BASE=$(realpath "$THIS_DIR"/../..)
+export PYTCH_REPOS_BASE
 
 (
     cd_or_fail "$PYTCH_REPOS_BASE"
