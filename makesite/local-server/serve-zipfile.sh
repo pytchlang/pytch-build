@@ -22,7 +22,7 @@ if [ -n "$2" ]; then
     mkdir "$CONTENTDIR"/demos
     unzip -q -d "$CONTENTDIR"/demos "$2"
     (
-        cd "$CONTENTDIR"/demos
+        cd_or_fail "$CONTENTDIR"/demos
         buildid=$(find . -name '????????????' -print)
         ln -s $buildid fake-build-id-for-tests
     )
@@ -31,7 +31,7 @@ fi
 chmod 755 "$CONTENTDIR"
 
 (
-    cd "$CONTENTDIR"
+    cd_or_fail "$CONTENTDIR"
     if [ -e releases ]; then
         echo Release zipfile: setting up redirection
         cp releases/*/toplevel-dot-htaccess .htaccess

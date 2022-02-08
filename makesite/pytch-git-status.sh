@@ -6,10 +6,10 @@ THIS_DIR=$(dirname "$0")
 export PYTCH_REPOS_BASE=$(realpath "$THIS_DIR"/../..)
 
 (
-    cd "$PYTCH_REPOS_BASE"
+    cd_or_fail "$PYTCH_REPOS_BASE"
     for x in pytch-*; do
         [ -d "$x" ] && (
-            cd "$x"
+            cd_or_fail "$x"
             echo
             tput bold
             echo ------------------------------------------------------------------------

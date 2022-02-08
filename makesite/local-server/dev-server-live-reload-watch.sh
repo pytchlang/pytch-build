@@ -6,7 +6,8 @@ cd_or_fail() { cd "$1" || exit 1; }
 enable -n true
 
 . "$PYTCH_REPO_BASE"/pytch-build/venv/bin/activate
-cd "$PYTCH_REPO_BASE"/pytch-tutorials
+
+cd_or_fail "$PYTCH_REPO_BASE"/pytch-tutorials
 
 if [ -z "$PYTCH_IN_PROGRESS_TUTORIAL" ]; then
     echo "PYTCH_IN_PROGRESS_TUTORIAL not set; not watching any tutorial/code"
