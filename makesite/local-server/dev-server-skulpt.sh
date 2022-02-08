@@ -4,6 +4,6 @@ cd_or_fail() { cd "$1" || exit 1; }
 
 cd_or_fail "$PYTCH_REPO_BASE"/pytch-vm/dist
 
-echo Serving Skulpt layer from $(pwd)
+echo Serving Skulpt layer from "$(pwd)"
 
-python3 $PYTCH_LOCAL_SERVER_DIR/cors_server.py 8124
+python3 "$PYTCH_LOCAL_SERVER_DIR"/cors_server.py 8124

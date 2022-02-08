@@ -9,7 +9,7 @@ REPO_ROOT="$(realpath "$BUILD_DIR"/..)"
 
 cd_or_fail "$REPO_ROOT"
 
-if [ $(git status --porcelain | wc -l) -ne 0 ]; then
+if [ "$(git status --porcelain | wc -l)" -ne 0 ]; then
     (
         echo "Working directory not clean; abandoning build"
         echo

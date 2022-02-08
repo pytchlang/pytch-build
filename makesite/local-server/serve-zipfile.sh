@@ -23,8 +23,8 @@ if [ -n "$2" ]; then
     unzip -q -d "$CONTENTDIR"/demos "$2"
     (
         cd_or_fail "$CONTENTDIR"/demos
-        buildid=$(find . -name '????????????' -print)
-        ln -s $buildid fake-build-id-for-tests
+        buildid="$(find . -name '????????????' -print)"
+        ln -s "$buildid" fake-build-id-for-tests
     )
 fi
 
@@ -45,7 +45,7 @@ chmod 755 "$CONTENTDIR"
 
         echo
         echo Cypress command within pytch-webapp directory:
-        echo CYPRESS_BASE_URL=http://localhost:5888/${app_path}app/ ./node_modules/.bin/cypress open
+        echo CYPRESS_BASE_URL=http://localhost:5888/"${app_path}"app/ ./node_modules/.bin/cypress open
         echo
     fi
 )

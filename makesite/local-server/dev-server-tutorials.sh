@@ -11,7 +11,7 @@ mkdir -p site-layer
 cd_or_fail site-layer
 unzip -qo /tmp/pytch-tutorials.zip
 
-echo Serving tutorial layer from $(pwd)
+echo Serving tutorial layer from "$(pwd)"
 
-python $PYTCH_LOCAL_SERVER_DIR/cors_server.py 8125
+python "$PYTCH_LOCAL_SERVER_DIR"/cors_server.py 8125
 

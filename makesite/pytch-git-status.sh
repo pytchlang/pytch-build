@@ -14,7 +14,7 @@ export PYTCH_REPOS_BASE=$(realpath "$THIS_DIR"/../..)
             tput bold
             echo ------------------------------------------------------------------------
             echo
-            printf "%-16s  %s\n" "$x" $(git rev-parse HEAD)
+            printf "%-16s  %s\n" "$x" "$(git rev-parse HEAD)"
             echo
             tput sgr0
             git status
