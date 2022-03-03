@@ -1,3 +1,6 @@
-# Shoot the fruit
+![Screenshot](screenshot.png)
 
-TODO.
+# Script-by-script Shoot the fruit
+
+Score points by clicking on the fruit.  If you miss you will lose
+points!
