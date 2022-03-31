@@ -119,3 +119,28 @@ def main(repository_path, tutorial_name, tutorial_branch, tutorial_slug):
         tutorial_branch,
         tutorial_slug
     )
+
+    print(f"""
+Assuming no errors were reported, files for the new tutorial are now
+in the directory
+
+    {tutorial_slug}/
+
+and your repo is checked out on the branch
+
+    {tutorial_branch}
+
+to start work on this tutorial.
+
+You can use an interactive-rebase to amend the {{base}} commit if the
+default starting code is not appropriate for this tutorial.
+
+The tutorial.md and summary.md files have been created and committed,
+each containing a "TODO" marker.
+
+You should now be able to go to the top-level directory of the
+pytch-releases checkout, and launch the development server with
+
+    export PYTCH_IN_PROGRESS_TUTORIAL={tutorial_slug}
+    ./pytch-build/makesite/local-server/dev-server.sh
+""")
