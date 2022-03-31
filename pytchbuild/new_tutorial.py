@@ -1,4 +1,5 @@
 import pygit2
+import click
 from pathlib import Path
 
 from .tutorialcompiler.fromgitrepo.config import (
@@ -72,3 +73,49 @@ def add_new_tutorial_to_index_yaml(repo, name, branch):
     sig = create_signature(repo)
 
     commit_files(repo, ["index.yaml"], sig, f'Add tutorial "{name}"')
+
+
+@click.command()
+@click.option(
+    "--tutorial-name",
+    required=True,
+    help="human-readable short name of tutorial"
+)
+@click.option(
+    "--tutorial-branch",
+    required=True,
+    help="name of branch to create"
+)
+@click.option(
+    "--tutorial-slug",
+    required=True,
+    help="name of directory (folder) to create"
+)
+@click.option(
+    "--repository-path",
+    default=pygit2.discover_repository("."),
+    envvar="GIT_DIR",
+    metavar="PATH",
+    help="path to root of git repository",
+)
+def main(repository_path, tutorial_name, tutorial_branch, tutorial_slug):
+    """
+    Create the branch, directories, and files for a new tutorial
+
+    Also create an entry in the index.yaml file to include the new
+    tutorial.
+    """
+    repo = pygit2.Repository(repository_path)
+
+    add_new_tutorial_to_index_yaml(
+        repo,
+        tutorial_name,
+        tutorial_branch,
+    )
+
+    create_new_tutorial_branch_and_structure(
+        repo,
+        tutorial_name,
+        tutorial_branch,
+        tutorial_slug
+    )
