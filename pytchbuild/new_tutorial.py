@@ -55,3 +55,20 @@ def create_new_tutorial_branch_and_structure(
         sig,
         "{base} Add starting point of code",
     )
+
+
+def add_new_tutorial_to_index_yaml(repo, name, branch):
+    ensure_status_clean(repo)
+
+    repo.checkout(f"refs/heads/{RELEASE_RECIPES_BRANCH_NAME}")
+    index_yaml_path = Path(repo.workdir) / "index.yaml"
+
+    if not index_yaml_path.is_file():
+        raise RuntimeError("file index.yaml not found")
+
+    with index_yaml_path.open("at") as f_out:
+        f_out.write(f"- name: {name}\n  tip-commit: {branch}\n")
+
+    sig = create_signature(repo)
+
+    commit_files(repo, ["index.yaml"], sig, f'Add tutorial "{name}"')
