@@ -7,7 +7,6 @@ import enum
 import zipfile
 import copy
 import pygit2
-import time
 from contextlib import closing
 
 from .fromgitrepo import git_repository
