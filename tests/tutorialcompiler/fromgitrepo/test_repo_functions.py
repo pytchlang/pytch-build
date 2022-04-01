@@ -28,3 +28,11 @@ class TestEnsureStatusClean:
         path_to_remove.unlink()
         with pytest.raises(RuntimeError, match="repo not clean"):
             TCRF.ensure_status_clean(clean_cloned_repo)
+
+
+class TestCreateSignature:
+    def test_returns_value(self, clean_cloned_repo):
+        # Pretty weak test.
+        sig = TCRF.create_signature(clean_cloned_repo)
+        # If we get here, assume all OK; but use value of "sig".
+        assert sig is not None
