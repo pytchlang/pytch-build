@@ -20,3 +20,11 @@ class TestEnsureStatusClean:
             f_out.write("Hello world!\n")
         with pytest.raises(RuntimeError, match="repo not clean"):
             TCRF.ensure_status_clean(clean_cloned_repo)
+
+    def test_when_removed_files(self, clean_cloned_repo):
+        workdir_path = Path(clean_cloned_repo.workdir)
+        path_to_remove = workdir_path / "boing" / "tutorial.md"
+        assert path_to_remove.is_file()
+        path_to_remove.unlink()
+        with pytest.raises(RuntimeError, match="repo not clean"):
+            TCRF.ensure_status_clean(clean_cloned_repo)
