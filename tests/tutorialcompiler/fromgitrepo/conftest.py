@@ -62,6 +62,14 @@ def cloned_repo(tmpdir_factory, discovered_repository_path):
     return repo
 
 
+@pytest.fixture(scope="function")
+def clean_cloned_repo(tmpdir_factory, discovered_repository_path):
+    clone_path = tmpdir_factory.mktemp("tutorials-")
+    return pygit2.clone_repository(discovered_repository_path,
+                                   clone_path,
+                                   checkout_branch="unit-tests-commits")
+
+
 @pytest.fixture(
     scope="session",
     params=list(TH.ProjectHistory.TutorialTextSource),
