@@ -18,6 +18,7 @@ from .fromgitrepo.config import (
     RELEASES_BRANCH_NAME,
     RELEASE_RECIPES_BRANCH_NAME,
 )
+from .fromgitrepo.repo_functions import create_signature
 
 
 def yaml_load(yaml_content):
@@ -159,12 +160,6 @@ class TutorialCollection:
     @property
     def build_sources_dicts(self):
         return [info.summary_dict for info in self.tutorials.values()]
-
-
-def create_signature(repo):
-    return pygit2.Signature(repo.config['user.name'],
-                            repo.config['user.email'],
-                            time=int(time.time()))
 
 
 def sole_tree_entry(commit):
