@@ -25,6 +25,11 @@ def ensure_status_clean(repo):
         raise RuntimeError(f'repo not clean: {", ".join(unclean_paths)}')
 
 
+def file_contents_at_revision(repo, revision, file_path):
+    commit = repo.revparse_single(revision)
+    return commit.tree[file_path].data
+
+
 def commit_files(repo, filenames, commit_sig, commit_message):
     index = repo.index
     for filename in filenames:

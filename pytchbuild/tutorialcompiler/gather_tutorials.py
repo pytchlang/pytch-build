@@ -17,7 +17,10 @@ from .fromgitrepo.config import (
     RELEASES_BRANCH_NAME,
     RELEASE_RECIPES_BRANCH_NAME,
 )
-from .fromgitrepo.repo_functions import create_signature
+from .fromgitrepo.repo_functions import (
+    create_signature,
+    file_contents_at_revision,
+)
 
 
 def yaml_load(yaml_content):
@@ -186,11 +189,6 @@ def verify_entry_type(idx, entry):
         raise TutorialStructureError(
             f"expecting tree-entry to be TREE for {entry.id}"
         )
-
-
-def file_contents_at_revision(repo, revision, file_path):
-    commit = repo.revparse_single(revision)
-    return commit.tree[file_path].data
 
 
 def index_data_at_recipes_tip(repo):
