@@ -14,10 +14,10 @@ from .fromgitrepo import git_repository
 from .fromgitrepo.tutorial_history import ProjectHistory
 from .fromgitrepo.tutorial_bundle import TutorialBundle
 from .fromgitrepo.errors import InternalError, TutorialStructureError
-
-
-RELEASES_BRANCH_NAME = "releases"
-RELEASE_RECIPES_BRANCH_NAME = "release-recipes"
+from .fromgitrepo.config import (
+    RELEASES_BRANCH_NAME,
+    RELEASE_RECIPES_BRANCH_NAME,
+)
 
 
 def yaml_load(yaml_content):
