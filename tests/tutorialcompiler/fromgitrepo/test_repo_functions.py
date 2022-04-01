@@ -36,3 +36,29 @@ class TestCreateSignature:
         sig = TCRF.create_signature(clean_cloned_repo)
         # If we get here, assume all OK; but use value of "sig".
         assert sig is not None
+
+
+class TestCommitFiles:
+    def test_commit_one_file(self, clean_cloned_repo):
+        tutorial_text_pre = TCRF.file_contents_at_revision(
+            clean_cloned_repo, "HEAD", "boing/tutorial.md"
+        ).decode("utf8")
+        assert not tutorial_text_pre.endswith("more text!\n")
+
+        workdir_path = Path(clean_cloned_repo.workdir)
+        path_to_modify = workdir_path / "boing" / "tutorial.md"
+        with path_to_modify.open("at") as f_out:
+            f_out.write("\n\nHello some more text!\n")
+
+        sig = TCRF.create_signature(clean_cloned_repo)
+        TCRF.commit_files(
+            clean_cloned_repo,
+            ["boing/tutorial.md"],
+            sig,
+            "Update tutorial",
+        )
+
+        tutorial_text_post = TCRF.file_contents_at_revision(
+            clean_cloned_repo, "HEAD", "boing/tutorial.md"
+        ).decode("utf8")
+        assert tutorial_text_post.endswith("more text!\n")
