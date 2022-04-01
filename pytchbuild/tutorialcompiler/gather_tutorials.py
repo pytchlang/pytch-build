@@ -7,17 +7,20 @@ import enum
 import zipfile
 import copy
 import pygit2
-import time
 from contextlib import closing
 
 from .fromgitrepo import git_repository
 from .fromgitrepo.tutorial_history import ProjectHistory
 from .fromgitrepo.tutorial_bundle import TutorialBundle
 from .fromgitrepo.errors import InternalError, TutorialStructureError
-
-
-RELEASES_BRANCH_NAME = "releases"
-RELEASE_RECIPES_BRANCH_NAME = "release-recipes"
+from .fromgitrepo.config import (
+    RELEASES_BRANCH_NAME,
+    RELEASE_RECIPES_BRANCH_NAME,
+)
+from .fromgitrepo.repo_functions import (
+    create_signature,
+    file_contents_at_revision,
+)
 
 
 def yaml_load(yaml_content):
@@ -161,12 +164,6 @@ class TutorialCollection:
         return [info.summary_dict for info in self.tutorials.values()]
 
 
-def create_signature(repo):
-    return pygit2.Signature(repo.config['user.name'],
-                            repo.config['user.email'],
-                            time=int(time.time()))
-
-
 def sole_tree_entry(commit):
     entries = list(commit.tree)
     if len(entries) != 1:
@@ -192,11 +189,6 @@ def verify_entry_type(idx, entry):
         raise TutorialStructureError(
             f"expecting tree-entry to be TREE for {entry.id}"
         )
-
-
-def file_contents_at_revision(repo, revision, file_path):
-    commit = repo.revparse_single(revision)
-    return commit.tree[file_path].data
 
 
 def index_data_at_recipes_tip(repo):

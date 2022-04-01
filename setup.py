@@ -37,6 +37,7 @@ setup(
             'pytchbuild=pytchbuild.cli:main',
             'pytchbuild-watch=pytchbuild.watch:main',
             'pytchbuild-gather-tutorials=pytchbuild.gather_tutorials:main',
+            'pytchbuild-new-tutorial=pytchbuild.new_tutorial:main',
         ],
     },
     install_requires=requirements,

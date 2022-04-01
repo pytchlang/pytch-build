@@ -62,6 +62,17 @@ def cloned_repo(tmpdir_factory, discovered_repository_path):
     return repo
 
 
+@pytest.fixture(scope="function")
+def clean_cloned_repo(tmpdir_factory, discovered_repository_path):
+    clone_path = tmpdir_factory.mktemp("tutorials-")
+    repo = pygit2.clone_repository(discovered_repository_path,
+                                   clone_path,
+                                   checkout_branch="unit-tests-commits")
+    repo.config["user.name"] = "Random Coder"
+    repo.config["user.email"] = "random.coder@example.com"
+    return repo
+
+
 @pytest.fixture(
     scope="session",
     params=list(TH.ProjectHistory.TutorialTextSource),

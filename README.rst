@@ -10,8 +10,9 @@ Development setup
 
 To set up a virtualenv for development and testing::
 
-  virtualenv -p python3 venv
+  python3 -m venv venv
   source venv/bin/activate
+  pip install --upgrade pip
   pip install tox
 
 Then one or both of::
