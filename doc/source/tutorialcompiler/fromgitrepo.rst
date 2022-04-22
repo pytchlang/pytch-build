@@ -115,8 +115,6 @@ and made available via the ``asset-credits`` shortcode.
 Current thinking is that assets will be added and then left
 unchanged.  Is there a use-case for modifying the graphics as part of
 the tutorial?  If so, how to encode version information in the code?
-Connected with the general 'project namespace' or 'base url' question;
-could that include a revision number?
 
 Tutorial assets
 ~~~~~~~~~~~~~~~
@@ -164,28 +162,9 @@ directory, the contents are:
   structure in the git repo should likewise have a ‘project-assets’
   directory.
 
-TODO: What about assets for use in the tutorial itself, e.g.,
-screenshots?  Can right-click on stage and choose ‘Save image as…’ (in
-Chrome anyway); choosing this gives you a ``download.png`` file.
-Might be nice to automatically generate screenshots by running the
-script in true Python and capturing and enacting the rendering
-instructions after a specified sequence of events, but that can be
-future work.  Put these in ``tutorial-assets/`` both in the repo and
-the output zipfile.
-
 TODO: This information is independent of the fact that the zipfile
 came from a git repo.  Move it to the general
 ``tutorial-structure.rst`` file?
-
-
-Tool support
-------------
-
-TODO: Script to create git repo of appropriate form.  E.g., make
-empty-base branch, initial commit within nothing in it, structure with
-READMEs in appropriate directories (assets), initial ``tutorial.md``
-with the title as given on command line.  Cookie-cutter for this?
-Branch pointing at git history once those pieces are all committed?
 
 
 Internals
