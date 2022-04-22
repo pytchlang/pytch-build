@@ -26,3 +26,12 @@ and/or::
   tox
 
 (Using ``tox`` will also build the docs and run ``flake8``.)
+
+For live reload while editing docs::
+
+  cd doc
+  sphinx-autobuild --re-ignore '/\.#' source build/html
+
+and then visit the URL mentioned in the output.  (The ``--re-ignore
+'/\.#'`` avoids Emacs auto-save files; other editors might require
+something analogous.)
