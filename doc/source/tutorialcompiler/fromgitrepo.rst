@@ -21,30 +21,13 @@ name to be created, and the name of the directory to be created.
 Structure of git repo
 ---------------------
 
-Each tutorial should be its own branch of the repo, and work within
-its own top-level directory of the repo.  We imagine such branches
-will very often have their history re-written as we think of clearer
-ways of structuring the development of the code.
+Each tutorial is in its own branch of the repo, and has its own
+top-level directory within the repo.  We imagine such branches will
+very often have their history re-written as we think of clearer ways
+of structuring the development of the code.
 
-I think it will be possible to have the ``releases`` branch have
-octopus merges in from the different tutorial branches, with the main
-parent commit being the previous bundle of tutorials.  But I haven't
-looked into this in detail yet.
-
-One downside: it would make it more annoying to have a simple overview
-of all available tutorials within the working directory.  Could have a
-‘release new version of Boing’ commit to ``releases``, which brings in
-the latest history?  Old histories would then still be available as
-parents of older ``releases`` commits?  Needs more thought.
-
-Elsewhere I've experimented with *structured* git repos, but for Pytch
-tutorials we're trying a different approach, where the structure
-(decomposition into sections etc.) is provided by the ``tutorial.md``
-document rather than the repo structure itself.  (Although there's
-nothing to stop the author creating a ‘dual-use’ history, where the
-history is structured as organised repo (merge commits for sections)
-for use with pure git tools, and also suitable for being rendered
-together with its ``tutorial.md`` into a bundle for the webapp.)
+The structure of the development of the code (its decomposition into
+sections etc.) is provided by the ``tutorial.md`` document.
 
 To identify particular commits touching the ``code.py`` file, the
 author adds a *slug* to the commit message by starting the subject
