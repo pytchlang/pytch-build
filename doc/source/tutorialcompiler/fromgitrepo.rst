@@ -1,23 +1,6 @@
 Compiling a tutorial from a Git repository
 ==========================================
 
-Creating a new tutorial
------------------------
-
-There is an **experimental** tool for creating the necessary file and
-repo structures for a new tutorial.  Within the ``pytch-tutorials``
-repo, and with the ``pytchbuild`` virtual environment activated, run
-something like::
-
-  pytchbuild-new-tutorial \
-    --tutorial-name="Collect the diamonds" \
-    --tutorial-branch=bn/collect-diamonds-01 \
-    --tutorial-slug="collect-diamonds"
-
-Where the three inputs give the short human-readable name, the branch
-name to be created, and the name of the directory to be created.
-
-
 Structure of git repo
 ---------------------
 
@@ -43,6 +26,23 @@ paragraph consisting of just a particular *shortcode* into the
   {{< commit fire-alien-missile >}}
 
 (These shortcodes are modelled on Hugo's.)
+
+
+Creating a new tutorial
+-----------------------
+
+There is an **experimental** tool for creating the necessary file and
+repo structures for a new tutorial.  Within the ``pytch-tutorials``
+repo, and with the ``pytchbuild`` virtual environment activated, run
+something like::
+
+  pytchbuild-new-tutorial \
+    --tutorial-name="Collect the diamonds" \
+    --tutorial-branch=bn/collect-diamonds-01 \
+    --tutorial-slug="collect-diamonds"
+
+Where the three inputs give the short human-readable name, the branch
+name to be created, and the name of the directory to be created.
 
 
 Structure of tutorial markdown file
