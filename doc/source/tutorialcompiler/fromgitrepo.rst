@@ -118,6 +118,14 @@ the tutorial?  If so, how to encode version information in the code?
 Connected with the general 'project namespace' or 'base url' question;
 could that include a revision number?
 
+Tutorial assets
+~~~~~~~~~~~~~~~
+
+Assets for use in the tutorial itself, for example screenshots, can be
+included in a ``tutorial-assets`` directory.  Commits adding such
+assets should have credits/licence information along the same lines as
+the information given for project assets.
+
 
 Tutorial summary file
 ---------------------
