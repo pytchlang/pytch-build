@@ -1,48 +1,6 @@
 Compiling a tutorial from a Git repository
 ==========================================
 
-Usage
------
-
-Create a ``git`` repo with a particular structure.  TODO: Move
-description from Google doc into here.  Run the command-line tool to
-produce a zipfile of the tutorial html bundle and the project assets.
-Unzip into the web content directory.
-
-Currently, such a tutorial is produced from a *git repository* which
-develops the project in a readable fashion.  The Python code lives in
-a file called ``code.py``, the tutorial text lives in a file called
-``tutorial.md``, and a summary lives in a file ``summary.md``.
-
-Command-line compiler
-^^^^^^^^^^^^^^^^^^^^^
-
-Example::
-
-  pytchbuild -o /tmp/bunner.zip
-
-In general, ``pytchbuild`` can be told:
-
-* which git repository to use; by default, the one containing the
-  working directory, or as specified by the ``GIT_DIR`` environment
-  variable (TODO: which takes precedence?);
-
-* which revision is the tip of the tutorial; by default, ``HEAD``.
-
-* whether to use the current working directory's version of the
-  tutorial text markdown file (or use the default, which is the
-  content as of the tip revision).
-
-Typical development workflow, then, is to be working in the
-``pytch-tutorials`` repo on a branch named for your tutorial.  When
-ready to try the tutorial in the IDE, run something like::
-
-  pytchbuild -o /tmp/t.zip \
-    && unzip -d ../pytch-ide/example/pytch/tutorials -o /tmp/t.zip
-
-TODO: Integrate this into a completely automated build of website.
-
-
 Creating a new tutorial
 -----------------------
 
