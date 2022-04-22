@@ -31,7 +31,7 @@ Structure of tutorial list HTML
 
 The ``tutorial-index.html`` file has the following structure::
 
-    <div class="tutorial-index" data-collection-oid="...SHA1...">
+    <div class="tutorial-index">
       <div class="tutorial-summary" data-tutorial-name="bunner">
         <p class="image-container">
           <img alt="Screenshot" src="summary-screenshot.png"/></p>
@@ -44,12 +44,8 @@ The ``tutorial-index.html`` file has the following structure::
         <h1>Boing — a Pong-like game</h1>
         <p>This tutorial shows you ...</p>
       </div>
+      <!-- DIVs for other tutorials -->
     </div>
-
-The ``SHA1`` is the git oid of the commit, at the tip of the
-``release-recipes`` branch, from which the collection was created.
-See `Releasing a new version of the tutorial collection`_ for more
-details.
 
 
 Archive of releases
