@@ -26,6 +26,8 @@ will read the current working copy of the ``index.yaml`` file, and use
 it to create the zipfile given by the ``-o`` argument.
 
 
+.. _tutorial-index-html-structure:
+
 Structure of tutorial list HTML
 -------------------------------
 
