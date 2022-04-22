@@ -78,7 +78,7 @@ After the horizontal rule, the markdown file should contain the
 *chapters* of the tutorial.  Each chapter starts with a level-2
 heading and continues until either the next level-2 heading or the end
 of the file.  Within each chapter, level-3 or lower-level headings can
-be used, as can any other markdown features
+be used, as can any other markdown features.
 
 Showing patches
 ~~~~~~~~~~~~~~~
