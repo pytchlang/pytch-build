@@ -20,5 +20,6 @@ workflow based on the *git* version control system.
    fromgitrepo
    tutorial-collection
    tutorial-text-dataflow
+   unit-testing
 
 And see also :doc:`../live-reload/index`.
