@@ -6,6 +6,10 @@ import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history as TH
 
 @pytest.fixture(scope="session")
 def discovered_repository_path():
+    """
+    The path for this repo.  As a side-effect, ensures all branches
+    needed for unit tests exist.
+    """
     path = pygit2.discover_repository(".")
     if path is None:
         raise ValueError("containing git repository not found")
@@ -37,11 +41,21 @@ def discovered_repository_path():
 
 @pytest.fixture(scope="session")
 def this_raw_repo(discovered_repository_path):
+    """
+    PyGit2 Repository object for this repo.
+    """
     return pygit2.Repository(discovered_repository_path)
 
 
 @pytest.fixture(scope="session")
 def cloned_repo(tmpdir_factory, discovered_repository_path):
+    """
+    This repo cloned into a tmpdir, checked out at the branch
+    "unit-tests-commits", with changes made to the working copies of
+    ``boing/tutorial.md`` and ``boing/summary.md``.  Tests using this
+    fixture should not modify the repo, as the fixture is
+    session-scoped.
+    """
     clone_path = tmpdir_factory.mktemp("tutorials-")
     repo = pygit2.clone_repository(discovered_repository_path,
                                    clone_path,
@@ -64,6 +78,11 @@ def cloned_repo(tmpdir_factory, discovered_repository_path):
 
 @pytest.fixture(scope="function")
 def clean_cloned_repo(tmpdir_factory, discovered_repository_path):
+    """
+    This repo cloned into a tmpdir, checked out at the branch
+    "unit-tests-commits", ensuring the repo's user name and email
+    address are configured.
+    """
     clone_path = tmpdir_factory.mktemp("tutorials-")
     repo = pygit2.clone_repository(discovered_repository_path,
                                    clone_path,
@@ -78,16 +97,24 @@ def clean_cloned_repo(tmpdir_factory, discovered_repository_path):
     params=list(TH.ProjectHistory.TutorialTextSource),
 )
 def project_history(cloned_repo, request):
+    """
+    A ProjectHistory constructed from a clone of this repo, using the
+    "unit-tests-commits" branch.  Parametrised with the two choices
+    for tutorial-text-source.
+    """
     return TH.ProjectHistory(cloned_repo.workdir,
                              "unit-tests-commits",
                              request.param)
 
 
-# To ensure we perform fresh computation of cached properties, and get
-# expected warnings, allow a test to request a clean freshly-made instance
-# of the history.
 @pytest.fixture
 def fresh_project_history(cloned_repo, request):
+    """
+    A ProjectHistory constructed from a clone of this repo, using the
+    "unit-tests-commits" branch.  This fixture is function-scoped so
+    a test using it gets a fresh ProjectHistory instance, ensuring all
+    cached-properties are computed.
+    """
     return TH.ProjectHistory(cloned_repo.workdir,
                              "unit-tests-commits")
 
