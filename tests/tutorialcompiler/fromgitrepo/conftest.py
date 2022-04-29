@@ -94,13 +94,7 @@ def clean_cloned_repo(tmpdir_factory, discovered_repository_path):
     "unit-tests-commits", ensuring the repo's user name and email
     address are configured.
     """
-    clone_path = tmpdir_factory.mktemp("tutorials-")
-    repo = pygit2.clone_repository(discovered_repository_path,
-                                   clone_path,
-                                   checkout_branch="unit-tests-commits")
-    repo.config["user.name"] = "Random Coder"
-    repo.config["user.email"] = "random.coder@example.com"
-    return repo
+    return _repo_clone(tmpdir_factory, discovered_repository_path)
 
 
 @pytest.fixture(
