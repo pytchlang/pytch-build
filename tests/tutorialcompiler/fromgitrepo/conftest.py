@@ -2,6 +2,7 @@ import pytest
 
 import pygit2
 import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history as TH
+from pathlib import Path
 
 
 @pytest.fixture(scope="session")
@@ -68,10 +69,8 @@ def cloned_repo(tmpdir_factory, discovered_repository_path):
     fixture should not modify the repo, as the fixture is
     session-scoped.
     """
-    clone_path = tmpdir_factory.mktemp("tutorials-")
-    repo = pygit2.clone_repository(discovered_repository_path,
-                                   clone_path,
-                                   checkout_branch="unit-tests-commits")
+    repo = _repo_clone(tmpdir_factory, discovered_repository_path)
+    clone_path = Path(repo.workdir)
 
     tutorial_path = clone_path / "boing/tutorial.md"
 
