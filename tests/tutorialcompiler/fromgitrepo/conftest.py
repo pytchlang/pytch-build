@@ -47,6 +47,18 @@ def this_raw_repo(discovered_repository_path):
     return pygit2.Repository(discovered_repository_path)
 
 
+def _repo_clone(tmpdir_factory, path):
+    clone_path = tmpdir_factory.mktemp("tutorials-")
+    repo = pygit2.clone_repository(
+        path,
+        clone_path,
+        checkout_branch="unit-tests-commits"
+    )
+    repo.config["user.name"] = "Random Coder"
+    repo.config["user.email"] = "random.coder@example.com"
+    return repo
+
+
 @pytest.fixture(scope="session")
 def cloned_repo(tmpdir_factory, discovered_repository_path):
     """
