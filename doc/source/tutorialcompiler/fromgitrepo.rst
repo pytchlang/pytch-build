@@ -1,46 +1,31 @@
 Compiling a tutorial from a Git repository
 ==========================================
 
-Usage
------
+Structure of git repo
+---------------------
 
-Create a ``git`` repo with a particular structure.  TODO: Move
-description from Google doc into here.  Run the command-line tool to
-produce a zipfile of the tutorial html bundle and the project assets.
-Unzip into the web content directory.
+Each tutorial is in its own branch of the repo, and has its own
+top-level directory within the repo.  We imagine such branches will
+very often have their history re-written as we think of clearer ways
+of structuring the development of the code.
 
-Currently, such a tutorial is produced from a *git repository* which
-develops the project in a readable fashion.  The Python code lives in
-a file called ``code.py``, the tutorial text lives in a file called
-``tutorial.md``, and a summary lives in a file ``summary.md``.
+The structure of the development of the code (its decomposition into
+sections etc.) is provided by the ``tutorial.md`` document.
 
-Command-line compiler
-^^^^^^^^^^^^^^^^^^^^^
+To identify particular commits touching the ``code.py`` file, the
+author adds a *slug* to the commit message by starting the subject
+with a string like::
 
-Example::
+  {#fire-alien-missile}
 
-  pytchbuild -o /tmp/bunner.zip
+To refer to such a commit in the tutorial text, and bring in an
+interactive patch element to the presentation, the author writes a
+paragraph consisting of just a particular *shortcode* into the
+``tutorial.md`` file like::
 
-In general, ``pytchbuild`` can be told:
+  {{< commit fire-alien-missile >}}
 
-* which git repository to use; by default, the one containing the
-  working directory, or as specified by the ``GIT_DIR`` environment
-  variable (TODO: which takes precedence?);
-
-* which revision is the tip of the tutorial; by default, ``HEAD``.
-
-* whether to use the current working directory's version of the
-  tutorial text markdown file (or use the default, which is the
-  content as of the tip revision).
-
-Typical development workflow, then, is to be working in the
-``pytch-tutorials`` repo on a branch named for your tutorial.  When
-ready to try the tutorial in the IDE, run something like::
-
-  pytchbuild -o /tmp/t.zip \
-    && unzip -d ../pytch-ide/example/pytch/tutorials -o /tmp/t.zip
-
-TODO: Integrate this into a completely automated build of website.
+(These shortcodes are modelled on Hugo's.)
 
 
 Creating a new tutorial
@@ -60,50 +45,6 @@ Where the three inputs give the short human-readable name, the branch
 name to be created, and the name of the directory to be created.
 
 
-Structure of git repo
----------------------
-
-Each tutorial should be its own branch of the repo, and work within
-its own top-level directory of the repo.  We imagine such branches
-will very often have their history re-written as we think of clearer
-ways of structuring the development of the code.
-
-I think it will be possible to have the ``releases`` branch have
-octopus merges in from the different tutorial branches, with the main
-parent commit being the previous bundle of tutorials.  But I haven't
-looked into this in detail yet.
-
-One downside: it would make it more annoying to have a simple overview
-of all available tutorials within the working directory.  Could have a
-‘release new version of Boing’ commit to ``releases``, which brings in
-the latest history?  Old histories would then still be available as
-parents of older ``releases`` commits?  Needs more thought.
-
-Elsewhere I've experimented with *structured* git repos, but for Pytch
-tutorials we're trying a different approach, where the structure
-(decomposition into sections etc.) is provided by the ``tutorial.md``
-document rather than the repo structure itself.  (Although there's
-nothing to stop the author creating a ‘dual-use’ history, where the
-history is structured as organised repo (merge commits for sections)
-for use with pure git tools, and also suitable for being rendered
-together with its ``tutorial.md`` into a bundle for the webapp.)
-
-To identify particular commits touching the ``code.py`` file, the
-author adds a *slug* to the commit message by starting the subject
-with a string like::
-
-  {#fire-alien-missile}
-
-To refer to such a commit in the tutorial text, and bring in an
-interactive patch element to the presentation, the author writes a
-paragraph consisting of just a particular *shortcode* into the
-``tutorial.md`` file like::
-
-  {{< commit fire-alien-missile >}}
-
-(These shortcodes are modelled on Hugo's.)
-
-
 Structure of tutorial markdown file
 -----------------------------------
 
@@ -116,14 +57,18 @@ Start with level-1 heading naming the project.  Then whatever you
 like, then a horizonal rule.  The rule marks the end of the front
 matter and does not appear in the rendered tutorial.
 
-TODO: Should this include metadata (author, licence, acknowledgements,
-abstract)?  That could go between initial H1 and the start of the
-tutorial proper.
-
 Typically the rendered front matter will include a *try the project*
 button, which is generated by the shortcode::
 
   {{< run-finished-project >}}
+
+It was also typically include credits, including perhaps by use of the
+shortcode::
+
+  {{< asset-credits >}}
+
+which brings in the credit information from the messages of commits
+adding assets.
 
 
 Chapters
@@ -133,7 +78,7 @@ After the horizontal rule, the markdown file should contain the
 *chapters* of the tutorial.  Each chapter starts with a level-2
 heading and continues until either the next level-2 heading or the end
 of the file.  Within each chapter, level-3 or lower-level headings can
-be used, as can any other markdown features
+be used, as can any other markdown features.
 
 Showing patches
 ~~~~~~~~~~~~~~~
@@ -162,16 +107,22 @@ files should be added in standard git commits.  More than one asset
 can be added in a single commit, but such commits should *not* include
 any other changes.
 
-TODO: Specify a format of the commit message to include copyright and
-licence, for example creative commons, source attribution, etc.
-Gather these all up as part of the compiler into a *sources* or
-*acknowledgments* file to be presented as part of the tutorial.
+The commit message should include copyright and licence information,
+for example creative commons, source attribution, etc.  This is
+free-form markdown, and the text is gathered by the tutorial-compiler
+and made available via the ``asset-credits`` shortcode.
 
 Current thinking is that assets will be added and then left
 unchanged.  Is there a use-case for modifying the graphics as part of
 the tutorial?  If so, how to encode version information in the code?
-Connected with the general 'project namespace' or 'base url' question;
-could that include a revision number?
+
+Tutorial assets
+~~~~~~~~~~~~~~~
+
+Assets for use in the tutorial itself, for example screenshots, can be
+included in a ``tutorial-assets`` directory.  Commits adding such
+assets should have credits/licence information along the same lines as
+the information given for project assets.
 
 
 Tutorial summary file
@@ -211,28 +162,9 @@ directory, the contents are:
   structure in the git repo should likewise have a ‘project-assets’
   directory.
 
-TODO: What about assets for use in the tutorial itself, e.g.,
-screenshots?  Can right-click on stage and choose ‘Save image as…’ (in
-Chrome anyway); choosing this gives you a ``download.png`` file.
-Might be nice to automatically generate screenshots by running the
-script in true Python and capturing and enacting the rendering
-instructions after a specified sequence of events, but that can be
-future work.  Put these in ``tutorial-assets/`` both in the repo and
-the output zipfile.
-
 TODO: This information is independent of the fact that the zipfile
 came from a git repo.  Move it to the general
 ``tutorial-structure.rst`` file?
-
-
-Tool support
-------------
-
-TODO: Script to create git repo of appropriate form.  E.g., make
-empty-base branch, initial commit within nothing in it, structure with
-READMEs in appropriate directories (assets), initial ``tutorial.md``
-with the title as given on command line.  Cookie-cutter for this?
-Branch pointing at git history once those pieces are all committed?
 
 
 Internals

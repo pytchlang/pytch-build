@@ -12,32 +12,40 @@ Structure on the server
 
 The URL structure of the tutorials is::
 
-  pytch.org/[betas/1234abcd/]
+  pytch.org/[beta/1234abcd/]
   ├── index.html
-  ├── about.html
-  ├── pytch.css
-  ├── pytch-gui.js
   :
-  └── tutorials/
-       ├── index.json  ## TODO: Would this be useful?
+  └── tutorials/1234abcd1234abcd1234
+       ├── tutorial-index.html
        ├── bunner/
        │   ├── tutorial.html
+       │   ├── summary.html
+       │   ├── project-assets.json
+       │   ├── tutorial-assets/
+       │   │   └── summary-screenshot.png
        │   └── project-assets/
        │       └── images/
-       │           ├── bunner-background.png
+       │           ├── world.png
        │           ├── car00.png
        :           :   :
        │           └── digit-9.png
        ├── boing/
        │   ├── tutorial.html
+       │   ├── summary.html
+       │   ├── project-assets.json
+       │   ├── tutorial-assets/
+       │   │   └── summary-screenshot.png
        │   └── project-assets/
        │       └── images/
-       │           ├── left-bat.png
-       │           ├── right-bat.png
+       │           ├── robot-normal.png
+       │           ├── robot-flash.png
        :           :   :
-       │           └── digit-9.png
+       │           └── table.png
        :
        etc.
+
+(The ``1234abcd1234abcd1234`` is a shortened SHA1 to avoid false
+cacheing of updated tutorial content.)
 
 
 Structure of HTML fragment

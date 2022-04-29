@@ -14,7 +14,7 @@ from top-level.
 .. caution::
 
    This index will not appear in the final website documentation.  It is just
-   for standalone development of the webapp docs.
+   for standalone development of the ``pytch-build`` docs.
 
 
 Tutorial compiler and related tools
