@@ -92,7 +92,7 @@ def clean_cloned_repo(tmpdir_factory, discovered_repository_path):
     """
     This repo cloned into a tmpdir, checked out at the branch
     "unit-tests-commits", ensuring the repo's user name and email
-    address are configured.
+    address are configured.  Scoped to "function".
     """
     return _repo_clone(tmpdir_factory, discovered_repository_path)
 
