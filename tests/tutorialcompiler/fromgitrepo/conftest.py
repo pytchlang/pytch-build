@@ -84,6 +84,11 @@ def cloned_repo(tmpdir_factory, discovered_repository_path):
     with open(summary_path, "wt") as f_summary:
         f_summary.write("# Working summary for Boing\n")
 
+    metadata_path = clone_path / "boing/metadata.json"
+
+    with open(metadata_path, "wt") as f_metadata:
+        f_metadata.write('{"difficulty": "easy"}')
+
     return repo
 
 
