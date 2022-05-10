@@ -20,6 +20,7 @@ workflow based on the *git* version control system.
    fromgitrepo
    tutorial-collection
    tutorial-text-dataflow
+   tutorial-markdown
    tutorial-metadata
    unit-testing
 
