@@ -14,7 +14,7 @@ Representation in the code
 
 The data is saved in the file ``metadata.json``. Such files can be
 found in each tutorial directory.  The top-level representation is a
-dictionary, which syntax is as followed:
+dictionary, whose syntax is as follows:
 
 .. code-block:: text
 
@@ -43,11 +43,11 @@ Representation in the output
 
 In the front end, the work of processing the HTML of each tutorial's
 ``summary_div`` is done in the ``<TutorialSummaryDisplay>`` component.
-To extend this to use the metadata, a slot ``metadata: any`` was added
-to the type ``ITutorialSummary``. Then, the property
+The parsed metadata object is stored in a slot ``metadata: any``
+within the type ``ITutorialSummary``.  The function
 ``allTutorialSummaries()`` in ``src/database/tutorials.ts`` pulls out
-the JSON metadata from the attribute, parse it, and use the result as
-the value of the metadata slot.  Finally, in the
+the JSON metadata from the attribute, parses it, and uses the result
+as the value of the metadata slot.  Finally, in the
 ``<TutorialSummaryDisplay>``, we use ``tutorial.metadata`` to look for
 a "difficulty" property, and insert a suitable ``<div>`` to show it on
 screen.
