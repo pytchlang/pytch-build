@@ -34,6 +34,8 @@ example of what can be found in the ``summary.html`` file:
 .. code-block:: html
 
   <div class="tutorial-summary" data-metadata-json='{"difficulty": "advance"}'>
+  <!-- tutorial content -->
+  </div>
 
 
 Representation in the output
