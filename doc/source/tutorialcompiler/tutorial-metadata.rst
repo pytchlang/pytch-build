@@ -4,6 +4,7 @@ Tutorial metadata
 At the moment, the tutorials are represented as a list. However, this configuration will get difficult to navigate once the number of provided tutorials will grow.
 Therefore, we want to include the possibility to filter the tutorials thanks to tags, such as the difficulty level of the tutorial for example. This will allow an easier navigation for the user.
 
+
 Representation in the code
 --------------------------
 The data is saved in the file ``metadata.json``. Such files can be found in each tutorial directory.
@@ -22,6 +23,7 @@ This is an example of what can be found in the ``summary.html`` file:
 .. code-block:: bash
 
   <div class="tutorial-summary" data-metadata-json='{"difficulty": "advance"}'>
+
 
 Representation in the output
 ----------------------------

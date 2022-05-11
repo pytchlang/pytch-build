@@ -278,7 +278,7 @@ def tutorial_div_from_project_history(project_history):
 def summary_div_from_project_history(project_history):
     soup = soup_from_markdown_text(project_history.summary_text)
     metadata_string = project_history.metadata_text
- 
+
     # Give all paragraphs holding images (which there should probably only be
     # one of, being the screenshot) an identifiable class.  The front-end is
     # going to have to patch the SRC to be within the tutorials/whatever
@@ -298,5 +298,5 @@ def summary_div_from_project_history(project_history):
 
     for elt in soup:
         summary_div.append(elt)
-    
+
     return summary_div

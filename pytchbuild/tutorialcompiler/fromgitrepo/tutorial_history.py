@@ -505,7 +505,7 @@ class ProjectHistory:
                 return f_in.read()
         else:
             raise InternalError("unknown tutorial_text_source")
-        
+
     @cached_property
     def initial_code_text(self):
         """The initial Python code
