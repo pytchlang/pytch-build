@@ -47,7 +47,7 @@ to the type ``ITutorialSummary``. Then, the property
 the JSON metadata from the attribute, parse it, and use the result as
 the value of the metadata slot.  Finally, in the
 ``<TutorialSummaryDisplay>``, we use ``tutorial.metadata`` to look for
-a "difficulty" property, and insert a suitable <div> to show it on
+a "difficulty" property, and insert a suitable ``<div>`` to show it on
 screen.
 
 
