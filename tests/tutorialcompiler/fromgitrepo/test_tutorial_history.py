@@ -280,7 +280,7 @@ class TestProjectHistory:
         text_source = project_history.tutorial_text_source
         target_text = ("advance" if text_source == TTS.TIP_REVISION
                        else "easy")
-        assert metadata['difficulty'] == target_text
+        assert metadata["difficulty"] == target_text
 
     def test_initial_code_text(self, project_history):
         assert project_history.initial_code_text == ""
