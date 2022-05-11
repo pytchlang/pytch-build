@@ -16,7 +16,7 @@ The data is saved in the file ``metadata.json``. Such files can be
 found in each tutorial directory.  The top-level representation is a
 dictionary, which syntax is as followed:
 
-.. code-block:: bash
+.. code-block:: text
 
   {"name_of_tag": "value_of_tag"}
 
@@ -31,7 +31,7 @@ or from the working directory.  Then the property
 that attribute will be the ``metadata_text`` property.  This is an
 example of what can be found in the ``summary.html`` file:
 
-.. code-block:: bash
+.. code-block:: html
 
   <div class="tutorial-summary" data-metadata-json='{"difficulty": "advance"}'>
 
