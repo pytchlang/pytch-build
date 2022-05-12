@@ -1,6 +1,7 @@
 import pytest
 import re
 import logging
+import json
 
 import pygit2
 import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history as TH
@@ -272,6 +273,14 @@ class TestProjectHistory:
         target_text = ("# Summary for Boing" if text_source == TTS.TIP_REVISION
                        else "# Working summary for Boing")
         assert project_history.summary_text.startswith(target_text)
+
+    def test_metadata_text(self, project_history):
+        metadata = json.loads(project_history.metadata_text)
+        TTS = TH.ProjectHistory.TutorialTextSource
+        text_source = project_history.tutorial_text_source
+        target_text = ("advance" if text_source == TTS.TIP_REVISION
+                       else "easy")
+        assert metadata["difficulty"] == target_text
 
     def test_initial_code_text(self, project_history):
         assert project_history.initial_code_text == ""

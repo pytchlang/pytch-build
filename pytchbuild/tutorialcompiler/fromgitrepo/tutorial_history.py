@@ -50,6 +50,7 @@ ASSET_SOURCE_DIRNAME = "asset-src"
 CODE_FILE_BASENAME = "code.py"
 TUTORIAL_TEXT_FILE_BASENAME = "tutorial.md"
 SUMMARY_TEXT_FILE_BASENAME = "summary.md"
+METADATA_FILE_BASENAME = "metadata.json"
 
 
 ################################################################################
@@ -449,6 +450,11 @@ class ProjectHistory:
         return f"{dirname}/{SUMMARY_TEXT_FILE_BASENAME}"
 
     @cached_property
+    def metadata_text_path(self):
+        dirname = self.top_level_directory_name
+        return f"{dirname}/{METADATA_FILE_BASENAME}"
+
+    @cached_property
     def tutorial_text(self):
         """The final tutorial text, depending on ``tutorial_text_source``
 
@@ -483,6 +489,18 @@ class ProjectHistory:
             return tip_commit.text_file_contents(self.summary_text_path)
         elif self.tutorial_text_source == self.TutorialTextSource.WORKING_DIRECTORY:
             full_path = self.workdir_path / self.summary_text_path
+            with full_path.open("rt") as f_in:
+                return f_in.read()
+        else:
+            raise InternalError("unknown tutorial_text_source")
+
+    @cached_property
+    def metadata_text(self):
+        if self.tutorial_text_source == self.TutorialTextSource.TIP_REVISION:
+            tip_commit = self.project_commits[0]
+            return tip_commit.text_file_contents(self.metadata_text_path)
+        elif self.tutorial_text_source == self.TutorialTextSource.WORKING_DIRECTORY:
+            full_path = self.workdir_path / self.metadata_text_path
             with full_path.open("rt") as f_in:
                 return f_in.read()
         else:
