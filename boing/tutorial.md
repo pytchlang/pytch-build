@@ -33,3 +33,9 @@ Not sure how we ended up with an alien in Boing but never mind.
 
 A primitive AI moves the alien:
 
+
+## Credits
+
+And here are the credits again in case you missed them:
+
+{{< asset-credits >}}
