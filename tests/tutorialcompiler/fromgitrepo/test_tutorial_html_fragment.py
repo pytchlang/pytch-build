@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import List
 from bs4 import BeautifulSoup
 
+import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history as TH
 import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_html_fragment as THF
 
 
@@ -187,6 +188,21 @@ class TestHtmlFragment:
             assert "data-seek-to-chapter" not in front_matter.attrs
         else:
             assert front_matter.attrs["data-seek-to-chapter"] == "2"
+
+    def test_asset_credits_shortcode(self, project_history):
+        # This test only applies to committed version of content:
+        TTS = TH.ProjectHistory.TutorialTextSource
+        if project_history.tutorial_text_source != TTS.TIP_REVISION:
+            return
+
+        div = THF.tutorial_div_from_project_history(project_history)
+
+        front_matter_credits = (
+            div
+            .find("div", class_="front-matter")
+            .find_all("p", class_="credit-intro")
+        )
+        assert len(front_matter_credits) == 1
 
 
 class TestPredicates:
