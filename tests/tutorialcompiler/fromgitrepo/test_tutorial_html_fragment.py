@@ -204,6 +204,14 @@ class TestHtmlFragment:
         )
         assert len(front_matter_credits) == 1
 
+        # Find credit-intro elts within final chapter:
+        body_credits = (
+            div
+            .find_all("div", class_="chapter-content")[-1]
+            .find_all("p", class_="credit-intro")
+        )
+        assert len(body_credits) == 1
+
 
 class TestPredicates:
     @pytest.mark.parametrize(
