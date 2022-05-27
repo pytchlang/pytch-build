@@ -77,7 +77,8 @@ def cloned_repo(tmpdir_factory, discovered_repository_path):
     with open(tutorial_path, "wt") as f_tutorial:
         f_tutorial.write("Working copy of tutorial\n"
                          "\n\n{{< commit import-pytch >}}\n"
-                         "\n\n{{< commit add-Alien-skeleton >}}\n")
+                         "\n\n{{< commit add-Alien-skeleton >}}\n"
+                         "\n\n```scratch\ngo to x: [0] y: [120]\n```\n")
 
     summary_path = clone_path / "boing/summary.md"
 
