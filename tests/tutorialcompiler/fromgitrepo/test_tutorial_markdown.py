@@ -21,6 +21,6 @@ class TestShortcodeParsing:
         if tutorial_md_text.startswith("Working copy"):
             return
         soup = TM.soup_from_markdown_text(tutorial_md_text)
-        all_code_elts = soup.find_all('code', 'language-scratch')
+        all_code_elts = soup.find_all("code", "language-scratch")
         all_code_texts = [elt.get_text() for elt in all_code_elts]
-        assert all_code_texts == ['go to x: [0] y: [120]\n']
+        assert all_code_texts == ["go to x: [0] y: [120]\n"]
