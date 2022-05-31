@@ -21,9 +21,7 @@ def test_scratchblocks_code(self, tutorial_md_text):
         if tutorial_md_text.startswith("Working copy"):
             return
         soup = TM.soup_from_markdown_text(tutorial_md_text)
-        print(soup)
-        all_maybe_slugs = [elt.get_text() for elt in soup.find_all('code')]
-        print(all_maybe_slugs)
-        all_mentioned_slugs = [s for s in all_maybe_slugs if s is not None]
+        all_maybe_slugs = [elt.get_text() for elt in soup.find_all('code', 'language-scratch')]
+        all_mentioned_slugs = [s for s in all_maybe_slugs]
         assert all_mentioned_slugs == ['go to x: [0] y: [120]\n']
         
