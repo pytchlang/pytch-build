@@ -1,6 +1,6 @@
 # Boing!
 
-This is a fun game.  It comes from "Code the Classics".
+This is a fun game. It comes from "Code the Classics".
 
 You can see how it turns out:
 
@@ -10,9 +10,7 @@ Hope you enjoy making it!
 
 {{< asset-credits >}}
 
-
-----------------------------------------------------------------
-
+---
 
 ## First we set up the skeleton
 
@@ -27,7 +25,6 @@ Here it is.
 Not sure how we ended up with an alien in Boing but never mind.
 
 {{< commit add-Alien-skeleton >}}
-
 
 ## Move the Alien around
 
