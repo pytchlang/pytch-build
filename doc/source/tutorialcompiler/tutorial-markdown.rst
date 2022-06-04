@@ -31,3 +31,13 @@ Shortcode processing
 The ``markdown`` library allows extensions.  The Pytch
 tutorial-compiler installs a ``BlockProcessor`` extension to handle
 our custom shortcodes.
+
+
+Fenced code blocks
+------------------
+
+The ``fenced_code`` extension is used to allow the triple-backtick
+style of code quoting.  Currently, syntax highlighting is not
+performed.  The main usage is in allowing ``scratch`` as a language,
+intended for use with the `scratchblocks library
+<https://github.com/scratchblocks/scratchblocks>`_ in the front-end.
