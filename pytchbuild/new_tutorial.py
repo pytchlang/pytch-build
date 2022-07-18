@@ -145,6 +145,9 @@ default starting code is not appropriate for this tutorial.
 The tutorial.md and summary.md files have been created and committed,
 each containing a "TODO" marker.
 
+The metadata.json file has been created; you should edit this to label
+your tutorial with the appropriate difficulty level.
+
 You should now be able to go to the top-level directory of the
 pytch-releases checkout, and launch the development server with
 
