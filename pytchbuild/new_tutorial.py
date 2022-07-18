@@ -42,7 +42,10 @@ def create_new_tutorial_branch_and_structure(
 
     commit_files(
         repo,
-        [f"{tutorial_slug}/tutorial.md", f"{tutorial_slug}/summary.md"],
+        [
+            f"{tutorial_slug}/tutorial.md",
+            f"{tutorial_slug}/summary.md",
+        ],
         sig,
         "Add tutorial and summary placeholders",
     )
