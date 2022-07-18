@@ -48,9 +48,10 @@ def create_new_tutorial_branch_and_structure(
         [
             f"{tutorial_slug}/tutorial.md",
             f"{tutorial_slug}/summary.md",
+            f"{tutorial_slug}/metadata.json",
         ],
         sig,
-        "Add tutorial and summary placeholders",
+        "Add tutorial, summary, metadata placeholders",
     )
 
     with (new_directory / "code.py").open("wt") as f_out:
