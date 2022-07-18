@@ -38,6 +38,9 @@ def create_new_tutorial_branch_and_structure(
     with (new_directory / "summary.md").open("wt") as f_out:
         f_out.write(f"# {tutorial_name}\n\nTODO: Write summary\n")
 
+    with (new_directory / "metadata.json").open("wt") as f_out:
+        f_out.write('{"difficulty": "medium"}\n')
+
     sig = create_signature(repo)
 
     commit_files(
