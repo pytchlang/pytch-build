@@ -21,4 +21,8 @@ fi
 
 echo "Watching tutorial $PYTCH_IN_PROGRESS_TUTORIAL"
 
-pytchbuild-watch "$PYTCH_IN_PROGRESS_TUTORIAL" || sleep 10
+pytchbuild-watch "$PYTCH_IN_PROGRESS_TUTORIAL"
+
+# Keep the shell process running in case of error, so tmux doesn't
+# discard the window before we can read the error message.
+sleep 60
