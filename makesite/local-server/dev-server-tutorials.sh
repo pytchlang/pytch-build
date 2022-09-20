@@ -16,3 +16,6 @@ echo Serving tutorial layer from "$(pwd)"
 
 python "$PYTCH_LOCAL_SERVER_DIR"/cors_server.py 8125
 
+# Keep the shell process running in case of error, so tmux doesn't
+# discard the window before we can read the error message.
+sleep 60
