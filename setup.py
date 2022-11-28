@@ -6,7 +6,6 @@ with open('README.rst') as readme_file:
     readme = readme_file.read()
 
 requirements = [
-    'cached_property',
     'pygit2>=1.2.1',
     'Markdown>=3.2.2',
     'beautifulsoup4>=4.9.1',
