@@ -36,7 +36,7 @@ import enum
 import colorlog
 from pathlib import Path
 from dataclasses import dataclass
-from cached_property import cached_property
+from .cached_property import cached_property
 from .errors import InternalError, TutorialStructureError
 
 logger = colorlog.getLogger(__name__)
