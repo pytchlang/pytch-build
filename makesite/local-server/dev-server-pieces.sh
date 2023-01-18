@@ -29,6 +29,12 @@ tmux split-window -t 0 -h \
      PYTCH_IN_PROGRESS_TUTORIAL="$PYTCH_IN_PROGRESS_TUTORIAL" \
      "$PYTCH_LOCAL_SERVER_DIR"/dev-server-live-reload-watch.sh
 
+tmux split-window -t 2 \
+     env \
+     PYTCH_REPO_BASE="$PYTCH_REPO_BASE" \
+     PYTCH_LOCAL_SERVER_DIR="$PYTCH_LOCAL_SERVER_DIR" \
+     "$PYTCH_LOCAL_SERVER_DIR"/dev-server-medialib.sh
+
 exec \
      env \
      PYTCH_REPO_BASE="$PYTCH_REPO_BASE" \
