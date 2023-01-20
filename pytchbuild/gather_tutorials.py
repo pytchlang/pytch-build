@@ -10,7 +10,7 @@ from .tutorialcompiler.gather_tutorials import TutorialCollection, commit_to_rel
     "-o", "--output-file",
     type=click.File(mode="wb"),
     required=True,
-    help=("where to write the zipfile containing the tutorial collection"),
+    help="where to write the zipfile containing the tutorial collection",
 )
 @click.option(
     "-r", "--repository-path",
