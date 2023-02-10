@@ -56,6 +56,9 @@ class TestAsset:
             _assert_data_length(288),  # Taken from "ls -l"
         )
 
+    def test_path_suffix(self):
+        assert self.sample_asset.path_suffix == ".png"
+
 
 class TestProjectCommit:
     def test_short_oid(self, this_raw_repo):
