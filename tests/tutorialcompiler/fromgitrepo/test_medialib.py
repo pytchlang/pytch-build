@@ -1,4 +1,7 @@
+from pathlib import Path
+
 import pytchbuild.tutorialcompiler.medialib as MLib
+import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history as TH
 
 
 def mkItem(name):
@@ -70,3 +73,15 @@ class TestMediaLibraryEntry:
         assert cgroups[2].name == "fruit"
         assert cgroups[2].n_items == 2
         assert cgroups[2].tags == ["fruit", "food"]
+
+
+class TestMediaLibraryItem:
+    def test_from_project_asset(self):
+        my_dir = Path(__file__).parent.resolve()
+        with open(f"{my_dir}/fixtures/rectangle.png", "rb") as f_in:
+            file_data = f_in.read()
+        asset = TH.Asset("project-assets/images/rectangle.png", file_data)
+        item = MLib.MediaLibraryItem.from_project_asset(asset)
+        assert item.name == "rectangle.png"
+        assert item.relativeUrl.endswith("3d610f3c7257a7137137ca2219ba1f0a.png")
+        assert item.size == [80, 40]
