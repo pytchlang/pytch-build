@@ -1,5 +1,5 @@
 from dataclasses import dataclass, asdict, replace
-from typing import List
+from typing import List, Dict
 from collections import defaultdict
 from operator import attrgetter, concat
 from functools import reduce
@@ -69,3 +69,9 @@ class MediaLibraryEntry:
         canonical_assets.sort(key=attrgetter("lowercase_name"))
 
         return canonical_assets
+
+
+@dataclass
+class MediaLibraryData:
+    entries: List[MediaLibraryEntry]
+    data_from_content_id: Dict[str, bytes]
