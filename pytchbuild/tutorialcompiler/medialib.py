@@ -22,6 +22,10 @@ class MediaLibraryEntry:
     items: List[MediaLibraryItem]
     tags: List[str]
 
+    @property
+    def lowercase_name(self):
+        return self.name.lower()
+
     def as_output_dict(self):
         items_dicts = [asdict(item) for item in self.items]
         return {
