@@ -26,6 +26,7 @@ pytchbuild = "pytchbuild.cli:main"
 pytchbuild-watch = "pytchbuild.watch:main"
 pytchbuild-gather-tutorials = "pytchbuild.gather_tutorials:main"
 pytchbuild-new-tutorial = "pytchbuild.new_tutorial:main"
+pytchbuild-gather-asset-media = "pytchbuild.gather_asset_media:main"
 
 [tool.poetry.group.dev.dependencies]
 tox = ">=4.4.6"
