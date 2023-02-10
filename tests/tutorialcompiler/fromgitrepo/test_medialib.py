@@ -23,7 +23,7 @@ entries = [
 ]
 
 
-class TestMediaLibrary:
+class TestMediaLibraryEntry:
     def test_as_output_dict(self):
         got_dict = entries[1].as_output_dict()
         exp_dict = {
