@@ -79,3 +79,7 @@ class MediaLibraryData:
     @classmethod
     def new_empty(cls):
         return cls([], {})
+
+    def accumulate(self, other):
+        self.entries.extend(other.entries)
+        self.data_from_content_id.update(other.data_from_content_id)
