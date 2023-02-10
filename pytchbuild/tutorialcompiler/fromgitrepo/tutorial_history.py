@@ -87,6 +87,21 @@ class Asset:
     def path_suffix(self):
         return Path(self.path).suffix
 
+    @cached_property
+    def project_asset_local_path(self):
+        if not self.is_project_asset:
+            return None
+
+        # The parts are, e.g.,
+        #
+        #     ["bunner", "project-assets", "images", "splash-3.png"]
+        #     ["ticket-vending-machine", "project-assets", "coin-1.png"]
+        #
+        # and we want the part past the tutorial slug part and the
+        # "project-assets" part.
+        #
+        return "/".join(Path(self.path).parts[2:])
+
 
 ################################################################################
 
