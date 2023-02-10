@@ -13,10 +13,11 @@ block = mkItem("block")
 
 block_singleton = MLib.MediaLibraryEntry(1001, "block", [block], ["block"])
 other_block_singleton = MLib.MediaLibraryEntry(1002, "block", [block], ["cube"])
+fruit_entry = MLib.MediaLibraryEntry(1003, "fruit", [banana, apple], ["fruit", "food"])
 
 entries = [
     block_singleton,
-    MLib.MediaLibraryEntry(1003, "fruit", [banana, apple], ["fruit", "food"]),
+    fruit_entry,
     MLib.MediaLibraryEntry(1004, "animals", [cow, horse], ["farm", "animal"]),
     other_block_singleton,
 ]
