@@ -20,3 +20,26 @@ entries = [
     MLib.MediaLibraryEntry(1004, "animals", [cow, horse], ["farm", "animal"]),
     other_block_singleton,
 ]
+
+
+class TestMediaLibrary:
+    def test_as_output_dict(self):
+        got_dict = entries[1].as_output_dict()
+        exp_dict = {
+            "id": 1003,
+            "name": "fruit",
+            "tags": ["fruit", "food"],
+            "items": [
+                {
+                    "name": "banana",
+                    "relativeUrl": "banana.jpg",
+                    "size": [200, 120],
+                },
+                {
+                    "name": "apple",
+                    "relativeUrl": "apple.jpg",
+                    "size": [200, 120],
+                },
+            ],
+        }
+        assert got_dict == exp_dict
