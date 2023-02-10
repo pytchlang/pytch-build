@@ -3,6 +3,10 @@ from typing import List, Dict
 from collections import defaultdict
 from operator import attrgetter, concat
 from functools import reduce
+from pathlib import Path
+from PIL import Image
+import io
+import hashlib
 
 
 @dataclass
@@ -12,6 +16,14 @@ class MediaLibraryItem:
     name: str
     relativeUrl: str
     size: List[int]
+
+    @classmethod
+    def from_project_asset(cls, asset):
+        path = Path(asset.path)
+        hash = hashlib.sha256(asset.data).hexdigest()
+        url = f"{hash}{path.suffix}"
+        size = list(Image.open(io.BytesIO(asset.data)).size)
+        return cls(path.name, url, size)
 
 
 @dataclass
