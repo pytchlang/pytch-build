@@ -23,11 +23,10 @@ def _assert_data_length(exp_length):
 
 
 class TestAsset:
+    sample_asset = TH.Asset("alien.png", b"not-a-real-PNG-file")
+
     def test_str(self):
-        fname = "alien.png"
-        data = b"not-a-real-PNG-file"
-        pa = TH.Asset(fname, data)
-        assert str(pa) == '<Asset "alien.png": 19 bytes>'
+        assert str(self.sample_asset) == '<Asset "alien.png": 19 bytes>'
 
     def _test_from_delta(self, repo, oid, exp_path, assert_data):
         commit_adding_file = repo[oid]
