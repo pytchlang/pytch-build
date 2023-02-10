@@ -34,10 +34,16 @@ from collections import Counter
 import itertools
 import enum
 import colorlog
+import json
 from pathlib import Path
 from dataclasses import dataclass
 from .cached_property import cached_property
 from .errors import InternalError, TutorialStructureError
+from ..medialib import (
+    MediaLibraryItem as MLItem,
+    MediaLibraryEntry as MLEntry,
+    MediaLibraryData,
+)
 
 logger = colorlog.getLogger(__name__)
 
@@ -536,6 +542,34 @@ class ProjectHistory:
                 if asset.path not in asset_from_path:
                     asset_from_path[asset.path] = asset
         return list(asset_from_path.values())
+
+    def medialib_contribution(self, tag, id_iter):
+        metadata = json.loads(self.metadata_text)
+
+        entry_dicts = metadata.get("groupedProjectAssets", [])
+        media_processor = MediaEntriesProcessor(entry_dicts)
+
+        data_from_content_id = {}
+        singleton_entries = []
+        for asset in self.all_assets:
+            if (local_path := asset.project_asset_local_path) is None:
+                continue
+            if asset.path_suffix not in [".jpg", ".png"]:
+                continue
+            item = MLItem.from_project_asset(asset)
+            if not media_processor.accept_item(local_path, item):
+                entry = MLEntry(next(id_iter), item.name, [item], [tag])
+                singleton_entries.append(entry)
+            data_from_content_id[item.relativeUrl] = asset.data
+
+        media_processor.assert_awaiting_nothing()
+
+        entries = (
+            media_processor.as_entries([tag], id_iter)
+            + singleton_entries
+        )
+
+        return MediaLibraryData(entries, data_from_content_id)
 
     @cached_property
     def all_project_assets(self):
