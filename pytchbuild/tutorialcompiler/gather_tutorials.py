@@ -8,6 +8,9 @@ import zipfile
 import copy
 import pygit2
 import itertools
+import re
+import subprocess
+import shutil
 from contextlib import closing
 
 from .medialib import MediaLibraryData
@@ -156,6 +159,48 @@ class TutorialCollection:
 
         with closing(bare_zfile) as zfile:
             self.write_to_zipfile(maybe_collection_oid, zfile)
+
+    def write_asset_credits(self, out_file):
+        pandoc = shutil.which("pandoc")
+        if pandoc is None:
+            raise RuntimeError("could not find pandoc executable")
+
+        pandoc_process = subprocess.Popen(
+            [
+                pandoc,
+                "--from=markdown",
+                "--to=rst",
+                "--output=-",
+                "-",
+            ],
+            stdin=subprocess.PIPE,
+            stdout=out_file,
+            encoding="utf-8",
+        )
+        pandoc_input = pandoc_process.stdin
+
+        pandoc_input.write("# Assets contributed by tutorials\n\n")
+
+        for n, t in self.tutorials.items():
+            # This computation of 'safe_name' is incomplete.  It
+            # handles "Q*Bert".
+            #
+            # TODO: Might need generalising.
+            #
+            safe_name = re.sub(r'\*', r'\*', t.name)
+
+            pandoc_input.write(f"## Tutorial _{safe_name}_\n\n")
+            for credit in t.project_history.all_asset_credits:
+                n_files = len(credit.asset_basenames)
+                files_noun = "File" if n_files == 1 else "Files"
+                basenames_list = ", ".join(
+                    f'`"{name}"`' for name in credit.asset_basenames
+                )
+                pandoc_input.write(f"\n{files_noun} {basenames_list}: ")
+                pandoc_input.write(credit.credit_markdown)
+
+        pandoc_input.close()
+        pandoc_process.wait()
 
     def all_asset_media(self):
         id_iter = itertools.count(64000)
