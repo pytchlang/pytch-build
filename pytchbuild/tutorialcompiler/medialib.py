@@ -7,6 +7,7 @@ from pathlib import Path
 from PIL import Image
 import io
 import hashlib
+import json
 
 
 @dataclass
@@ -107,3 +108,11 @@ class MediaLibraryData:
     def with_entries_unified(self):
         unified_entries = MediaLibraryEntry.gather_equivalent(self.entries)
         return replace(self, entries=unified_entries)
+
+    def write_files(self, out_dir):
+        for entry in self.entries:
+            entry.write_files(out_dir, self.data_from_content_id)
+
+        index_data = [e.as_output_dict() for e in self.entries]
+        with (out_dir / "index.json").open("wt") as f_out:
+            json.dump(index_data, f_out, indent=2)
