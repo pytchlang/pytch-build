@@ -52,6 +52,10 @@ class MediaLibraryEntry:
             "tags": self.tags,
         }
 
+    def write_files(self, out_dir, data_from_url):
+        for item in self.items:
+            item.write_file(out_dir, data_from_url)
+
     @classmethod
     def unify_equivalent(cls, groups):
         # Avoid needless new objects:
