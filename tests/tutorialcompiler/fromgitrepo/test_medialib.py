@@ -56,3 +56,17 @@ class TestMediaLibrary:
         assert unified_group.tags == ["block", "cube"]
 
         assert unify_equiv([fruit_entry]) == fruit_entry
+
+    def test_gather_equivalent(self):
+        cgroups = MLib.MediaLibraryEntry.gather_equivalent(entries)
+        assert len(cgroups) == 3
+        assert cgroups[0].name == "animals"
+        assert cgroups[0].n_items == 2
+        assert cgroups[0].tags == ["farm", "animal"]
+        assert cgroups[1].name == "block"
+        assert cgroups[1].n_items == 1
+        assert cgroups[1].items[0].relativeUrl == "block.jpg"
+        assert cgroups[1].tags == ["block", "cube"]
+        assert cgroups[2].name == "fruit"
+        assert cgroups[2].n_items == 2
+        assert cgroups[2].tags == ["fruit", "food"]
