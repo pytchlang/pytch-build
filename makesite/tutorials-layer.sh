@@ -79,10 +79,37 @@ LAYER_ZIPFILE="$LAYER_WORKDIR"/layer.zip
 
 mkdir -p "$CONTENT_DIR"/tutorials/"$PYTCH_DEPLOYMENT_ID"
 unzip -q -d "$CONTENT_DIR"/tutorials/"$PYTCH_DEPLOYMENT_ID" "$LAYER_ZIPFILE"
+
+
+########################################################################
+#
+# TMP: Include tutorial-sourced media library in the "tutorials" layer.
+#
+# TODO: This will need re-writing once we have media content which
+# does not come from tutorials.  There will need to be some process
+# which merges media libraries: one from tutorials, and one
+# directly-sourced.
+
+medialib_outputdir="$CONTENT_DIR"/medialib/"$PYTCH_DEPLOYMENT_ID"
+mkdir -p "$medialib_outputdir"
+
+(
+    cd_or_fail "$TUTORIALS_REPO_ROOT"
+
+    pytchbuild-gather-asset-media \
+        --index-source=WORKING_DIRECTORY \
+        --output-directory="$medialib_outputdir"
+)
+
+# /TMP
+#
+########################################################################
+
+
 rm "$LAYER_ZIPFILE"
 (
     cd_or_fail "$CONTENT_DIR"
     find tutorials -type d -print0 | xargs -0 chmod 755
     find tutorials -type f -print0 | xargs -0 chmod 644
-    zip -q -r "$LAYER_ZIPFILE" tutorials
+    zip -q -r "$LAYER_ZIPFILE" tutorials medialib
 )
