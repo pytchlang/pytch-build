@@ -44,6 +44,10 @@ class MediaLibraryEntry:
     def lowercase_name(self):
         return self.name.lower()
 
+    @property
+    def n_items(self):
+        return len(self.items)
+
     def as_output_dict(self):
         items_dicts = [asdict(item) for item in self.items]
         return {
