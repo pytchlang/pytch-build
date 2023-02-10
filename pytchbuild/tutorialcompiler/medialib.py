@@ -1,5 +1,6 @@
 from dataclasses import dataclass, asdict, replace
 from typing import List
+from collections import defaultdict
 from operator import attrgetter, concat
 from functools import reduce
 
@@ -43,3 +44,28 @@ class MediaLibraryEntry:
 
         all_tags = reduce(concat, map(attrgetter("tags"), groups), [])
         return replace(groups[0], tags=sorted(all_tags))
+
+    @classmethod
+    def gather_equivalent(cls, groups):
+        """Unify singleton asset-groups by name and content
+        """
+        singleton_groups = [g for g in groups if g.n_items == 1]
+        proper_groups = [g for g in groups if g.n_items > 1]
+
+        group_by_id = {}
+        groups_by_key = defaultdict(set)
+        for group in singleton_groups:
+            group_by_id[group.id] = group
+            asset = group.items[0]
+            key = (asset.name, asset.relativeUrl)
+            groups_by_key[key].add(group.id)
+
+        canonical_singleton_groups = [
+            cls.unify_equivalent([group_by_id[id] for id in group_ids])
+            for group_ids in groups_by_key.values()
+        ]
+
+        canonical_assets = canonical_singleton_groups + proper_groups
+        canonical_assets.sort(key=attrgetter("lowercase_name"))
+
+        return canonical_assets
