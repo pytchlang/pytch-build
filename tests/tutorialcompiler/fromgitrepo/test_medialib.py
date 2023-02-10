@@ -74,6 +74,9 @@ class TestMediaLibraryEntry:
         assert cgroups[2].n_items == 2
         assert cgroups[2].tags == ["fruit", "food"]
 
+    def test_n_items(self):
+        assert [e.n_items for e in entries] == [1, 2, 2, 1]
+
 
 class TestMediaLibraryItem:
     def test_from_project_asset(self):
