@@ -59,6 +59,13 @@ class TestAsset:
     def test_path_suffix(self):
         assert self.sample_asset.path_suffix == ".png"
 
+    def test_project_asset_local_path(self):
+        asset_0 = TH.Asset("invaders/project-assets/images/L1/boom.jpg", b"")
+        assert asset_0.project_asset_local_path == "images/L1/boom.jpg"
+
+        asset_1 = TH.Asset("invaders/project-assets/boom.jpg", b"")
+        assert asset_1.project_asset_local_path == "boom.jpg"
+
 
 class TestProjectCommit:
     def test_short_oid(self, this_raw_repo):
