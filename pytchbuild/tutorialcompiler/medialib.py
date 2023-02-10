@@ -1,5 +1,7 @@
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, replace
 from typing import List
+from operator import attrgetter, concat
+from functools import reduce
 
 
 @dataclass
@@ -28,3 +30,12 @@ class MediaLibraryEntry:
             "items": items_dicts,
             "tags": self.tags,
         }
+
+    @classmethod
+    def unify_equivalent(cls, groups):
+        # Avoid needless new objects:
+        if len(groups) == 1:
+            return groups[0]
+
+        all_tags = reduce(concat, map(attrgetter("tags"), groups), [])
+        return replace(groups[0], tags=sorted(all_tags))
