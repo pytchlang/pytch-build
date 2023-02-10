@@ -44,3 +44,15 @@ class TestMediaLibrary:
             ],
         }
         assert got_dict == exp_dict
+
+    def test_unify_equivalent(self):
+        unify_equiv = MLib.MediaLibraryEntry.unify_equivalent
+
+        unified_group = unify_equiv([block_singleton, other_block_singleton])
+        assert unified_group.id == 1001  # from first input block
+        assert unified_group.name == "block"
+        assert len(unified_group.items) == 1
+        assert unified_group.items[0].relativeUrl == "block.jpg"
+        assert unified_group.tags == ["block", "cube"]
+
+        assert unify_equiv([fruit_entry]) == fruit_entry
