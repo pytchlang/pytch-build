@@ -25,6 +25,10 @@ class MediaLibraryItem:
         size = list(Image.open(io.BytesIO(asset.data)).size)
         return cls(path.name, url, size)
 
+    def write_file(self, out_dir, data_from_url):
+        data = data_from_url[self.relativeUrl]
+        (out_dir / self.relativeUrl).write_bytes(data)
+
 
 @dataclass
 class MediaLibraryEntry:
