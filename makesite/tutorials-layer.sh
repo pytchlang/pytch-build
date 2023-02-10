@@ -48,6 +48,14 @@ if [ ! -e "$TUTORIALS_REPO_ROOT"/.git ]; then
     exit 1
 fi
 
+MEDIALIB_REPO_ROOT="$(realpath "$REPO_ROOT"/../pytch-medialib)"
+if [ ! -e "$MEDIALIB_REPO_ROOT"/.git ]; then
+    (
+        echo No '"'pytch-medialib'"' git repo found parallel to this one
+    ) >&2
+    exit 1
+fi
+
 poetry env use -q python3
 poetry install
 source "$(poetry env info --path)"/bin/activate
