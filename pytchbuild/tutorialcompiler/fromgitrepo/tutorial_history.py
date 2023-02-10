@@ -83,6 +83,10 @@ class Asset:
     def is_project_asset(self):
         return Path(self.path).parts[1] == 'project-assets'
 
+    @cached_property
+    def path_suffix(self):
+        return Path(self.path).suffix
+
 
 ################################################################################
 
