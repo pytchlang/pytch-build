@@ -75,3 +75,7 @@ class MediaLibraryEntry:
 class MediaLibraryData:
     entries: List[MediaLibraryEntry]
     data_from_content_id: Dict[str, bytes]
+
+    @classmethod
+    def new_empty(cls):
+        return cls([], {})
