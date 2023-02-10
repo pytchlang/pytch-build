@@ -83,3 +83,7 @@ class MediaLibraryData:
     def accumulate(self, other):
         self.entries.extend(other.entries)
         self.data_from_content_id.update(other.data_from_content_id)
+
+    def with_entries_unified(self):
+        unified_entries = MediaLibraryEntry.gather_equivalent(self.entries)
+        return replace(self, entries=unified_entries)
