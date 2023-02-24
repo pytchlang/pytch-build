@@ -2,6 +2,7 @@
 name = "pytch-build"
 version = "0.1.0"
 description = "Assemble Pytch website from content, IDE, and tutorials"
+homepage = "https://github.com/pytchlang/pytch-build"
 authors = ["Ben North <ben@redfrontdoor.org>"]
 license = "GPL-3.0-or-later"
 readme = "README.rst"
