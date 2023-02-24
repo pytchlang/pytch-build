@@ -6,7 +6,7 @@ homepage = "https://github.com/pytchlang/pytch-build"
 authors = ["Ben North <ben@redfrontdoor.org>"]
 license = "GPL-3.0-or-later"
 readme = "README.rst"
-packages = [{include = "pytch_build"}]
+packages = [{include = "pytchbuild"}]
 
 [tool.poetry.dependencies]
 python = "^3.8"
