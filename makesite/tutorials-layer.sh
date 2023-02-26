@@ -29,6 +29,16 @@ if [ -e venv ] || [ -e "$CONTENT_DIR" ]; then
     exit 1
 fi
 
+n_poetry_envs=$(poetry env list | wc -l)
+
+if [ "$n_poetry_envs" -ne 0 ]; then
+    (
+        echo "Must be run in a clean clone"
+        echo "(no existing poetry environment)"
+    ) >& 2
+    exit 1
+fi
+
 TUTORIALS_REPO_ROOT="$(realpath "$REPO_ROOT"/../pytch-tutorials)"
 if [ ! -e "$TUTORIALS_REPO_ROOT"/.git ]; then
     (
