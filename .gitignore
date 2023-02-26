@@ -3,6 +3,7 @@
 *.egg-info/
 __pycache__/
 venv/
+.venv/
 doc/build/
 website-layer/
 build/
