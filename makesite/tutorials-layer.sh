@@ -48,12 +48,9 @@ if [ ! -e "$TUTORIALS_REPO_ROOT"/.git ]; then
     exit 1
 fi
 
-# shellcheck disable=SC1091
-python3 -m venv venv \
-    && source venv/bin/activate \
-    && pip install --upgrade pip \
-    && pip install -r requirements_dev.txt \
-    && python setup.py install
+poetry env use -q python3
+poetry install
+source "$(poetry env info --path)"/bin/activate
 
 mkdir -p "$LAYER_WORKDIR"
 LAYER_ZIPFILE="$LAYER_WORKDIR"/layer.zip
