@@ -21,10 +21,11 @@ fi
 LAYER_WORKDIR="$REPO_ROOT"/website-layer
 CONTENT_DIR="$LAYER_WORKDIR"/layer-content
 
-if [ -e venv ] || [ -e "$CONTENT_DIR" ]; then
+# Leave the "venv" check even though we now use poetry.
+if [ -e venv ] || [ -e .venv ] || [ -e "$CONTENT_DIR" ]; then
     (
         echo "Must be run in a clean clone"
-        echo '(i.e., no "venv" or "website-layer/layer-content")'
+        echo '(no "venv" or ".venv" or "website-layer/layer-content")'
     ) >&2
     exit 1
 fi
