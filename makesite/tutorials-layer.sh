@@ -21,11 +21,22 @@ fi
 LAYER_WORKDIR="$REPO_ROOT"/website-layer
 CONTENT_DIR="$LAYER_WORKDIR"/layer-content
 
-if [ -e venv ] || [ -e "$CONTENT_DIR" ]; then
+# Leave the "venv" check even though we now use poetry.
+if [ -e venv ] || [ -e .venv ] || [ -e "$CONTENT_DIR" ]; then
     (
         echo "Must be run in a clean clone"
-        echo '(i.e., no "venv" or "website-layer/layer-content")'
+        echo '(no "venv" or ".venv" or "website-layer/layer-content")'
     ) >&2
+    exit 1
+fi
+
+n_poetry_envs=$(poetry env list | wc -l)
+
+if [ "$n_poetry_envs" -ne 0 ]; then
+    (
+        echo "Must be run in a clean clone"
+        echo "(no existing poetry environment)"
+    ) >& 2
     exit 1
 fi
 
@@ -37,12 +48,9 @@ if [ ! -e "$TUTORIALS_REPO_ROOT"/.git ]; then
     exit 1
 fi
 
-# shellcheck disable=SC1091
-python3 -m venv venv \
-    && source venv/bin/activate \
-    && pip install --upgrade pip \
-    && pip install -r requirements_dev.txt \
-    && python setup.py install
+poetry env use -q python3
+poetry install
+source "$(poetry env info --path)"/bin/activate
 
 mkdir -p "$LAYER_WORKDIR"
 LAYER_ZIPFILE="$LAYER_WORKDIR"/layer.zip

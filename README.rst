@@ -8,26 +8,35 @@ Tools to assemble website from content, IDE, and tutorials.
 Development setup
 -----------------
 
+This project uses `poetry <https://python-poetry.org/>`_.
+
 To set up a virtualenv for development and testing::
 
-  python3 -m venv venv
-  source venv/bin/activate
-  pip install --upgrade pip
-  pip install 'tox>=4.0.0'
+  poetry install
+
+which will cause *poetry* to create a virtual environment in a
+``.venv`` folder.
 
 Then one or both of::
 
-  python setup.py develop
-  pip install -r requirements_dev.txt
-  pytest tests
+  poetry run pytest tests
 
 and/or::
 
-  tox
+  poetry run tox
 
-(Using ``tox`` will also build the docs and run ``flake8``.)
+(which will also build the docs and run ``flake8``).
 
-For live reload while editing docs::
+  poetry run tox -p
+
+will run ``tox`` tasks in parallel.
+
+For live reload while editing docs, first enter a shell which has the
+poetry virtualenv activated by doing::
+
+  poetry shell
+
+then within that shell, run::
 
   cd doc
   sphinx-autobuild --re-ignore '/\.#' source build/html
