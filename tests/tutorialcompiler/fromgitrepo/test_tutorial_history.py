@@ -109,9 +109,10 @@ class TestProjectCommit:
         assert credit.asset_usage == "the project"
         assert "candle damper" in credit.credit_markdown
 
-    def test_asset_credits_without(self, this_raw_repo, caplog):
+    @pytest.mark.parametrize("oid", ["9b40818"])
+    def test_asset_credits_without(self, this_raw_repo, oid, caplog):
         with caplog.at_level(logging.WARNING):
-            pc = TH.ProjectCommit(this_raw_repo, "9b40818")
+            pc = TH.ProjectCommit(this_raw_repo, oid)
             assert len(pc.assets_credits) == 0
             assert "has no body" in caplog.text
 
