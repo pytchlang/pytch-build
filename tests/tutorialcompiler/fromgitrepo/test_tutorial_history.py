@@ -8,6 +8,12 @@ import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history as TH
 import pytchbuild.tutorialcompiler.fromgitrepo.errors as TCE
 
 
+def _assert_data_content(exp_content):
+    def do_assert(got_data):
+        assert got_data == exp_content
+    return do_assert
+
+
 class TestAsset:
     def test_str(self):
         fname = "alien.png"
