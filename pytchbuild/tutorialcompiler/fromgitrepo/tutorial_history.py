@@ -329,6 +329,14 @@ class ProjectCommit:
             return []
 
     @cached_property
+    def modified_assets(self):
+        if self.modifies_project_assets:
+            return [Asset.from_delta(self.repo, delta)
+                    for delta in self.diff_against_parent_or_empty.deltas]
+        else:
+            return []
+
+    @cached_property
     def assets_credits(self):
         if self.adds_project_assets or self.adds_tutorial_assets:
             credit_markdown = self.message_body
