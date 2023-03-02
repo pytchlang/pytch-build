@@ -3,6 +3,7 @@ import re
 import logging
 import io
 import json
+import itertools
 
 import pygit2
 from PIL import Image
@@ -389,3 +390,37 @@ class TestProjectHistory:
         context, n_adds, n_dels = patch.line_stats
         assert n_adds == 4
         assert n_dels == 0
+
+    def test_medialib_contribution(self, project_history):
+        ids = itertools.count(50000)
+        media_data = project_history.medialib_contribution("helicopters", ids)
+
+        TTS = TH.ProjectHistory.TutorialTextSource
+        if project_history.tutorial_text_source == TTS.TIP_REVISION:
+            # Committed version has a group with the two small-*.png
+            # assets in an entry called "rectangles".
+            assert len(media_data.entries) == 2
+            rectangle_entries = [
+                entry for entry in media_data.entries
+                if entry.name == "rectangles"
+            ]
+            assert len(rectangle_entries) == 1
+            rectangles = rectangle_entries[0]
+            assert len(rectangles.items) == 2
+            # The order should be preserved; small-blue should be first even
+            # though small-red is added more recently, and we process assets
+            # from most-recently-added to least-recently-added.
+            assert rectangles.items[0].name == "small-blue.png"
+        elif project_history.tutorial_text_source == TTS.WORKING_DIRECTORY:
+            # Content overwritten in conftest.py has no grouped
+            # assets.
+            assert len(media_data.entries) == 3
+            entry_names = sorted([e.name for e in media_data.entries])
+            assert entry_names == ["alien.png", "small-blue.png", "small-red.png"]
+            for entry in media_data.entries:
+                assert len(entry.items) == 1
+                assert entry.items[0].name == entry.name
+                exp_size = [80, 40] if entry.name == "alien.png" else [40, 16]
+                assert entry.items[0].size == exp_size
+        else:
+            pytest.fail("internal test error; bad tutorial_text_source")
