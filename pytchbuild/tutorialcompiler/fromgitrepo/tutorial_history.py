@@ -338,7 +338,12 @@ class ProjectCommit:
 
     @cached_property
     def assets_credits(self):
-        if self.adds_project_assets or self.adds_tutorial_assets:
+        should_have_credits = (
+            self.adds_project_assets
+            or self.adds_tutorial_assets
+        )
+
+        if should_have_credits:
             credit_markdown = self.message_body
             if re.match(r"^\s*$", credit_markdown):
                 logger.warning(f"commit {self.oid} adds assets but has no"
