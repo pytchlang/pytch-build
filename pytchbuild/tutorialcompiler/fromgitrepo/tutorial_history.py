@@ -253,23 +253,23 @@ class ProjectCommit:
         if self.is_base:
             return False
 
-        deltas_adding_assets = []
-        other_deltas = []
+        any_deltas_adding_assets = False
+        any_other_deltas = False
 
         for delta in self.diff_against_parent_or_empty.deltas:
             if (delta.status == pygit2.GIT_DELTA_ADDED
                     and is_asset_fun(delta.new_file.path)):
-                deltas_adding_assets.append(delta)
+                any_deltas_adding_assets = True
             else:
-                other_deltas.append(delta)
+                any_other_deltas = True
 
-        if deltas_adding_assets and other_deltas:
+        if any_deltas_adding_assets and any_other_deltas:
             raise TutorialStructureError(
                 f"commit {self.oid} adds {asset_kind_name} assets"
                 " but also has other deltas"
             )
 
-        return bool(deltas_adding_assets)
+        return any_deltas_adding_assets
 
     def modifies_assets(self, is_asset_fun, asset_kind_name):
         any_deltas_modifying_assets = False
