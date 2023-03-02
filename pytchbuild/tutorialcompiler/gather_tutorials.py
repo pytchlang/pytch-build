@@ -7,7 +7,10 @@ import enum
 import zipfile
 import copy
 import pygit2
+import itertools
 from contextlib import closing
+
+from .medialib import MediaLibraryData
 
 from .fromgitrepo import git_repository
 from .fromgitrepo.tutorial_history import ProjectHistory
@@ -153,6 +156,16 @@ class TutorialCollection:
 
         with closing(bare_zfile) as zfile:
             self.write_to_zipfile(maybe_collection_oid, zfile)
+
+    def all_asset_media(self):
+        id_iter = itertools.count(64000)
+        library_data = MediaLibraryData.new_empty()
+        for n, t in self.tutorials.items():
+            tag = f'Tutorial "{n}"'
+            tutorial_data = t.project_history.medialib_contribution(tag, id_iter)
+            library_data.accumulate(tutorial_data)
+
+        return library_data.with_entries_unified()
 
     @property
     def gathered_tip_oids(self):
