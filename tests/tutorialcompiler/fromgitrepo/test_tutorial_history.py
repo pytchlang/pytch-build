@@ -42,6 +42,7 @@ class TestProjectCommit:
             ("e1655214", "tutorial-text"),
             ("e41e02c9", "#add-Alien-skeleton"),
             ("9b408181", 'add-assets("boing/project-assets/graphics/alien.png")'),
+            ("c87cb28d", 'modify-assets("boing/project-assets/graphics/alien.png")'),
             ("bf0e5cfa", 'add-assets("boing/tutorial-assets/not-a-real-png.png")'),
             ("b36564cb", "asset-source"),
         ])
