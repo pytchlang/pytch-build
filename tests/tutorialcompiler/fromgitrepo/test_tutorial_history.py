@@ -41,8 +41,8 @@ class TestProjectCommit:
             ("ae1fea2c", "BASE"),
             ("e1655214", "tutorial-text"),
             ("e41e02c9", "#add-Alien-skeleton"),
-            ("9b408181", 'assets("boing/project-assets/graphics/alien.png")'),
-            ("bf0e5cfa", 'assets("boing/tutorial-assets/not-a-real-png.png")'),
+            ("9b408181", 'add-assets("boing/project-assets/graphics/alien.png")'),
+            ("bf0e5cfa", 'add-assets("boing/tutorial-assets/not-a-real-png.png")'),
             ("b36564cb", "asset-source"),
         ])
     def test_summary_label(self, this_raw_repo, oid, exp_summary):
