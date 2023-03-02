@@ -71,8 +71,11 @@ class Asset:
     def from_delta(cls, repo, delta):
         """Construct a :py:class:`Asset` from a Git delta
         """
-        if delta.status != pygit2.GIT_DELTA_ADDED:
-            raise InternalError("delta is not of type ADDED")
+        if delta.status not in [
+            pygit2.GIT_DELTA_ADDED,
+            pygit2.GIT_DELTA_MODIFIED,
+        ]:
+            raise InternalError("delta is not of type ADDED or MODIFIED")
 
         return cls(delta.new_file.path, repo[delta.new_file.id].data)
 
