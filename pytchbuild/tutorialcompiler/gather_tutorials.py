@@ -167,6 +167,9 @@ class TutorialCollection:
 
         return library_data.with_entries_unified()
 
+    def write_asset_media(self, out_dir):
+        self.all_asset_media().write_files(out_dir)
+
     @property
     def gathered_tip_oids(self):
         return [info.project_history.tip_oid_string
