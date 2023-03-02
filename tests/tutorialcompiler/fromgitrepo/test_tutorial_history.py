@@ -48,17 +48,12 @@ class TestAsset:
         )
 
     def test_from_delta_modify(self, this_raw_repo):
-        commit_adding_file = this_raw_repo["c87cb28d15ba"]
-        parent_commit = this_raw_repo[commit_adding_file.parent_ids[0]]
-        diff = this_raw_repo.diff(a=parent_commit.tree,
-                                  b=commit_adding_file.tree)
-        deltas = list(diff.deltas)
-        assert len(deltas) == 1
-        delta = deltas[0]
-
-        pa = TH.Asset.from_delta(this_raw_repo, delta)
-        assert pa.path == "boing/project-assets/graphics/alien.png"
-        assert len(pa.data) == 288  # Taken from "ls -l"
+        self._test_from_delta(
+            this_raw_repo,
+            "c87cb28d15ba",
+            "boing/project-assets/graphics/alien.png",
+            _assert_data_length(288),  # Taken from "ls -l"
+        )
 
 
 class TestProjectCommit:
