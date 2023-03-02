@@ -109,7 +109,7 @@ class TestProjectCommit:
         assert credit.asset_usage == "the project"
         assert "candle damper" in credit.credit_markdown
 
-    @pytest.mark.parametrize("oid", ["9b40818"])
+    @pytest.mark.parametrize("oid", ["9b40818", "c87cb28"])
     def test_asset_credits_without(self, this_raw_repo, oid, caplog):
         with caplog.at_level(logging.WARNING):
             pc = TH.ProjectCommit(this_raw_repo, oid)
