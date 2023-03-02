@@ -1,9 +1,11 @@
 import pytest
 import re
 import logging
+import io
 import json
 
 import pygit2
+from PIL import Image
 import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history as TH
 import pytchbuild.tutorialcompiler.fromgitrepo.errors as TCE
 
@@ -355,6 +357,14 @@ class TestProjectHistory:
             "boing/project-assets/bell-ping.mp3",
             "boing/project-assets/graphics/alien.png",
         ]
+        alien_assets = [
+            a for a in project_history.all_project_assets
+            if a.path.endswith("alien.png")
+        ]
+        assert len(alien_assets) == 1
+        alien_asset = alien_assets[0]
+        got_size = Image.open(io.BytesIO(alien_asset.data)).size
+        assert got_size == (80, 40)
 
     def test_code_text_from_slug(self, project_history):
         text = project_history.code_text_from_slug("add-Alien-skeleton")
