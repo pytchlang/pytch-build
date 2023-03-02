@@ -14,6 +14,12 @@ def _assert_data_content(exp_content):
     return do_assert
 
 
+def _assert_data_length(exp_length):
+    def do_assert(got_data):
+        assert len(got_data) == exp_length
+    return do_assert
+
+
 class TestAsset:
     def test_str(self):
         fname = "alien.png"
