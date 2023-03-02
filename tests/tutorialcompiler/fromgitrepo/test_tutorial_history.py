@@ -15,7 +15,7 @@ class TestAsset:
         pa = TH.Asset(fname, data)
         assert str(pa) == '<Asset "alien.png": 19 bytes>'
 
-    def test_from_delta(self, this_raw_repo):
+    def test_from_delta_add(self, this_raw_repo):
         commit_adding_file = this_raw_repo["9b40818176"]
         parent_commit = this_raw_repo[commit_adding_file.parent_ids[0]]
         diff = this_raw_repo.diff(a=parent_commit.tree,
