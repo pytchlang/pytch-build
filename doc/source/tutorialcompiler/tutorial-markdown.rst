@@ -9,7 +9,7 @@ various pieces of a tutorial:
 * The tutorial summary (in a tutorial's ``summary.md`` file)
 
 * The credits / acknowledgement / licence text for third-party assets
-  (in commit messages adding those assets)
+  (in commit messages adding or modifying those assets)
 
 All of these pieces of Markdown are processed by the
 ``soup_from_markdown_text()`` function in::

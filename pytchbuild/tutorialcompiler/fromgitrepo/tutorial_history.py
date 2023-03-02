@@ -71,8 +71,11 @@ class Asset:
     def from_delta(cls, repo, delta):
         """Construct a :py:class:`Asset` from a Git delta
         """
-        if delta.status != pygit2.GIT_DELTA_ADDED:
-            raise InternalError("delta is not of type ADDED")
+        if delta.status not in [
+            pygit2.GIT_DELTA_ADDED,
+            pygit2.GIT_DELTA_MODIFIED,
+        ]:
+            raise InternalError("delta is not of type ADDED or MODIFIED")
 
         return cls(delta.new_file.path, repo[delta.new_file.id].data)
 
@@ -140,7 +143,10 @@ class ProjectCommit:
             return "BASE"
         if self.adds_project_assets or self.adds_tutorial_assets:
             asset_paths = ", ".join(f'"{a.path}"' for a in self.added_assets)
-            return f"assets({asset_paths})"
+            return f"add-assets({asset_paths})"
+        if self.modifies_project_assets:
+            asset_paths = ", ".join(f'"{a.path}"' for a in self.modified_assets)
+            return f"modify-assets({asset_paths})"
         if self.adds_asset_source:
             return "asset-source"
         if self.modifies_tutorial_text:
@@ -247,27 +253,50 @@ class ProjectCommit:
         if self.is_base:
             return False
 
-        deltas_adding_assets = []
-        other_deltas = []
+        any_deltas_adding_assets = False
+        any_other_deltas = False
 
         for delta in self.diff_against_parent_or_empty.deltas:
             if (delta.status == pygit2.GIT_DELTA_ADDED
                     and is_asset_fun(delta.new_file.path)):
-                deltas_adding_assets.append(delta)
+                any_deltas_adding_assets = True
             else:
-                other_deltas.append(delta)
+                any_other_deltas = True
 
-        if deltas_adding_assets and other_deltas:
+        if any_deltas_adding_assets and any_other_deltas:
             raise TutorialStructureError(
                 f"commit {self.oid} adds {asset_kind_name} assets"
                 " but also has other deltas"
             )
 
-        return bool(deltas_adding_assets)
+        return any_deltas_adding_assets
+
+    def modifies_assets(self, is_asset_fun, asset_kind_name):
+        any_deltas_modifying_assets = False
+        any_other_deltas = False
+
+        for delta in self.diff_against_parent_or_empty.deltas:
+            if (delta.status == pygit2.GIT_DELTA_MODIFIED
+                    and is_asset_fun(delta.new_file.path)):
+                any_deltas_modifying_assets = True
+            else:
+                any_other_deltas = True
+
+        if any_deltas_modifying_assets and any_other_deltas:
+            raise TutorialStructureError(
+                f"commit {self.oid} modifies {asset_kind_name} assets"
+                " but also has other deltas"
+            )
+
+        return any_deltas_modifying_assets
 
     @cached_property
     def adds_project_assets(self):
         return self.adds_assets(self.path_is_a_project_asset, "project")
+
+    @cached_property
+    def modifies_project_assets(self):
+        return self.modifies_assets(self.path_is_a_project_asset, "project")
 
     @cached_property
     def adds_tutorial_assets(self):
@@ -300,8 +329,22 @@ class ProjectCommit:
             return []
 
     @cached_property
+    def modified_assets(self):
+        if self.modifies_project_assets:
+            return [Asset.from_delta(self.repo, delta)
+                    for delta in self.diff_against_parent_or_empty.deltas]
+        else:
+            return []
+
+    @cached_property
     def assets_credits(self):
-        if self.adds_project_assets or self.adds_tutorial_assets:
+        should_have_credits = (
+            self.adds_project_assets
+            or self.modifies_project_assets
+            or self.adds_tutorial_assets
+        )
+
+        if should_have_credits:
             credit_markdown = self.message_body
             if re.match(r"^\s*$", credit_markdown):
                 logger.warning(f"commit {self.oid} adds assets but has no"
@@ -391,10 +434,24 @@ class ProjectHistory:
 
     @cached_property
     def all_assets(self):
-        """List of all assets added during the history of the project
+        """List of all assets added or updated during the history of the project
+
+        If an asset is added and then modified, the most recent
+        content of that asset is used.  Assets are given in no
+        particular order.
         """
-        commits_assets = (c.added_assets for c in self.project_commits)
-        return list(itertools.chain.from_iterable(commits_assets))
+        asset_from_path = {}
+        for commit in self.project_commits:
+            for asset in itertools.chain(
+                commit.added_assets,
+                commit.modified_assets
+            ):
+                # We go through commits from newest to oldest, so
+                # ignore any older modifies/adds of an asset we
+                # already know about.
+                if asset.path not in asset_from_path:
+                    asset_from_path[asset.path] = asset
+        return list(asset_from_path.values())
 
     @cached_property
     def all_project_assets(self):

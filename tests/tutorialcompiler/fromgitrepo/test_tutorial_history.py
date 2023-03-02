@@ -1,11 +1,25 @@
 import pytest
 import re
 import logging
+import io
 import json
 
 import pygit2
+from PIL import Image
 import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history as TH
 import pytchbuild.tutorialcompiler.fromgitrepo.errors as TCE
+
+
+def _assert_data_content(exp_content):
+    def do_assert(got_data):
+        assert got_data == exp_content
+    return do_assert
+
+
+def _assert_data_length(exp_length):
+    def do_assert(got_data):
+        assert len(got_data) == exp_length
+    return do_assert
 
 
 class TestAsset:
@@ -15,18 +29,33 @@ class TestAsset:
         pa = TH.Asset(fname, data)
         assert str(pa) == '<Asset "alien.png": 19 bytes>'
 
-    def test_from_delta(self, this_raw_repo):
-        commit_adding_file = this_raw_repo["9b40818176"]
-        parent_commit = this_raw_repo[commit_adding_file.parent_ids[0]]
-        diff = this_raw_repo.diff(a=parent_commit.tree,
-                                  b=commit_adding_file.tree)
+    def _test_from_delta(self, repo, oid, exp_path, assert_data):
+        commit_adding_file = repo[oid]
+        parent_commit = repo[commit_adding_file.parent_ids[0]]
+        diff = repo.diff(a=parent_commit.tree, b=commit_adding_file.tree)
         deltas = list(diff.deltas)
         assert len(deltas) == 1
         delta = deltas[0]
 
-        pa = TH.Asset.from_delta(this_raw_repo, delta)
-        assert pa.path == "boing/project-assets/graphics/alien.png"
-        assert pa.data == b"This is not a real PNG file!"
+        pa = TH.Asset.from_delta(repo, delta)
+        assert pa.path == exp_path
+        assert_data(pa.data)
+
+    def test_from_delta_add(self, this_raw_repo):
+        self._test_from_delta(
+            this_raw_repo,
+            "9b40818176",
+            "boing/project-assets/graphics/alien.png",
+            _assert_data_content(b"This is not a real PNG file!"),
+        )
+
+    def test_from_delta_modify(self, this_raw_repo):
+        self._test_from_delta(
+            this_raw_repo,
+            "c87cb28d15ba",
+            "boing/project-assets/graphics/alien.png",
+            _assert_data_length(288),  # Taken from "ls -l"
+        )
 
 
 class TestProjectCommit:
@@ -41,8 +70,9 @@ class TestProjectCommit:
             ("ae1fea2c", "BASE"),
             ("e1655214", "tutorial-text"),
             ("e41e02c9", "#add-Alien-skeleton"),
-            ("9b408181", 'assets("boing/project-assets/graphics/alien.png")'),
-            ("bf0e5cfa", 'assets("boing/tutorial-assets/not-a-real-png.png")'),
+            ("9b408181", 'add-assets("boing/project-assets/graphics/alien.png")'),
+            ("c87cb28d", 'modify-assets("boing/project-assets/graphics/alien.png")'),
+            ("bf0e5cfa", 'add-assets("boing/tutorial-assets/not-a-real-png.png")'),
             ("b36564cb", "asset-source"),
         ])
     def test_summary_label(self, this_raw_repo, oid, exp_summary):
@@ -79,9 +109,10 @@ class TestProjectCommit:
         assert credit.asset_usage == "the project"
         assert "candle damper" in credit.credit_markdown
 
-    def test_asset_credits_without(self, this_raw_repo, caplog):
+    @pytest.mark.parametrize("oid", ["9b40818", "c87cb28"])
+    def test_asset_credits_without(self, this_raw_repo, oid, caplog):
         with caplog.at_level(logging.WARNING):
-            pc = TH.ProjectCommit(this_raw_repo, "9b40818")
+            pc = TH.ProjectCommit(this_raw_repo, oid)
             assert len(pc.assets_credits) == 0
             assert "has no body" in caplog.text
 
@@ -307,11 +338,11 @@ class TestProjectHistory:
         assert str(got_oid) == exp_oid
 
     def test_all_assets(self, project_history):
-        got_paths = [a.path for a in project_history.all_assets]
+        got_paths = sorted([a.path for a in project_history.all_assets])
         assert got_paths == [
             "boing/project-assets/bell-ping.mp3",
-            "boing/tutorial-assets/not-a-real-png.png",
             "boing/project-assets/graphics/alien.png",
+            "boing/tutorial-assets/not-a-real-png.png",
         ]
 
     def test_all_asset_credits(self, fresh_project_history, caplog):
@@ -322,11 +353,19 @@ class TestProjectHistory:
             assert "9b40818" in caplog.text
 
     def test_all_project_assets(self, project_history):
-        got_paths = [a.path for a in project_history.all_project_assets]
+        got_paths = sorted([a.path for a in project_history.all_project_assets])
         assert got_paths == [
             "boing/project-assets/bell-ping.mp3",
             "boing/project-assets/graphics/alien.png",
         ]
+        alien_assets = [
+            a for a in project_history.all_project_assets
+            if a.path.endswith("alien.png")
+        ]
+        assert len(alien_assets) == 1
+        alien_asset = alien_assets[0]
+        got_size = Image.open(io.BytesIO(alien_asset.data)).size
+        assert got_size == (80, 40)
 
     def test_code_text_from_slug(self, project_history):
         text = project_history.code_text_from_slug("add-Alien-skeleton")
