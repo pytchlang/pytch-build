@@ -289,6 +289,10 @@ class ProjectCommit:
         return self.adds_assets(self.path_is_a_project_asset, "project")
 
     @cached_property
+    def modifies_project_assets(self):
+        return self.modifies_assets(self.path_is_a_project_asset, "project")
+
+    @cached_property
     def adds_tutorial_assets(self):
         return self.adds_assets(self.path_is_a_tutorial_asset, "tutorial")
 
