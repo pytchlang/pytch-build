@@ -340,6 +340,7 @@ class ProjectCommit:
     def assets_credits(self):
         should_have_credits = (
             self.adds_project_assets
+            or self.modifies_project_assets
             or self.adds_tutorial_assets
         )
 
