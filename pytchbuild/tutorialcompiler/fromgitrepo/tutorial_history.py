@@ -428,10 +428,24 @@ class ProjectHistory:
 
     @cached_property
     def all_assets(self):
-        """List of all assets added during the history of the project
+        """List of all assets added or updated during the history of the project
+
+        If an asset is added and then modified, the most recent
+        content of that asset is used.  Assets are given in no
+        particular order.
         """
-        commits_assets = (c.added_assets for c in self.project_commits)
-        return list(itertools.chain.from_iterable(commits_assets))
+        asset_from_path = {}
+        for commit in self.project_commits:
+            for asset in itertools.chain(
+                commit.added_assets,
+                commit.modified_assets
+            ):
+                # We go through commits from newest to oldest, so
+                # ignore any older modifies/adds of an asset we
+                # already know about.
+                if asset.path not in asset_from_path:
+                    asset_from_path[asset.path] = asset
+        return list(asset_from_path.values())
 
     @cached_property
     def all_project_assets(self):
