@@ -40,17 +40,12 @@ class TestAsset:
         assert_data(pa.data)
 
     def test_from_delta_add(self, this_raw_repo):
-        commit_adding_file = this_raw_repo["9b40818176"]
-        parent_commit = this_raw_repo[commit_adding_file.parent_ids[0]]
-        diff = this_raw_repo.diff(a=parent_commit.tree,
-                                  b=commit_adding_file.tree)
-        deltas = list(diff.deltas)
-        assert len(deltas) == 1
-        delta = deltas[0]
-
-        pa = TH.Asset.from_delta(this_raw_repo, delta)
-        assert pa.path == "boing/project-assets/graphics/alien.png"
-        assert pa.data == b"This is not a real PNG file!"
+        self._test_from_delta(
+            this_raw_repo,
+            "9b40818176",
+            "boing/project-assets/graphics/alien.png",
+            _assert_data_content(b"This is not a real PNG file!"),
+        )
 
     def test_from_delta_modify(self, this_raw_repo):
         commit_adding_file = this_raw_repo["c87cb28d15ba"]
