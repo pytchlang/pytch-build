@@ -15,6 +15,18 @@ class TestAsset:
         pa = TH.Asset(fname, data)
         assert str(pa) == '<Asset "alien.png": 19 bytes>'
 
+    def _test_from_delta(self, repo, oid, exp_path, assert_data):
+        commit_adding_file = repo[oid]
+        parent_commit = repo[commit_adding_file.parent_ids[0]]
+        diff = repo.diff(a=parent_commit.tree, b=commit_adding_file.tree)
+        deltas = list(diff.deltas)
+        assert len(deltas) == 1
+        delta = deltas[0]
+
+        pa = TH.Asset.from_delta(repo, delta)
+        assert pa.path == exp_path
+        assert_data(pa.data)
+
     def test_from_delta_add(self, this_raw_repo):
         commit_adding_file = this_raw_repo["9b40818176"]
         parent_commit = this_raw_repo[commit_adding_file.parent_ids[0]]
