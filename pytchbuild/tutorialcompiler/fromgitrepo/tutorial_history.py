@@ -265,6 +265,25 @@ class ProjectCommit:
 
         return bool(deltas_adding_assets)
 
+    def modifies_assets(self, is_asset_fun, asset_kind_name):
+        any_deltas_modifying_assets = False
+        any_other_deltas = False
+
+        for delta in self.diff_against_parent_or_empty.deltas:
+            if (delta.status == pygit2.GIT_DELTA_MODIFIED
+                    and is_asset_fun(delta.new_file.path)):
+                any_deltas_modifying_assets = True
+            else:
+                any_other_deltas = True
+
+        if any_deltas_modifying_assets and any_other_deltas:
+            raise TutorialStructureError(
+                f"commit {self.oid} modifies {asset_kind_name} assets"
+                " but also has other deltas"
+            )
+
+        return any_deltas_modifying_assets
+
     @cached_property
     def adds_project_assets(self):
         return self.adds_assets(self.path_is_a_project_asset, "project")
