@@ -6,7 +6,7 @@ cd_or_fail() { cd "$1" || exit 1; }
 enable -n true
 
 # shellcheck disable=SC1091
-. "$PYTCH_REPO_BASE"/pytch-build/venv/bin/activate || {
+. "$PYTCH_REPO_BASE"/pytch-build/.venv/bin/activate || {
     echo Could not activate pytch-build venv
     sleep 60
     exit 1
