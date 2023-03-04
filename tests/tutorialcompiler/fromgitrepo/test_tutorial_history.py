@@ -424,3 +424,26 @@ class TestProjectHistory:
                 assert entry.items[0].size == exp_size
         else:
             pytest.fail("internal test error; bad tutorial_text_source")
+
+    def test_medialib_contribution_missing_path(self, fresh_project_history):
+        # Force-overwrite the "metadata_text" attribute:
+        bad_metadata = {
+            "difficulty": "medium",
+            "groupedProjectAssets": [
+                {
+                    "name": "rectangles",
+                    "assets": [
+                        "graphics/small-blue.png",
+                        "graphics/large-blue.png"
+                    ]
+                }
+            ]
+        }
+        fresh_project_history.metadata_text = json.dumps(bad_metadata)
+
+        ids = itertools.count(60000)
+        with pytest.raises(
+                TCE.TutorialStructureError,
+                match=r"paths \[.graphics/large-blue.png'\] not found"
+        ):
+            fresh_project_history.medialib_contribution("fruit", ids)
