@@ -6,7 +6,17 @@ media_distdir="$PYTCH_REPO_BASE"/pytch-medialib/dist
 mkdir -p "$media_distdir"
 cd_or_fail "$media_distdir"
 
-# TODO: Build step.
+# shellcheck disable=SC1091
+. "$PYTCH_REPO_BASE"/pytch-build/.venv/bin/activate || {
+    echo Could not activate pytch-build venv
+    sleep 60
+    exit 1
+}
+
+echo Generating media library contribution from tutorials
+pytchbuild-gather-asset-media \
+    --repository-path="$PYTCH_REPO_BASE"/pytch-tutorials \
+    --output-directory=.
 
 echo Serving media library from "$(pwd)"
 
