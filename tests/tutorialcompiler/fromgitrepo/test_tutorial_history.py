@@ -447,3 +447,31 @@ class TestProjectHistory:
                 match=r"paths \[.graphics/large-blue.png'\] not found"
         ):
             fresh_project_history.medialib_contribution("fruit", ids)
+
+    def test_medialib_contribution_dupd_path(self, fresh_project_history):
+        # Force-overwrite the "metadata_text" attribute:
+        bad_metadata = {
+            "difficulty": "medium",
+            "groupedProjectAssets": [
+                {
+                    "name": "rectangles",
+                    "assets": [
+                        "graphics/small-blue.png"
+                    ]
+                },
+                {
+                    "name": "more-rectangles",
+                    "assets": [
+                        "graphics/small-blue.png"
+                    ]
+                }
+            ]
+        }
+        fresh_project_history.metadata_text = json.dumps(bad_metadata)
+
+        ids = itertools.count(60000)
+        with pytest.raises(
+                TCE.TutorialStructureError,
+                match=r"small-blue.png.*part of 2"
+        ):
+            fresh_project_history.medialib_contribution("fruit", ids)
