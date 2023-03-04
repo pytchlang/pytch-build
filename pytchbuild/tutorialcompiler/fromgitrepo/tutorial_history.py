@@ -398,6 +398,40 @@ class ProjectCommit:
 
 ################################################################################
 
+class MediaEntryProcessor:
+    def __init__(self, name, paths):
+        self.name = name
+        # Initially, every element of self.items is a string, being
+        # the path of an asset we expect to be provided in due course.
+        # Each time accept_item() is called, one element of self.items
+        # might get replaced with a MediaLibraryItem for that asset.
+        # By the time all tutorial assets have been provided to us via
+        # accept_item(), all elements of self.items should be
+        # MediaLibraryItem instances.
+        self.items = paths
+
+    def accept_item(self, path, item):
+        try:
+            idx = self.items.index(path)
+            self.items[idx] = item
+            return True
+        except ValueError:
+            return False
+
+    def assert_awaiting_nothing(self):
+        missing_paths = [
+            item for item in self.items
+            if isinstance(item, str)
+        ]
+        if len(missing_paths) > 0:
+            raise TutorialStructureError(
+                f'media-entry "{self.name}":'
+                f" paths {missing_paths} not found"
+            )
+
+
+################################################################################
+
 class ProjectHistory:
     """Development history of a Pytch project within a tutorial context
     """
