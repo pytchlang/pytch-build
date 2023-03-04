@@ -342,6 +342,8 @@ class TestProjectHistory:
         assert got_paths == [
             "boing/project-assets/bell-ping.mp3",
             "boing/project-assets/graphics/alien.png",
+            "boing/project-assets/graphics/small-blue.png",
+            "boing/project-assets/graphics/small-red.png",
             "boing/tutorial-assets/not-a-real-png.png",
         ]
 
@@ -357,6 +359,8 @@ class TestProjectHistory:
         assert got_paths == [
             "boing/project-assets/bell-ping.mp3",
             "boing/project-assets/graphics/alien.png",
+            "boing/project-assets/graphics/small-blue.png",
+            "boing/project-assets/graphics/small-red.png",
         ]
         alien_assets = [
             a for a in project_history.all_project_assets
