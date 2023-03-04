@@ -1,1 +1,12 @@
-{"difficulty": "advance"}
+{
+    "difficulty": "advance",
+    "groupedProjectAssets": [
+        {
+            "name": "rectangles",
+            "assets": [
+                "graphics/small-blue.png",
+                "graphics/small-red.png"
+            ]
+        }
+    ]
+}
