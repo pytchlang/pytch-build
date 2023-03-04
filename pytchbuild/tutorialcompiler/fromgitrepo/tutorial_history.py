@@ -430,6 +430,37 @@ class MediaEntryProcessor:
             )
 
 
+class MediaEntriesProcessor:
+    def __init__(self, entry_dicts):
+        self.processors = [
+            MediaEntryProcessor(entry["name"], entry["assets"])
+            for entry in entry_dicts
+        ]
+
+    def accept_item(self, path, item):
+        n_did_accept = 0
+        for processor in self.processors:
+            n_did_accept += int(processor.accept_item(path, item))
+
+        if n_did_accept > 1:
+            raise TutorialStructureError(
+                f'asset "{path}":'
+                f" part of {n_did_accept} entries"
+            )
+
+        return n_did_accept == 1
+
+    def assert_awaiting_nothing(self):
+        for processor in self.processors:
+            processor.assert_awaiting_nothing()
+
+    def as_entries(self, tags, id_iter):
+        return [
+            MLEntry(next(id_iter), processor.name, processor.items, tags)
+            for processor in self.processors
+        ]
+
+
 ################################################################################
 
 class ProjectHistory:
