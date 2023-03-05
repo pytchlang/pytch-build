@@ -118,7 +118,7 @@ def project_history(cloned_repo, request):
 
 
 @pytest.fixture
-def fresh_project_history(cloned_repo, request):
+def fresh_project_history(cloned_repo):
     """
     A ProjectHistory constructed from a clone of this repo, using the
     "unit-tests-commits" branch.  This fixture is function-scoped so

@@ -34,10 +34,16 @@ from collections import Counter
 import itertools
 import enum
 import colorlog
+import json
 from pathlib import Path
 from dataclasses import dataclass
 from .cached_property import cached_property
 from .errors import InternalError, TutorialStructureError
+from ..medialib import (
+    MediaLibraryItem as MLItem,
+    MediaLibraryEntry as MLEntry,
+    MediaLibraryData,
+)
 
 logger = colorlog.getLogger(__name__)
 
@@ -82,6 +88,25 @@ class Asset:
     @cached_property
     def is_project_asset(self):
         return Path(self.path).parts[1] == 'project-assets'
+
+    @cached_property
+    def path_suffix(self):
+        return Path(self.path).suffix
+
+    @cached_property
+    def project_asset_local_path(self):
+        if not self.is_project_asset:
+            return None
+
+        # The parts are, e.g.,
+        #
+        #     ["bunner", "project-assets", "images", "splash-3.png"]
+        #     ["ticket-vending-machine", "project-assets", "coin-1.png"]
+        #
+        # and we want the part past the tutorial slug part and the
+        # "project-assets" part.
+        #
+        return "/".join(Path(self.path).parts[2:])
 
 
 ################################################################################
@@ -379,6 +404,71 @@ class ProjectCommit:
 
 ################################################################################
 
+class MediaEntryProcessor:
+    def __init__(self, name, paths):
+        self.name = name
+        # Initially, every element of self.items is a string, being
+        # the path of an asset we expect to be provided in due course.
+        # Each time accept_item() is called, one element of self.items
+        # might get replaced with a MediaLibraryItem for that asset.
+        # By the time all tutorial assets have been provided to us via
+        # accept_item(), all elements of self.items should be
+        # MediaLibraryItem instances.
+        self.items = paths
+
+    def accept_item(self, path, item):
+        try:
+            idx = self.items.index(path)
+            self.items[idx] = item
+            return True
+        except ValueError:
+            return False
+
+    def assert_awaiting_nothing(self):
+        missing_paths = [
+            item for item in self.items
+            if isinstance(item, str)
+        ]
+        if len(missing_paths) > 0:
+            raise TutorialStructureError(
+                f'media-entry "{self.name}":'
+                f" paths {missing_paths} not found"
+            )
+
+
+class MediaEntriesProcessor:
+    def __init__(self, entry_dicts):
+        self.processors = [
+            MediaEntryProcessor(entry["name"], entry["assets"])
+            for entry in entry_dicts
+        ]
+
+    def accept_item(self, path, item):
+        n_did_accept = 0
+        for processor in self.processors:
+            n_did_accept += int(processor.accept_item(path, item))
+
+        if n_did_accept > 1:
+            raise TutorialStructureError(
+                f'asset "{path}":'
+                f" part of {n_did_accept} entries"
+            )
+
+        return n_did_accept == 1
+
+    def assert_awaiting_nothing(self):
+        for processor in self.processors:
+            processor.assert_awaiting_nothing()
+
+    def as_entries(self, tags, id_iter):
+        return [
+            MLEntry(next(id_iter), processor.name, processor.items, tags)
+            for processor in self.processors
+        ]
+
+
+################################################################################
+
 class ProjectHistory:
     """Development history of a Pytch project within a tutorial context
     """
@@ -452,6 +542,34 @@ class ProjectHistory:
                 if asset.path not in asset_from_path:
                     asset_from_path[asset.path] = asset
         return list(asset_from_path.values())
+
+    def medialib_contribution(self, tag, id_iter):
+        metadata = json.loads(self.metadata_text)
+
+        entry_dicts = metadata.get("groupedProjectAssets", [])
+        media_processor = MediaEntriesProcessor(entry_dicts)
+
+        data_from_content_id = {}
+        singleton_entries = []
+        for asset in self.all_assets:
+            if (local_path := asset.project_asset_local_path) is None:
+                continue
+            if asset.path_suffix not in [".jpg", ".png"]:
+                continue
+            item = MLItem.from_project_asset(asset)
+            if not media_processor.accept_item(local_path, item):
+                entry = MLEntry(next(id_iter), item.name, [item], [tag])
+                singleton_entries.append(entry)
+            data_from_content_id[item.relativeUrl] = asset.data
+
+        media_processor.assert_awaiting_nothing()
+
+        entries = (
+            media_processor.as_entries([tag], id_iter)
+            + singleton_entries
+        )
+
+        return MediaLibraryData(entries, data_from_content_id)
 
     @cached_property
     def all_project_assets(self):

@@ -11,6 +11,7 @@ cd_or_fail() { cd "$1" || exit 1; }
 
 cd_or_fail "$PYTCH_REPO_BASE"/pytch-tutorials
 
+echo Generating tutorials layer
 pytchbuild-gather-tutorials --index-source=RECIPES_TIP -o /tmp/pytch-tutorials.zip
 mkdir -p site-layer
 cd_or_fail site-layer

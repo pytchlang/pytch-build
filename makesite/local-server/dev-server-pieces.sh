@@ -13,6 +13,7 @@ tmux split-window -d -b -v \
      REACT_APP_SKULPT_BASE=http://localhost:8124 \
      REACT_APP_TUTORIALS_BASE=http://localhost:8125 \
      REACT_APP_DEMOS_BASE=http://localhost:8126 \
+     REACT_APP_MEDIALIB_BASE=http://localhost:8127 \
      REACT_APP_ENABLE_LIVE_RELOAD_WEBSOCKET=yes \
      REACT_APP_VERSION_TAG=local-development-build \
      "$PYTCH_LOCAL_SERVER_DIR"/dev-server-webapp.sh
@@ -28,6 +29,12 @@ tmux split-window -t 0 -h \
      PYTCH_REPO_BASE="$PYTCH_REPO_BASE" \
      PYTCH_IN_PROGRESS_TUTORIAL="$PYTCH_IN_PROGRESS_TUTORIAL" \
      "$PYTCH_LOCAL_SERVER_DIR"/dev-server-live-reload-watch.sh
+
+tmux split-window -t 2 \
+     env \
+     PYTCH_REPO_BASE="$PYTCH_REPO_BASE" \
+     PYTCH_LOCAL_SERVER_DIR="$PYTCH_LOCAL_SERVER_DIR" \
+     "$PYTCH_LOCAL_SERVER_DIR"/dev-server-medialib.sh
 
 exec \
      env \
