@@ -28,6 +28,8 @@ paragraph consisting of just a particular *shortcode* into the
 (These shortcodes are modelled on Hugo's.)
 
 
+.. _Creating a new tutorial:
+
 Creating a new tutorial
 -----------------------
 
