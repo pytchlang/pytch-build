@@ -3,7 +3,7 @@ Building and deploying the site
 
 The build system uses a git 'superproject' repo ``pytch-releases`` to
 coordinate the build process, both for beta deployments and also
-versioned release deployments.  TODO: Finish this explanation.
+versioned release deployments.
 
 .. toctree::
    :maxdepth: 1
