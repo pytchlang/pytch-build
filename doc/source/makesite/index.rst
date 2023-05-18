@@ -6,6 +6,7 @@ coordinate the build process, both for beta deployments and also
 versioned release deployments.  TODO: Finish this explanation.
 
 .. toctree::
+   :maxdepth: 1
 
    querying-repo-status
    development-local-server
