@@ -46,9 +46,8 @@ this can be done in the author's editor of choice.  Whenever the
 ``tutorial.md`` file changes, the watcher sends the tutorial content to
 the webapp, which updates its *Tutorial* tab.
 
-TODO: Currently, getting set up to develop a brand new tutorial is
-quite clunky.  We should make this workflow smoother.
-
+To start writing a new tutorial, the :ref:`pytchbuild-new-tutorial
+<Creating a new tutorial>` tool can be used.
 
 Marking the work-in-progress chapter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

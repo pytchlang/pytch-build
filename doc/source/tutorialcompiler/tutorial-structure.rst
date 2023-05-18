@@ -1,10 +1,8 @@
 Tutorial structure
 ==================
 
-TODO: What is the starting point for the code?  The ``{base}`` commit
-of the tutorial should add the ``code.py`` file with the same contents
-as the IDE starts off with in the code pane.  This changed with the
-introduction of the auto-registration code, so might need review.
+The ``{base}`` commit of the tutorial should add the ``code.py`` file
+with the same contents as the IDE starts off with in the code pane.
 
 
 Structure on the server

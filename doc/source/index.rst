@@ -1,28 +1,16 @@
 Pytch build tools
 =================
 
-Standalone build of docs
-------------------------
-
-Run::
-
-  tox -e doc
-
-from top-level.
-
-
-.. caution::
-
-   This index will not appear in the final website documentation.  It is just
-   for standalone development of the ``pytch-build`` docs.
+This repo contains various tools for building the website, both for
+production and for local development, and for helping write tutorials
+efficiently.
 
 
 Tutorial compiler and related tools
 -----------------------------------
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
 
    tutorialcompiler/index
    live-reload/index
@@ -32,7 +20,6 @@ Assembly of website bundle
 --------------------------
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
 
    makesite/index

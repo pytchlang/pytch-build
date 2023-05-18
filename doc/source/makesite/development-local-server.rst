@@ -9,7 +9,7 @@ A script
 
   makesite/local-server/dev-server.sh
 
-is provided which launches a four-way ``tmux`` session.  The panes
+is provided which launches a five-way ``tmux`` session.  The panes
 contain individual shell scripts for the following pieces:
 
 * ``dev-server-webapp.sh`` — An ``npm``-based server for the React
@@ -23,6 +23,8 @@ contain individual shell scripts for the following pieces:
   Skulpt-based VM.
 * ``dev-server-tutorials.sh`` — A Python-based web server for the
   tutorial bundle and components.
+* ``dev-server-medialib.sh`` — Builds the media library and serves it
+  over HTTP.
 
 For example,
 
