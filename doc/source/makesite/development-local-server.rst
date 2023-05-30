@@ -13,7 +13,8 @@ is provided which launches a five-way ``tmux`` session.  The panes
 contain individual shell scripts for the following pieces:
 
 * ``dev-server-webapp.sh`` — An ``npm``-based server for the React
-  webapp itself.
+  webapp itself.  Uses various environment variables (including some
+  loaded from a ``.env`` file) to configure the webapp's behaviour.
 * ``dev-server-live-reload-watch.sh`` — A websocket server for
   live-reload of code and tutorial content.  See
   :doc:`../live-reload/index` for details of this mechanism.  This
