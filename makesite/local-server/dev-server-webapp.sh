@@ -16,6 +16,10 @@ set -o allexport
 source ${dotenvfile}
 set +o allexport
 
+npx() {
+    command npx --no-install "$@"
+}
+
 npm start
 
 # Keep the shell process running in case of error, so tmux doesn't
