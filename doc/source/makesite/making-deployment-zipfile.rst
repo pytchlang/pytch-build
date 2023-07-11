@@ -66,10 +66,10 @@ WebApp / IDE
 
 Comes from ``pytch-webapp`` repo.  This is a React app and so needs to
 be built with knowledge of where it will be deployed (via
-``PUBLIC_URL``).  The Pytch app in particular also needs to be built
+``BASE_URL``).  The Pytch app in particular also needs to be built
 knowing where it will get its Skulpt files from
-(``REACT_APP_SKULPT_BASE``), and where it will get tutorial
-information from (``REACT_APP_TUTORIALS_BASE``).  The files from the
+(``VITE_SKULPT_BASE``), and where it will get tutorial
+information from (``VITE_TUTORIALS_BASE``).  The files from the
 webapp end up in::
 
   app/...
