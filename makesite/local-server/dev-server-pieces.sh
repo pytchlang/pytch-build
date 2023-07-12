@@ -8,14 +8,13 @@ PYTCH_LOCAL_SERVER_DIR="$(realpath "$(dirname "$0")")"
 tmux split-window -d -b -v \
      env \
      PYTCH_REPO_BASE="$PYTCH_REPO_BASE" \
-     PUBLIC_URL="" \
-     REACT_APP_DEPLOY_BASE_URL="" \
-     REACT_APP_SKULPT_BASE=http://localhost:8124 \
-     REACT_APP_TUTORIALS_BASE=http://localhost:8125 \
-     REACT_APP_DEMOS_BASE=http://localhost:8126 \
-     REACT_APP_MEDIALIB_BASE=http://localhost:8127 \
-     REACT_APP_ENABLE_LIVE_RELOAD_WEBSOCKET=yes \
-     REACT_APP_VERSION_TAG=local-development-build \
+     VITE_DEPLOY_BASE_URL="" \
+     VITE_SKULPT_BASE=http://localhost:8124 \
+     VITE_TUTORIALS_BASE=http://localhost:8125 \
+     VITE_DEMOS_BASE=http://localhost:8126 \
+     VITE_MEDIALIB_BASE=http://localhost:8127 \
+     VITE_LIVE_RELOAD_WEBSOCKET=yes \
+     VITE_VERSION_TAG=local-development-build \
      "$PYTCH_LOCAL_SERVER_DIR"/dev-server-webapp.sh
 
 tmux split-window -h \

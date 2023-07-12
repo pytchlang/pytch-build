@@ -16,7 +16,21 @@ set -o allexport
 source ${dotenvfile}
 set +o allexport
 
-npm start
+npx() {
+    command npx --no-install "$@"
+}
+
+basearg=""
+if [ -n "$DEV_VITE_BASE_PATH" ]; then
+    basearg="--base=$DEV_VITE_BASE_PATH"
+fi
+
+if [ "${DEV_VITE_USE_PREVIEW:-no}" = "yes" ]; then
+    echo Running tsc...
+    npx tsc && npx vite build "$basearg" && npx vite preview "$basearg"
+else
+    npx vite "$basearg"
+fi
 
 # Keep the shell process running in case of error, so tmux doesn't
 # discard the window before we can read the error message.
