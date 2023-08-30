@@ -7,6 +7,9 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
+LOCAL_SERVER_DIR="$(realpath "$(dirname "$0")")"
+cd_or_fail "$LOCAL_SERVER_DIR"
+
 # This is sometimes unnecessary, but it's very quick, so worthwhile to
 # make sure we have the latest image configuration:
 docker build --tag pytch-local-server .
