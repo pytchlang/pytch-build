@@ -38,6 +38,7 @@ chmod 755 "$CONTENTDIR"
     if [ -e releases ]; then
         echo Release zipfile: setting up redirection
         cp releases/*/toplevel-dot-htaccess .htaccess
+        app_path=""
     else
         app_path=$(python -c "import zipfile; print(zipfile.ZipFile('$1').infolist()[0].filename)")
         if [ -z "$app_path" ]; then
