@@ -46,12 +46,12 @@ chmod 755 "$CONTENTDIR"
             echo Problem finding path within zipfile "$1"
             echo
         fi
-
-        echo
-        echo Cypress command within pytch-webapp directory:
-        echo CYPRESS_BASE_URL=http://localhost:5888/"${app_path}"app/ ./node_modules/.bin/cypress open
-        echo
     fi
+
+    echo
+    echo Cypress command within pytch-webapp directory:
+    echo CYPRESS_BASE_URL=http://localhost:5888/"${app_path}"app/ ./node_modules/.bin/cypress open
+    echo
 )
 
 docker run -it --rm \
