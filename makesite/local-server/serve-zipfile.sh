@@ -7,6 +7,9 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
+LOCAL_SERVER_DIR="$(realpath "$(dirname "$0")")"
+cd_or_fail "$LOCAL_SERVER_DIR"
+
 # This is sometimes unnecessary, but it's very quick, so worthwhile to
 # make sure we have the latest image configuration:
 docker build --tag pytch-local-server .
@@ -35,6 +38,7 @@ chmod 755 "$CONTENTDIR"
     if [ -e releases ]; then
         echo Release zipfile: setting up redirection
         cp releases/*/toplevel-dot-htaccess .htaccess
+        app_path=""
     else
         app_path=$(python -c "import zipfile; print(zipfile.ZipFile('$1').infolist()[0].filename)")
         if [ -z "$app_path" ]; then
@@ -42,12 +46,12 @@ chmod 755 "$CONTENTDIR"
             echo Problem finding path within zipfile "$1"
             echo
         fi
-
-        echo
-        echo Cypress command within pytch-webapp directory:
-        echo CYPRESS_BASE_URL=http://localhost:5888/"${app_path}"app/ ./node_modules/.bin/cypress open
-        echo
     fi
+
+    echo
+    echo Cypress command within pytch-webapp directory:
+    echo CYPRESS_BASE_URL=http://localhost:5888/"${app_path}"app/ ./node_modules/.bin/cypress open
+    echo
 )
 
 docker run -it --rm \
