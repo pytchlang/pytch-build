@@ -40,4 +40,4 @@ class ScoreKeeper(pytch.Sprite):
 
     @pytch.when_I_receive("award-point")
     def award_point(self):
-        pass
+        self.score += 1
