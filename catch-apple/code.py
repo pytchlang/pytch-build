@@ -45,3 +45,7 @@ class ScoreKeeper(pytch.Sprite):
     def award_point(self):
         self.score += 1
         self.say(self.score)
+
+    @pytch.when_green_flag_clicked
+    def drop_apples(self):
+        pass
