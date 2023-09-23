@@ -48,4 +48,5 @@ class ScoreKeeper(pytch.Sprite):
 
     @pytch.when_green_flag_clicked
     def drop_apples(self):
-        pass
+        while True:
+            pytch.broadcast_and_wait("drop-apple")
