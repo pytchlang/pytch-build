@@ -264,3 +264,25 @@ class ActorCode:
     kind: Literal["stage", "sprite"]
     appearances: list[str]
     handlers: list[EventHandler]
+
+    @classmethod
+    def new_empty(cls, cdef):
+        n_bases = len(cdef.bases)
+        if n_bases != 1:
+            raise TutorialStructureError(
+                f'expecting class "{cdef.name}" to have one base'
+                f" but found {n_bases}"
+            )
+        base = cdef.bases[0]
+        assert_is_attribute_on_pytch(base, f'base of class "{cdef.name}"')
+
+        # Convert "Stage" (the name of the class within the pytch
+        # module) to the kind "stage" and similarly "Sprite"/"sprite".
+        kind = base.attr.lower()
+        if kind not in ["sprite", "stage"]:
+            raise TutorialStructureError(
+                f'expecting base of class "{cdef.name}" to be either'
+                f" pytch.Sprite or pytch.Stage but found {base.attr}"
+            )
+
+        return cls(cdef.name, kind, [], [])
