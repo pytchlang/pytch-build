@@ -407,3 +407,12 @@ class StructuredPytchProgram:
             for actor_code in self.top_level_classes.values()
             for appearance_name in actor_code.appearances
         ]
+
+    @property
+    def all_scripts(self):
+        """All scripts in context of each one's actor."""
+        return [
+            ActorScript(actor_code.identifier, handler)
+            for actor_code in self.top_level_classes.values()
+            for handler in actor_code.handlers
+        ]
