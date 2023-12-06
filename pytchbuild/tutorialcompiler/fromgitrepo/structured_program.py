@@ -312,3 +312,17 @@ class ActorScript:
     @property
     def path(self):
         return ScriptPath(self.actor_identifier, self.script.method_name)
+
+
+########################################################################
+
+class StructuredPytchProgram:
+    """Representation of a Pytch program as actors with scripts."""
+
+    def __init__(self, code_text):
+        # Line numbers reported in AST nodes are 1-based.  Prepend a
+        # padding entry to give a list where we can use those 1-based
+        # numbers as indexes:
+        self.code_lines = ["PADDING"] + code_text.split("\n")
+        self.top_level_classes = {}
+        code_ast = ast.parse(code_text)
