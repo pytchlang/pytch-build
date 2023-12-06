@@ -74,3 +74,22 @@ def assert_is_attribute_on_pytch(node, node_description):
             f"expecting {node_description} to be Attribute"
             " on pytch but it is not"
         )
+
+
+def string_literal_value(node):
+    """The value of the string literal `node`.
+
+    If `node` is not such a string literal, raise an error.
+    """
+    if not isinstance(node, ast.Constant):
+        cls_name = node.__class__.__name__
+        raise TutorialStructureError(
+            f"expecting string literal but found {cls_name}"
+        )
+    if not isinstance(node.value, str):
+        value_cls_name = node.value.__class__.__name__
+        raise TutorialStructureError(
+            "expecting string literal but found Constant"
+            f" of class {value_cls_name}"
+        )
+    return node.value
