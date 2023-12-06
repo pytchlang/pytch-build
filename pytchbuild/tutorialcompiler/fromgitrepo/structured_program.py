@@ -3,6 +3,9 @@ from dataclasses import dataclass
 from typing import Literal
 from .errors import TutorialStructureError
 
+# Some of the following have camelCase because they're destined to be
+# serialised as JSON ready for consumption by JavaScript.
+
 
 def make_of_kind(kind):
     def make(cls, *args):
