@@ -327,6 +327,21 @@ class StructuredPytchProgram:
         self.top_level_classes = {}
         code_ast = ast.parse(code_text)
 
+    def ingest_classdef(self, cdef):
+        """Add an ActorCode instance for a class definition."""
+        actor_code = ActorCode.new_empty(cdef)
+        self.top_level_classes[cdef.name] = actor_code
+        for stmt in cdef.body:
+            if isinstance(stmt, ast.FunctionDef):
+                self.ingest_methoddef(actor_code, stmt)
+            elif isinstance(stmt, ast.Assign):
+                self.ingest_assignment(actor_code, stmt)
+            else:
+                cls_name = stmt.__class__.__name__
+                raise TutorialStructureError(
+                    f"unexpected {cls_name} statement in classdef"
+                )
+
     def ingest_methoddef(self, actor_code, mdef):
         """Add a handler to actor_code for a method definition."""
         body_lineno_lb = mdef.body[0].lineno
