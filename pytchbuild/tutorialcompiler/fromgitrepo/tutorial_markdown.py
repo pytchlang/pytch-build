@@ -54,6 +54,13 @@ class ShortcodeExtension(markdown.extensions.Extension):
         )
 
 
+def node_is_from_shortcode(node, target_shortcode):
+    if node.name != "div":
+        return False
+    node_classes = node.attrs.get("class", [])
+    return target_shortcode in node_classes
+
+
 def soup_from_markdown_text(markdown_text):
     html = markdown.markdown(
         markdown_text,
