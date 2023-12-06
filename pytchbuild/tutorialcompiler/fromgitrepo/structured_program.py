@@ -189,3 +189,13 @@ class ScriptPath:
     """Location of a method within a Sprite/Stage."""
     actor: ActorIdentifier
     methodName: str  # Not clear whether/how this will be used.
+
+
+########################################################################
+
+@dataclass
+class EventHandlerSummary:
+    """Single script represented in Scratch-like form."""
+    method_name: str  # For use in unit tests
+    event: EventDescriptor
+    code_text: str
