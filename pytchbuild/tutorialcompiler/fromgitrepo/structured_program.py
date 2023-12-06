@@ -388,3 +388,8 @@ class StructuredPytchProgram:
             string_literal_value(elt)
             for elt in stmt.value.elts
         ]
+
+    def all_handlers(self):
+        """Flat iterator yielding all known handlers."""
+        for actor_code in self.top_level_classes.values():
+            yield from actor_code.handlers
