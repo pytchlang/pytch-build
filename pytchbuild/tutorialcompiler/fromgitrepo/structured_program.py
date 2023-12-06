@@ -326,3 +326,18 @@ class StructuredPytchProgram:
         self.code_lines = ["PADDING"] + code_text.split("\n")
         self.top_level_classes = {}
         code_ast = ast.parse(code_text)
+
+    def ingest_methoddef(self, actor_code, mdef):
+        """Add a handler to actor_code for a method definition."""
+        body_lineno_lb = mdef.body[0].lineno
+        lineno_ub = mdef.end_lineno + 1
+        handler = EventHandler(
+            actor_code.name,
+            mdef.name,
+            body_lineno_lb,
+            mdef.decorator_list,
+            mdef.lineno,
+            lineno_ub,
+            self.code_lines[body_lineno_lb:lineno_ub]
+        )
+        actor_code.handlers.append(handler)
