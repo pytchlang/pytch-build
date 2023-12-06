@@ -8,7 +8,7 @@ from .errors import TutorialStructureError
 
 
 class ShortcodeProcessor(markdown.blockprocessors.BlockProcessor):
-    RE_SHORTCODE = re.compile(r"^\s*\{\{< ([-\w]+)( (.*))? >\}\}\s*$")
+    RE_SHORTCODE = re.compile(r"^\s*\{\{< ([-/\w]+)( (.*))? >\}\}\s*$")
 
     simple_shortcode_kinds = [
         "run-finished-project", "work-in-progress", "asset-credits",
