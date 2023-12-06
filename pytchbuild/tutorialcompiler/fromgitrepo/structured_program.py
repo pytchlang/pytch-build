@@ -393,3 +393,8 @@ class StructuredPytchProgram:
         """Flat iterator yielding all known handlers."""
         for actor_code in self.top_level_classes.values():
             yield from actor_code.handlers
+
+    @property
+    def all_actor_names(self):
+        """List of all known actor names."""
+        return list(self.top_level_classes.keys())
