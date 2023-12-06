@@ -19,6 +19,18 @@ EXPECTED_INDENT_LEN = 8
 EXPECTED_INDENT = " " * EXPECTED_INDENT_LEN
 
 
+def deindented_line(line):
+    if line == "":
+        return line
+    else:
+        if not line.startswith(EXPECTED_INDENT):
+            raise TutorialStructureError(
+                "expecting line to start with"
+                f" {EXPECTED_INDENT_LEN} spaces but it did not"
+            )
+        return line[EXPECTED_INDENT_LEN:]
+
+
 ########################################################################
 #
 # Mirror the TypeScript ones in the "structured-program" part of the
