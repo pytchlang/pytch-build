@@ -290,3 +290,12 @@ class ActorCode:
     @property
     def identifier(self):
         return ActorIdentifier_make(self.kind, self.name)
+
+
+########################################################################
+
+@dataclass(frozen=True)
+class ActorAppearance:
+    """A costume/backdrop belonging to an actor."""
+    actor_identifier: ActorIdentifier
+    appearance_name: str
