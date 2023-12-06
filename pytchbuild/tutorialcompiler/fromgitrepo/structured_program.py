@@ -252,3 +252,15 @@ class EventHandler:
             self.event,
             self.body_suite_text
         )
+
+
+########################################################################
+
+
+@dataclass
+class ActorCode:
+    """A Sprite (Stage) parsed into Costumes (Backdrops) and Scripts."""
+    name: str
+    kind: Literal["stage", "sprite"]
+    appearances: list[str]
+    handlers: list[EventHandler]
