@@ -299,3 +299,12 @@ class ActorAppearance:
     """A costume/backdrop belonging to an actor."""
     actor_identifier: ActorIdentifier
     appearance_name: str
+
+
+########################################################################
+
+@dataclass
+class ActorScript:
+    """A script belonging to an actor."""
+    actor_identifier: ActorIdentifier
+    script: EventHandler
