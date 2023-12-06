@@ -133,6 +133,13 @@ def slugs_for_class(soup, cls):
 
 
 def ordered_commit_slugs_in_soup(soup):
-    return [elt.attrs["data-slug"]
-            for elt in soup.find_all("div",
-                                     attrs={"class": "patch-container"})]
+    patch_slugs = slugs_for_class(soup, "patch-container")
+    jr_slugs = slugs_for_class(soup, "jr-commit")
+
+    have_patch_slugs = len(patch_slugs) > 0
+    have_jr_slugs = len(jr_slugs) > 0
+
+    if have_patch_slugs and have_jr_slugs:
+        raise TutorialStructureError("mixture of patch and jr-commit slugs")
+
+    return patch_slugs if have_patch_slugs else jr_slugs
