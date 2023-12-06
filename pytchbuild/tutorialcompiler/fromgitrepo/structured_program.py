@@ -126,3 +126,24 @@ def string_literal_value(node):
             f" of class {value_cls_name}"
         )
     return node.value
+
+
+########################################################################
+#
+# Mirror the front-end's ActorIdentifier.
+
+
+@dataclass(frozen=True)
+class ActorIdentifierStage:
+    kind: Literal["stage"]
+    make = make_of_kind("stage")
+
+
+@dataclass(frozen=True)
+class ActorIdentifierSprite:
+    kind: Literal["sprite"]
+    name: str
+    make = make_of_kind("sprite")
+
+
+ActorIdentifier = ActorIdentifierStage | ActorIdentifierSprite
