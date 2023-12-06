@@ -341,3 +341,31 @@ class StructuredPytchProgram:
             self.code_lines[body_lineno_lb:lineno_ub]
         )
         actor_code.handlers.append(handler)
+
+    def ingest_assignment(self, actor_code, stmt):
+        """Handle class-level assignment to Costumes or Backdrops.
+
+        Set actor_code.appearances to the list of costume/backdrop
+        names if assignment is to either of Costumes or Backdrops.
+        """
+        if len(stmt.targets) != 1:
+            # TODO: Warn?
+            return
+        target = stmt.targets[0]
+        if not isinstance(target, ast.Name):
+            # TODO: Warn?
+            return
+        class_attr_name = target.id
+        if class_attr_name not in ["Costumes", "Backdrops"]:
+            # TODO: Warn?
+            return
+        if not isinstance(stmt.value, ast.List):
+            cls_name = stmt.value.__class__.__name__
+            raise TutorialStructureError(
+                "expecting Costumes/Backdrops to be list literal"
+                f" but found {cls_name}"
+            )
+        actor_code.appearances = [
+            string_literal_value(elt)
+            for elt in stmt.value.elts
+        ]
