@@ -421,3 +421,24 @@ class StructuredPytchProgram:
     def all_script_paths(self):
         """Paths of all scripts."""
         return [script.path for script in self.all_scripts]
+
+    def handler_from_path(self, path):
+        """The unique handler at the given `path`."""
+        scripts = [
+            handler
+            for actor_code in self.top_level_classes.values()
+            for handler in actor_code.handlers
+            if (
+                actor_code.identifier == path.actor
+                and handler.method_name == path.methodName
+            )
+        ]
+
+        n_found = len(scripts)
+        if n_found != 1:
+            raise TutorialStructureError(
+                "expecting exactly one handler at"
+                f" {path} but found {n_found}"
+            )
+
+        return scripts[0]
