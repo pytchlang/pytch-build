@@ -326,6 +326,9 @@ class StructuredPytchProgram:
         self.code_lines = ["PADDING"] + code_text.split("\n")
         self.top_level_classes = {}
         code_ast = ast.parse(code_text)
+        for stmt in code_ast.body:
+            if isinstance(stmt, ast.ClassDef):
+                self.ingest_classdef(stmt)
 
     def ingest_classdef(self, cdef):
         """Add an ActorCode instance for a class definition."""
