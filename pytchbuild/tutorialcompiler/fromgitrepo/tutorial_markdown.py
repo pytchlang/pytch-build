@@ -124,6 +124,14 @@ def soup_from_markdown_text(markdown_text):
     return soup
 
 
+def slugs_for_class(soup, cls):
+    """List of "data-slug" attrs for elements of given `cls`."""
+    return [
+        elt.attrs["data-slug"]
+        for elt in soup.find_all("div", attrs={"class": cls})
+    ]
+
+
 def ordered_commit_slugs_in_soup(soup):
     return [elt.attrs["data-slug"]
             for elt in soup.find_all("div",
