@@ -14,6 +14,12 @@ def make_of_kind(kind):
 
 
 ########################################################################
+
+EXPECTED_INDENT_LEN = 8
+EXPECTED_INDENT = " " * EXPECTED_INDENT_LEN
+
+
+########################################################################
 #
 # Mirror the TypeScript ones in the "structured-program" part of the
 # front-end, used to represent the different kinds of hat-blocks
