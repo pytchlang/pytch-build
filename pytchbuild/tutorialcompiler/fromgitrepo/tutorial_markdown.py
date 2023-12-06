@@ -61,6 +61,12 @@ def node_is_from_shortcode(node, target_shortcode):
     return target_shortcode in node_classes
 
 
+def new_div(soup, div_class):
+    div = soup.new_tag("div")
+    div.attrs["class"] = div_class
+    return div
+
+
 def soup_from_markdown_text(markdown_text):
     html = markdown.markdown(
         markdown_text,
