@@ -10,6 +10,10 @@ from .errors import TutorialStructureError
 class ShortcodeProcessor(markdown.blockprocessors.BlockProcessor):
     RE_SHORTCODE = re.compile(r"^\s*\{\{< ([-\w]+)( (.*))? >\}\}\s*$")
 
+    simple_shortcode_kinds = [
+        "run-finished-project", "work-in-progress", "asset-credits",
+    ]
+
     def test(self, parent, block):
         m = self.RE_SHORTCODE.match(block)
         return (m is not None)
@@ -25,15 +29,8 @@ class ShortcodeProcessor(markdown.blockprocessors.BlockProcessor):
             etree.SubElement(parent, "div",
                              {"class": "patch-container",
                               "data-slug": args_str})
-        elif kind == "run-finished-project":
-            etree.SubElement(parent, "div",
-                             {"class": "run-finished-project"})
-        elif kind == "work-in-progress":
-            etree.SubElement(parent, "div",
-                             {"class": "work-in-progress"})
-        elif kind == "asset-credits":
-            etree.SubElement(parent, "div",
-                             {"class": "asset-credits"})
+        elif kind in self.simple_shortcode_kinds:
+            etree.SubElement(parent, "div", {"class": kind})
         else:
             raise TutorialStructureError(f'unknown shortcode kind "{kind}"')
 
