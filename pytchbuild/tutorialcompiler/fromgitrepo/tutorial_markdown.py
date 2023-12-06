@@ -119,7 +119,8 @@ def soup_from_markdown_text(markdown_text):
         markdown_text,
         extensions=[ShortcodeExtension(), "fenced_code"]
     )
-    soup = BeautifulSoup(html, "html.parser")
+    flat_soup = BeautifulSoup(html, "html.parser")
+    soup = gather_learner_task_divs(flat_soup)
     return soup
 
 
