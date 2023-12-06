@@ -12,6 +12,7 @@ class ShortcodeProcessor(markdown.blockprocessors.BlockProcessor):
 
     simple_shortcode_kinds = [
         "run-finished-project", "work-in-progress", "asset-credits",
+        "learner-task", "/learner-task", "learner-task-help",
     ]
 
     def test(self, parent, block):
