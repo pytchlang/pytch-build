@@ -286,3 +286,7 @@ class ActorCode:
             )
 
         return cls(cdef.name, kind, [], [])
+
+    @property
+    def identifier(self):
+        return ActorIdentifier_make(self.kind, self.name)
