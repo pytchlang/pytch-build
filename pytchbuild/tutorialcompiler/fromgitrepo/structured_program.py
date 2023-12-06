@@ -1,6 +1,6 @@
 import ast
 from dataclasses import dataclass
-from typing import Literal
+from typing import Any, Literal
 from .errors import TutorialStructureError
 
 # Some of the following have camelCase because they're destined to be
@@ -199,3 +199,17 @@ class EventHandlerSummary:
     method_name: str  # For use in unit tests
     event: EventDescriptor
     code_text: str
+
+
+########################################################################
+
+@dataclass
+class EventHandler:
+    """Python event handler as it appears in AST."""
+    actor_name: str
+    method_name: str
+    body_lineno_lb: int
+    decorators: [Any]
+    funcdef_lineno_lb: int
+    funcdef_lineno_ub: int
+    body_lines: [str]
