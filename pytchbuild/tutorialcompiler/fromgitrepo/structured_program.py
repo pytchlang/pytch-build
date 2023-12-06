@@ -157,3 +157,14 @@ def ActorIdentifier_make(kind, name):
         return ActorIdentifierSprite.make(name)
     else:
         raise ValueError(f'unknown kind "{kind}"')
+
+
+########################################################################
+#
+# Mirrors the front-end's ScriptPath.
+
+@dataclass(frozen=True)
+class ScriptPath:
+    """Location of a method within a Sprite/Stage."""
+    actor: ActorIdentifier
+    methodName: str  # Not clear whether/how this will be used.
