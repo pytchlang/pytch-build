@@ -12,6 +12,7 @@ import copy
 import bs4
 import difflib
 import colorlog
+import dataclasses
 
 from .tutorial_markdown import (
     soup_from_markdown_text,
@@ -19,6 +20,8 @@ from .tutorial_markdown import (
 )
 
 from .errors import InternalError, TutorialStructureError
+
+from .structured_diff import StructuredPytchDiff
 
 logger = colorlog.getLogger(__name__)
 
@@ -141,6 +144,21 @@ def node_is_asset_credits_marker(elt):
     return (elt.name == "div"
             and elt.has_attr("class")
             and "asset-credits" in elt.attrs["class"])
+
+
+def augment_jr_commit_elt(soup, elt, project_history):
+    commit_slug = elt.attrs["data-slug"]
+    commit_kind = elt.attrs["data-jr-commit-kind"]
+    commit_args = json.loads(elt.attrs["data-jr-commit-args"])
+
+    old_code, new_code = project_history.old_and_new_code(commit_slug)
+    structured_diff = StructuredPytchDiff(old_code, new_code)
+    rich_commit = structured_diff.rich_commit(commit_kind, *commit_args)
+    rich_commit_json = json.dumps(dataclasses.asdict(rich_commit))
+
+    del elt.attrs["data-jr-commit-kind"]
+    del elt.attrs["data-jr-commit-args"]
+    elt.attrs["data-jr-commit"] = rich_commit_json
 
 
 def augment_patch_elt(soup, elt, project_history):
