@@ -274,7 +274,11 @@ def tutorial_div_from_project_history(project_history):
         else:
             if node_is_patch(elt):
                 augment_patch_elt(soup, elt, project_history)
-            elif node_is_asset_credits_marker(elt):
+            for inner_node in elt.find_all("div"):
+                if node_is_patch(inner_node):
+                    augment_patch_elt(soup, inner_node, project_history)
+
+            if node_is_asset_credits_marker(elt):
                 augment_asset_credits_elt(soup, elt, project_history)
             elif elt.name == "h2":
                 chapters.append(current_chapter)
