@@ -7,6 +7,7 @@ just stacking two tables?
 """
 
 import re
+import json
 import bs4
 import difflib
 import colorlog
@@ -256,9 +257,13 @@ def tutorial_div_from_project_history(project_history):
 
     chapters.append(current_chapter)
 
+    # Round-trip to get compact representation:
+    metadata_json = json.dumps(json.loads(project_history.metadata_text))
+
     tutorial_div = soup.new_tag("div", attrs={
         "class": "tutorial-bundle",
         "data-tip-sha1": project_history.tip_oid_string,
+        "data-metadata-json": metadata_json,
     })
 
     tutorial_div.append(div_from_front_matter(
