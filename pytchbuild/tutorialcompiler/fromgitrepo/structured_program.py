@@ -147,3 +147,13 @@ class ActorIdentifierSprite:
 
 
 ActorIdentifier = ActorIdentifierStage | ActorIdentifierSprite
+
+
+def ActorIdentifier_make(kind, name):
+    if kind == "stage":
+        # Ignore name
+        return ActorIdentifierStage.make()
+    elif kind == "sprite":
+        return ActorIdentifierSprite.make(name)
+    else:
+        raise ValueError(f'unknown kind "{kind}"')
