@@ -173,7 +173,13 @@ def augment_patch_elt(soup, elt, project_history):
             attrs={"class": "tutorial-compiler-warning unknown-slug"})
         warning_p.append(f'Slug "{target_slug}" was not found.')
         elt.append(warning_p)
+        return
+
+    elt_classes = elt.attrs["class"]
+    if "jr-commit" in elt_classes:
+        augment_jr_commit_elt(soup, elt, project_history)
     else:
+        # TODO: Move this arm to its own function?
         code_text = project_history.code_text_from_slug(target_slug)
         elt.attrs["data-code-as-of-commit"] = code_text
         patch = project_history.code_patch_against_parent(target_slug)
