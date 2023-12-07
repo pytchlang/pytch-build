@@ -7,15 +7,18 @@ just stacking two tables?
 """
 
 import re
+import json
+import copy
 import bs4
 import difflib
 import colorlog
+import dataclasses
 
 from .tutorial_markdown import (
     soup_from_markdown_text,
     ordered_commit_slugs_in_soup,
 )
-
+from .structured_diff import StructuredPytchDiff
 from .errors import InternalError, TutorialStructureError
 
 logger = colorlog.getLogger(__name__)
@@ -126,7 +129,10 @@ def node_is_relevant(soup_node):
 def node_is_patch(elt):
     return (elt.name == "div"
             and elt.has_attr("class")
-            and "patch-container" in elt.attrs["class"])
+            and (
+                "patch-container" in elt.attrs["class"]
+                or "jr-commit" in elt.attrs["class"]
+            ))
 
 
 def node_is_work_in_progress_marker(elt):
@@ -141,20 +147,41 @@ def node_is_asset_credits_marker(elt):
             and "asset-credits" in elt.attrs["class"])
 
 
+def augment_jr_commit_elt(soup, elt, project_history):
+    commit_slug = elt.attrs["data-slug"]
+    commit_kind = elt.attrs["data-jr-commit-kind"]
+    commit_args = json.loads(elt.attrs["data-jr-commit-args"])
+
+    old_code, new_code = project_history.old_and_new_code(commit_slug)
+    structured_diff = StructuredPytchDiff(old_code, new_code)
+    rich_commit = structured_diff.rich_commit(commit_kind, *commit_args)
+    rich_commit_json = json.dumps(dataclasses.asdict(rich_commit))
+
+    del elt.attrs["data-jr-commit-kind"]
+    del elt.attrs["data-jr-commit-args"]
+    elt.attrs["data-jr-commit"] = rich_commit_json
+
+
 def augment_patch_elt(soup, elt, project_history):
     target_slug = elt.attrs["data-slug"]
-    if project_history.slug_is_known(target_slug):
-        code_text = project_history.code_text_from_slug(target_slug)
-        elt.attrs["data-code-as-of-commit"] = code_text
-        patch = project_history.code_patch_against_parent(target_slug)
-        elt.append(tables_div_from_patch(soup, patch))
-    else:
+    if not project_history.slug_is_known(target_slug):
         logger.warning(f'slug "{target_slug}" not found; noting in output')
         warning_p = soup.new_tag(
             "p",
             attrs={"class": "tutorial-compiler-warning unknown-slug"})
         warning_p.append(f'Slug "{target_slug}" was not found.')
         elt.append(warning_p)
+        return
+
+    elt_classes = elt.attrs["class"]
+    if "jr-commit" in elt_classes:
+        augment_jr_commit_elt(soup, elt, project_history)
+    else:
+        # TODO: Move this arm to its own function?
+        code_text = project_history.code_text_from_slug(target_slug)
+        elt.attrs["data-code-as-of-commit"] = code_text
+        patch = project_history.code_patch_against_parent(target_slug)
+        elt.append(tables_div_from_patch(soup, patch))
 
 
 def augment_asset_credits_elt(soup, elt, project_history):
@@ -245,7 +272,11 @@ def tutorial_div_from_project_history(project_history):
         else:
             if node_is_patch(elt):
                 augment_patch_elt(soup, elt, project_history)
-            elif node_is_asset_credits_marker(elt):
+            for inner_node in elt.find_all("div"):
+                if node_is_patch(inner_node):
+                    augment_patch_elt(soup, inner_node, project_history)
+
+            if node_is_asset_credits_marker(elt):
                 augment_asset_credits_elt(soup, elt, project_history)
             elif elt.name == "h2":
                 chapters.append(current_chapter)
@@ -256,9 +287,13 @@ def tutorial_div_from_project_history(project_history):
 
     chapters.append(current_chapter)
 
+    # Round-trip to get compact representation:
+    metadata_json = json.dumps(json.loads(project_history.metadata_text))
+
     tutorial_div = soup.new_tag("div", attrs={
         "class": "tutorial-bundle",
         "data-tip-sha1": project_history.tip_oid_string,
+        "data-metadata-json": metadata_json,
     })
 
     tutorial_div.append(div_from_front_matter(
@@ -299,6 +334,8 @@ def summary_div_from_project_history(project_history):
     )
 
     for elt in soup:
-        summary_div.append(elt)
+        # In other situations, trying to append the original elt
+        # instance led to hard-to-track-down bugs.
+        summary_div.append(copy.copy(elt))
 
     return summary_div
