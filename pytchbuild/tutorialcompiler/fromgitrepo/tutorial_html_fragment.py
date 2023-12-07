@@ -166,18 +166,18 @@ def augment_jr_commit_elt(soup, elt, project_history):
 
 def augment_patch_elt(soup, elt, project_history):
     target_slug = elt.attrs["data-slug"]
-    if project_history.slug_is_known(target_slug):
-        code_text = project_history.code_text_from_slug(target_slug)
-        elt.attrs["data-code-as-of-commit"] = code_text
-        patch = project_history.code_patch_against_parent(target_slug)
-        elt.append(tables_div_from_patch(soup, patch))
-    else:
+    if not project_history.slug_is_known(target_slug):
         logger.warning(f'slug "{target_slug}" not found; noting in output')
         warning_p = soup.new_tag(
             "p",
             attrs={"class": "tutorial-compiler-warning unknown-slug"})
         warning_p.append(f'Slug "{target_slug}" was not found.')
         elt.append(warning_p)
+    else:
+        code_text = project_history.code_text_from_slug(target_slug)
+        elt.attrs["data-code-as-of-commit"] = code_text
+        patch = project_history.code_patch_against_parent(target_slug)
+        elt.append(tables_div_from_patch(soup, patch))
 
 
 def augment_asset_credits_elt(soup, elt, project_history):
