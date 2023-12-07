@@ -57,6 +57,39 @@ EventDescriptor = (
 )
 
 
+def EventDescriptor_from_decorator_node(node):
+    # TODO: Replace if/elif/elif/else with match/case?
+    if isinstance(node, ast.Attribute):
+        assert_is_attribute_on_pytch(node, "attribute decorator")
+        if node.attr == "when_green_flag_clicked":
+            return EventDescriptorGreenFlag.make()
+        elif node.attr in ["when_this_sprite_clicked", "when_stage_clicked"]:
+            return EventDescriptorClicked.make()
+        elif node.attr == "when_I_start_as_a_clone":
+            return EventDescriptorStartAsClone.make()
+        else:
+            raise TutorialStructureError(
+                f"unknown attribute decorator \"{node.attr}\""
+            )
+    elif isinstance(node, ast.Call):
+        err = TutorialStructureError("unknown pytch function-call decorator")
+        assert_is_attribute_on_pytch(node.func, "function-call decorator")
+        if len(node.args) != 1:
+            raise err
+        decorator_arg = string_literal_value(node.args[0])
+        if node.func.attr == "when_I_receive":
+            return EventDescriptorMessageReceived.make(decorator_arg)
+        elif node.func.attr == "when_key_pressed":
+            return EventDescriptorKeyPressed.make(decorator_arg)
+        raise err
+    else:
+        cls_name = node.__class__.__name__
+        raise TutorialStructureError(
+            "expecting decorator to be pytch bare attribute"
+            f" or function call but found {cls_name}"
+        )
+
+
 ########################################################################
 
 def assert_is_attribute_on_pytch(node, node_description):
