@@ -8,6 +8,7 @@ just stacking two tables?
 
 import re
 import json
+import copy
 import bs4
 import difflib
 import colorlog
@@ -304,6 +305,8 @@ def summary_div_from_project_history(project_history):
     )
 
     for elt in soup:
-        summary_div.append(elt)
+        # In other situations, trying to append the original elt
+        # instance led to hard-to-track-down bugs.
+        summary_div.append(copy.copy(elt))
 
     return summary_div
