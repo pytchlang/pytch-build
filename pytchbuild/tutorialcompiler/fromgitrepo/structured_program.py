@@ -312,3 +312,133 @@ class ActorScript:
     @property
     def path(self):
         return ScriptPath(self.actor_identifier, self.script.method_name)
+
+
+########################################################################
+
+class StructuredPytchProgram:
+    """Representation of a Pytch program as actors with scripts."""
+
+    def __init__(self, code_text):
+        # Line numbers reported in AST nodes are 1-based.  Prepend a
+        # padding entry to give a list where we can use those 1-based
+        # numbers as indexes:
+        self.code_lines = ["PADDING"] + code_text.split("\n")
+        self.top_level_classes = {}
+        code_ast = ast.parse(code_text)
+        for stmt in code_ast.body:
+            if isinstance(stmt, ast.ClassDef):
+                self.ingest_classdef(stmt)
+
+    def ingest_classdef(self, cdef):
+        """Add an ActorCode instance for a class definition."""
+        actor_code = ActorCode.new_empty(cdef)
+        self.top_level_classes[cdef.name] = actor_code
+        for stmt in cdef.body:
+            if isinstance(stmt, ast.FunctionDef):
+                self.ingest_methoddef(actor_code, stmt)
+            elif isinstance(stmt, ast.Assign):
+                self.ingest_assignment(actor_code, stmt)
+            else:
+                cls_name = stmt.__class__.__name__
+                raise TutorialStructureError(
+                    f"unexpected {cls_name} statement in classdef"
+                )
+
+    def ingest_methoddef(self, actor_code, mdef):
+        """Add a handler to actor_code for a method definition."""
+        body_lineno_lb = mdef.body[0].lineno
+        lineno_ub = mdef.end_lineno + 1
+        handler = EventHandler(
+            actor_code.name,
+            mdef.name,
+            body_lineno_lb,
+            mdef.decorator_list,
+            mdef.lineno,
+            lineno_ub,
+            self.code_lines[body_lineno_lb:lineno_ub]
+        )
+        actor_code.handlers.append(handler)
+
+    def ingest_assignment(self, actor_code, stmt):
+        """Handle class-level assignment to Costumes or Backdrops.
+
+        Set actor_code.appearances to the list of costume/backdrop
+        names if assignment is to either of Costumes or Backdrops.
+        """
+        if len(stmt.targets) != 1:
+            # TODO: Warn?
+            return
+        target = stmt.targets[0]
+        if not isinstance(target, ast.Name):
+            # TODO: Warn?
+            return
+        class_attr_name = target.id
+        if class_attr_name not in ["Costumes", "Backdrops"]:
+            # TODO: Warn?
+            return
+        if not isinstance(stmt.value, ast.List):
+            cls_name = stmt.value.__class__.__name__
+            raise TutorialStructureError(
+                "expecting Costumes/Backdrops to be list literal"
+                f" but found {cls_name}"
+            )
+        # TODO: Check Sprite has Costumes and Stage has Backdrops?
+        actor_code.appearances = [
+            string_literal_value(elt)
+            for elt in stmt.value.elts
+        ]
+
+    def all_handlers(self):
+        """Flat iterator yielding all known handlers."""
+        for actor_code in self.top_level_classes.values():
+            yield from actor_code.handlers
+
+    @property
+    def all_actor_names(self):
+        """List of all known actor names."""
+        return list(self.top_level_classes.keys())
+
+    @property
+    def all_appearances(self):
+        """All costumes/backdrops in context of each one's actor."""
+        return [
+            ActorAppearance(actor_code.identifier, appearance_name)
+            for actor_code in self.top_level_classes.values()
+            for appearance_name in actor_code.appearances
+        ]
+
+    @property
+    def all_scripts(self):
+        """All scripts in context of each one's actor."""
+        return [
+            ActorScript(actor_code.identifier, handler)
+            for actor_code in self.top_level_classes.values()
+            for handler in actor_code.handlers
+        ]
+
+    @property
+    def all_script_paths(self):
+        """Paths of all scripts."""
+        return [script.path for script in self.all_scripts]
+
+    def handler_from_path(self, path):
+        """The unique handler at the given `path`."""
+        scripts = [
+            handler
+            for actor_code in self.top_level_classes.values()
+            for handler in actor_code.handlers
+            if (
+                actor_code.identifier == path.actor
+                and handler.method_name == path.methodName
+            )
+        ]
+
+        n_found = len(scripts)
+        if n_found != 1:
+            raise TutorialStructureError(
+                "expecting exactly one handler at"
+                f" {path} but found {n_found}"
+            )
+
+        return scripts[0]
