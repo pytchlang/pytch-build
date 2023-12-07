@@ -3,6 +3,7 @@ import xml.etree.ElementTree as etree
 import markdown
 import markdown.extensions.fenced_code
 from bs4 import BeautifulSoup
+import copy
 import json
 
 from .errors import TutorialStructureError
@@ -54,12 +55,72 @@ class ShortcodeExtension(markdown.extensions.Extension):
         )
 
 
+def node_is_from_shortcode(node, target_shortcode):
+    if node.name != "div":
+        return False
+    node_classes = node.attrs.get("class", [])
+    return target_shortcode in node_classes
+
+
+def new_div(soup, div_class):
+    div = soup.new_tag("div")
+    div.attrs["class"] = div_class
+    return div
+
+
+def gather_learner_task_divs(flat_soup):
+    """Create a new soup with structured learner tasks.
+
+    The input `flat_soup` should have sequential DIVs for the start-
+    and end-markers of each learner task.  Between them (still at the
+    same nesting level in the input soup) should be learner-task-help
+    DIVs which mark the start of each help section.
+
+    Gather all the DIVs for one learner task into a single DIV
+    containing inner DIVs for:
+
+    The introduction, which is everything up to (but excluding) the
+    first learner-task-help DIV, and is turned into a
+    learner-task-intro DIV.
+
+    Zero or more help sections, each of which is turned into a
+    learner-task-help DIV.
+    """
+    soup = BeautifulSoup("", features="html.parser")
+    empty_chunk_error = TutorialStructureError(
+        "empty learner chunk (intro/help)"
+    )
+
+    elts = flat_soup.children
+    for elt in elts:
+        if node_is_from_shortcode(elt, "learner-task"):
+            task_div = new_div(soup, "learner-task")
+            chunk_div = new_div(soup, "learner-task-intro")
+            for elt in elts:
+                if node_is_from_shortcode(elt, "/learner-task"):
+                    break
+                if node_is_from_shortcode(elt, "learner-task-help"):
+                    if len(chunk_div.contents) == 0:
+                        raise empty_chunk_error
+                    task_div.append(chunk_div)
+                    chunk_div = new_div(soup, "learner-task-help")
+                else:
+                    chunk_div.append(copy.copy(elt))
+            task_div.append(chunk_div)
+            soup.append(task_div)
+        else:
+            soup.append(copy.copy(elt))
+
+    return soup
+
+
 def soup_from_markdown_text(markdown_text):
     html = markdown.markdown(
         markdown_text,
         extensions=[ShortcodeExtension(), "fenced_code"]
     )
-    soup = BeautifulSoup(html, "html.parser")
+    flat_soup = BeautifulSoup(html, "html.parser")
+    soup = gather_learner_task_divs(flat_soup)
     return soup
 
 
