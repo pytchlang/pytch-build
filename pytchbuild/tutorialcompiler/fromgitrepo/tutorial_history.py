@@ -389,6 +389,12 @@ class ProjectCommit:
         else:
             return []
 
+    def assert_modifies_python_code(self):
+        if not self.modifies_python_code:
+            raise TutorialStructureError(
+                f"commit {self.oid} does not modify the Python code"
+            )
+
     @cached_property
     def code_patch_against_parent(self):
         if not self.modifies_python_code:
