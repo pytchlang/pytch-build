@@ -1,5 +1,7 @@
+import ast
 from dataclasses import dataclass
 from typing import Literal
+from .errors import TutorialStructureError
 
 
 def make_of_kind(kind):
@@ -53,3 +55,22 @@ EventDescriptor = (
     | EventDescriptorStartAsClone
     | EventDescriptorClicked
 )
+
+
+########################################################################
+
+def assert_is_attribute_on_pytch(node, node_description):
+    """Raise error if `node` is not an Attribute "pytch.SOMETHING".
+
+    The given `node_description` is included in the error message if
+    the `node` is not such an Attribute.
+    """
+    if (
+        not isinstance(node, ast.Attribute)
+        or not isinstance(node.value, ast.Name)
+        or node.value.id != "pytch"
+    ):
+        raise TutorialStructureError(
+            f"expecting {node_description} to be Attribute"
+            " on pytch but it is not"
+        )
