@@ -3,12 +3,18 @@ import xml.etree.ElementTree as etree
 import markdown
 import markdown.extensions.fenced_code
 from bs4 import BeautifulSoup
+import json
 
 from .errors import TutorialStructureError
 
 
 class ShortcodeProcessor(markdown.blockprocessors.BlockProcessor):
-    RE_SHORTCODE = re.compile(r"^\s*\{\{< ([-\w]+)( (.*))? >\}\}\s*$")
+    RE_SHORTCODE = re.compile(r"^\s*\{\{< ([-/\w]+)( (.*))? >\}\}\s*$")
+
+    simple_shortcode_kinds = [
+        "run-finished-project", "work-in-progress", "asset-credits",
+        "learner-task", "/learner-task", "learner-task-help",
+    ]
 
     def test(self, parent, block):
         m = self.RE_SHORTCODE.match(block)
@@ -25,15 +31,15 @@ class ShortcodeProcessor(markdown.blockprocessors.BlockProcessor):
             etree.SubElement(parent, "div",
                              {"class": "patch-container",
                               "data-slug": args_str})
-        elif kind == "run-finished-project":
+        elif kind == "jr-commit":
+            [slug, commit_kind, *commit_args] = args_str.split(" ")
             etree.SubElement(parent, "div",
-                             {"class": "run-finished-project"})
-        elif kind == "work-in-progress":
-            etree.SubElement(parent, "div",
-                             {"class": "work-in-progress"})
-        elif kind == "asset-credits":
-            etree.SubElement(parent, "div",
-                             {"class": "asset-credits"})
+                             {"class": "jr-commit",
+                              "data-slug": slug,
+                              "data-jr-commit-kind": commit_kind,
+                              "data-jr-commit-args": json.dumps(commit_args)})
+        elif kind in self.simple_shortcode_kinds:
+            etree.SubElement(parent, "div", {"class": kind})
         else:
             raise TutorialStructureError(f'unknown shortcode kind "{kind}"')
 
