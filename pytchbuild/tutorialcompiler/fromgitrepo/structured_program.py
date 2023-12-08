@@ -2,6 +2,12 @@ from dataclasses import dataclass
 from typing import Literal
 
 
+def make_of_kind(kind):
+    def make(cls, *args):
+        return cls(kind, *args)
+    return classmethod(make)
+
+
 ########################################################################
 #
 # Mirror the TypeScript ones in the "structured-program" part of the
