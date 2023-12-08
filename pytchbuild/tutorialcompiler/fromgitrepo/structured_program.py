@@ -17,28 +17,33 @@ def make_of_kind(kind):
 @dataclass
 class EventDescriptorGreenFlag:
     kind: Literal["green-flag"]
+    make = make_of_kind("green-flag")
 
 
 @dataclass
 class EventDescriptorKeyPressed:
     kind: Literal["key-pressed"]
     keyName: str
+    make = make_of_kind("key-pressed")
 
 
 @dataclass
 class EventDescriptorMessageReceived:
     kind: Literal["message-received"]
     message: str
+    make = make_of_kind("message-received")
 
 
 @dataclass
 class EventDescriptorStartAsClone:
     kind: Literal["start-as-clone"]
+    make = make_of_kind("start-as-clone")
 
 
 @dataclass
 class EventDescriptorClicked:
     kind: Literal["clicked"]
+    make = make_of_kind("clicked")
 
 
 EventDescriptor = (
