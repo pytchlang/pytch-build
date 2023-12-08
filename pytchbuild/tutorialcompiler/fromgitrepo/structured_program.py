@@ -236,3 +236,7 @@ class EventHandler:
             return ""
         else:
             return "\n".join(deindented_lines)
+
+    @property
+    def _decorator(self):
+        return self.decorators[0]
