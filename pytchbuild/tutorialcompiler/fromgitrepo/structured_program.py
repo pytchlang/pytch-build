@@ -416,3 +416,8 @@ class StructuredPytchProgram:
             for actor_code in self.top_level_classes.values()
             for handler in actor_code.handlers
         ]
+
+    @property
+    def all_script_paths(self):
+        """Paths of all scripts."""
+        return [script.path for script in self.all_scripts]
