@@ -365,6 +365,7 @@ class StructuredPytchProgram:
                 "expecting Costumes/Backdrops to be list literal"
                 f" but found {cls_name}"
             )
+        # TODO: Check Sprite has Costumes and Stage has Backdrops?
         actor_code.appearances = [
             string_literal_value(elt)
             for elt in stmt.value.elts
