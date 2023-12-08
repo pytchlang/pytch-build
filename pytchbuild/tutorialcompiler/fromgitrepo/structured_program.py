@@ -213,3 +213,11 @@ class EventHandler:
     funcdef_lineno_lb: int
     funcdef_lineno_ub: int
     body_lines: [str]
+
+    def __post_init__(self):
+        n_decorators = len(self.decorators)
+        if n_decorators != 1:
+            raise TutorialStructureError(
+                f"expecting method {self.actor_name}.{self.method_name}"
+                f" to have one decorator but found {n_decorators}"
+            )
