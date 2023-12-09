@@ -8,6 +8,7 @@ from .structured_program import (
     EventDescriptor,
     StructuredPytchProgram,
 )
+from .errors import TutorialStructureError
 
 
 #########################################################################
@@ -76,3 +77,23 @@ class StructuredPytchDiff:
     @cached_property
     def new_program(self):
         return StructuredPytchProgram(self.new_code)
+
+    def sole_added(self, old_objs, new_objs, name):
+        old_set = set(old_objs)
+        new_set = set(new_objs)
+
+        removed_objs = old_set - new_set
+        if len(removed_objs) > 0:
+            raise TutorialStructureError(
+                f"expecting every {name} from old code to still exist"
+                f" in new code, but found {removed_objs!r} removed"
+            )
+
+        added_objs = new_set - old_set
+        if len(added_objs) != 1:
+            raise TutorialStructureError(
+                f"expecting exactly one new {name} to exist in new code"
+                f" compared to old code, but found {added_objs!r} added"
+            )
+
+        return added_objs.pop()
