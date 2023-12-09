@@ -235,3 +235,18 @@ class StructuredPytchDiff:
                 )
 
         return self.sole_change_hat_block_commit(commits)
+
+    def rich_commit(self, kind, *args):
+        match kind:
+            case "add-sprite":
+                return self.add_sprite_commit(*args)
+            case "add-medialib-appearance":
+                return self.add_medialib_appearance_commit(*args)
+            case "add-script":
+                return self.add_script_commit(*args)
+            case "edit-script":
+                return self.edit_script_commit(*args)
+            case "change-hat-block":
+                return self.change_hat_block_commit(*args)
+
+        raise ValueError(f'unknown commit-kind "{kind}"')
