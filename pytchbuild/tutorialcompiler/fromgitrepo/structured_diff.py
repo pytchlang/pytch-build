@@ -97,3 +97,12 @@ class StructuredPytchDiff:
             )
 
         return added_objs.pop()
+
+    def assert_lists_unchanged(self, old_objs, new_objs, name_plural):
+        if new_objs != old_objs:
+            raise TutorialStructureError(
+                f"expecting the collection of {name_plural}"
+                " to be unchanged, but found"
+                f" old list {old_objs} to differ"
+                f" from new list {new_objs}"
+            )
