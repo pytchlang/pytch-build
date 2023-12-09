@@ -171,3 +171,30 @@ class StructuredPytchDiff:
                 f" code but found {n_commits}, at {paths}"
             )
         return commits[0]
+
+    def edit_script_commit(self):
+        self.assert_lists_unchanged(
+            self.old_program.all_script_paths,
+            self.new_program.all_script_paths,
+            "script paths",
+        )
+
+        commits = []
+        for old_script, new_script in zip(
+            self.old_program.all_scripts,
+            self.new_program.all_scripts,
+        ):
+            self.assert_event_unchanged(old_script, new_script)
+            old_code = old_script.script.body_suite_text
+            new_code = new_script.script.body_suite_text
+            if new_code != old_code:
+                commits.append(
+                    JrCommitEditScript.make(
+                        old_script.path,
+                        old_script.script.event,
+                        old_code,
+                        new_code,
+                    )
+                )
+
+        return self.sole_edit_script_commit(commits)
