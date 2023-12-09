@@ -114,3 +114,15 @@ class StructuredPytchDiff:
             "class",
         )
         return JrCommitAddSprite.make(added_class_name)
+
+    def add_medialib_appearance_commit(self, display_identifier):
+        added_appearance = self.sole_added(
+            set(self.old_program.all_appearances),
+            set(self.new_program.all_appearances),
+            "appearance",
+        )
+        return JrCommitAddMedialibAppearance.make(
+            added_appearance.actor_identifier,
+            display_identifier,
+            added_appearance.appearance_name,
+        )
