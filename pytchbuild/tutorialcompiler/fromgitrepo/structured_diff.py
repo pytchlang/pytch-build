@@ -106,3 +106,11 @@ class StructuredPytchDiff:
                 f" old list {old_objs} to differ"
                 f" from new list {new_objs}"
             )
+
+    def add_sprite_commit(self):
+        added_class_name = self.sole_added(
+            self.old_program.all_actor_names,
+            self.new_program.all_actor_names,
+            "class",
+        )
+        return JrCommitAddSprite.make(added_class_name)
