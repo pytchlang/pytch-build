@@ -208,3 +208,30 @@ class StructuredPytchDiff:
                 f" hat-block but found {n_commits}, at {paths}"
             )
         return commits[0]
+
+    def change_hat_block_commit(self):
+        self.assert_lists_unchanged(
+            self.old_program.all_script_paths,
+            self.new_program.all_script_paths,
+            "script paths",
+        )
+
+        commits = []
+        for old_script, new_script in zip(
+            self.old_program.all_scripts,
+            self.new_program.all_scripts,
+        ):
+            self.assert_code_unchanged(old_script, new_script)
+            old_event = old_script.script.event
+            new_event = new_script.script.event
+            if new_event != old_event:
+                commits.append(
+                    JrCommitChangeHatBlock.make(
+                        old_script.path,
+                        old_script.script.body_suite_text,
+                        old_script.script.event,
+                        new_script.script.event,
+                    )
+                )
+
+        return self.sole_change_hat_block_commit(commits)
