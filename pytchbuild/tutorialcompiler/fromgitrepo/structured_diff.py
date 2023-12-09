@@ -5,6 +5,7 @@ from .structured_program import (
     ActorIdentifier,
     ScriptPath,
     EventDescriptor,
+    StructuredPytchProgram,
 )
 
 
@@ -57,3 +58,12 @@ class JrCommitChangeHatBlock:
     oldEvent: EventDescriptor
     newEvent: EventDescriptor
     make = make_of_kind("change-hat-block")
+
+
+########################################################################
+
+
+@dataclass
+class StructuredPytchDiff:
+    old_code: str
+    new_code: str
