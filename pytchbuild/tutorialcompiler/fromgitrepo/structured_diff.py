@@ -126,3 +126,16 @@ class StructuredPytchDiff:
             display_identifier,
             added_appearance.appearance_name,
         )
+
+    def add_script_commit(self):
+        added_path = self.sole_added(
+            set(self.old_program.all_script_paths),
+            set(self.new_program.all_script_paths),
+            "script",
+        )
+        added_script = self.new_program.handler_from_path(added_path)
+        return JrCommitAddScript.make(
+            added_path,
+            added_script.summary.event,
+            added_script.summary.code_text,
+        )
