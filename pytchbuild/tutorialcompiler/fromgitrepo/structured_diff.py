@@ -161,3 +161,13 @@ class StructuredPytchDiff:
                 f" to be unchanged, but found {old_code_lines} for old"
                 f" vs {new_code_lines} for new"
             )
+
+    def sole_edit_script_commit(self, commits):
+        n_commits = len(commits)
+        if n_commits != 1:
+            paths = [commit.path for commit in commits]
+            raise TutorialStructureError(
+                "expecting exactly one script to have different"
+                f" code but found {n_commits}, at {paths}"
+            )
+        return commits[0]
