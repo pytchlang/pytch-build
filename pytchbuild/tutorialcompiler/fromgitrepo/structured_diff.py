@@ -150,3 +150,14 @@ class StructuredPytchDiff:
                 f" to be unchanged, but found {old_event} for old"
                 f" vs {new_event} for new"
             )
+
+    def assert_code_unchanged(self, old_script, new_script):
+        assert new_script.path == old_script.path
+        old_code_lines = old_script.script.body_lines
+        new_code_lines = new_script.script.body_lines
+        if new_code_lines != old_code_lines:
+            raise TutorialStructureError(
+                f"expecting code for script at {old_script.path}"
+                f" to be unchanged, but found {old_code_lines} for old"
+                f" vs {new_code_lines} for new"
+            )
