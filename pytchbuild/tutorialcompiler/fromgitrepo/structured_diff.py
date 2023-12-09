@@ -198,3 +198,13 @@ class StructuredPytchDiff:
                 )
 
         return self.sole_edit_script_commit(commits)
+
+    def sole_change_hat_block_commit(self, commits):
+        n_commits = len(commits)
+        if n_commits != 1:
+            paths = [commit.path for commit in commits]
+            raise TutorialStructureError(
+                "expecting exactly one script to have a different"
+                f" hat-block but found {n_commits}, at {paths}"
+            )
+        return commits[0]
