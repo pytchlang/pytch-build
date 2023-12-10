@@ -221,3 +221,18 @@ class EventHandler:
                 f"expecting method {self.actor_name}.{self.method_name}"
                 f" to have one decorator but found {n_decorators}"
             )
+
+    @property
+    def body_suite_text(self):
+        """Method body, deindented as if it were at top level."""
+
+        lines = [line.rstrip() for line in self.body_lines]
+        deindented_lines = [deindented_line(line) for line in lines]
+
+        # When a commit adds an "empty" script, it in fact acts a script
+        # with body just "pass".  This keeps the code syntactically valid.
+        # Map back to truly empty when presenting to the learner:
+        if deindented_lines == ["pass"]:
+            return ""
+        else:
+            return "\n".join(deindented_lines)
