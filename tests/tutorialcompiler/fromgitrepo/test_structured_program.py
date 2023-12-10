@@ -65,3 +65,22 @@ class TestEventDescriptor:
             decorator = sole_decorator_of_func_def(func)
             got_descriptor = mk_EventDescriptor(decorator)
             assert got_descriptor == exp_descriptor
+
+    def test_ctor_invalid(self):
+        func_defs = func_defs_of_path("invalid_decorators.py")
+
+        exp_names_with_exception_matches = [
+            ("h1", "but found Name"),
+            ("h2", "unknown attribute decorator"),
+            ("h3", "function-call decorator .* Attribute on pytch"),
+            ("h4", "unknown pytch function-call"),
+        ]
+
+        for func, (exp_name, exp_exception_match) in zip2(
+            func_defs,
+            exp_names_with_exception_matches,
+        ):
+            assert func.name == exp_name
+            decorator = sole_decorator_of_func_def(func)
+            with raises_TutorialStructureError(exp_exception_match):
+                SP.EventDescriptor_from_decorator_node(decorator)
