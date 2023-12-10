@@ -119,3 +119,21 @@ class TestActorCode:
             actor_code = SP.ActorCode.new_empty(cls)
             assert actor_code.name == exp_name
             assert actor_code.kind == exp_kind
+
+    def test_new_empty_invalid(self):
+        class_defs = class_defs_of_path("invalid_empty_classes.py")
+
+        exp_names_with_exception_matches = [
+            ("C1", "either pytch.Sprite or pytch.Stage"),
+            ("C2", "have one base but found 2"),
+            ("C3", "to be Attribute on pytch"),
+            ("C4", "to be Attribute on pytch"),
+        ]
+
+        for cls, (exp_name, exp_exception_match) in zip2(
+            class_defs,
+            exp_names_with_exception_matches,
+        ):
+            assert cls.name == exp_name
+            with raises_TutorialStructureError(exp_exception_match):
+                SP.ActorCode.new_empty(cls)
