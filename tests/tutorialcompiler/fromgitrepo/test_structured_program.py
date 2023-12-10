@@ -43,6 +43,16 @@ def raises_TutorialStructureError(match):
     return pytest.raises(TCE.TutorialStructureError, match=match)
 
 
+@pytest.fixture(scope="session")
+def valid_program_text():
+    return fixture_code_text("valid_classes.py")
+
+
+@pytest.fixture(scope="session")
+def valid_program(valid_program_text):
+    return SP.StructuredPytchProgram(valid_program_text)
+
+
 class TestEventDescriptor:
     def test_ctor_valid(self):
         mk_EventDescriptor = SP.EventDescriptor_from_decorator_node
