@@ -101,3 +101,21 @@ class TestHelpers:
             TCE.TutorialStructureError, match="8 spaces but it did not"
         ):
             SP.deindented_line("    # not enough indentation")
+
+
+class TestActorCode:
+    def test_new_empty_valid(self):
+        class_defs = class_defs_of_path("valid_empty_classes.py")
+
+        exp_names_with_kinds = [
+            ("Banana", "sprite"),
+            ("Landscape", "stage"),
+        ]
+
+        for cls, (exp_name, exp_kind) in zip2(
+            class_defs, exp_names_with_kinds
+        ):
+            assert cls.name == exp_name
+            actor_code = SP.ActorCode.new_empty(cls)
+            assert actor_code.name == exp_name
+            assert actor_code.kind == exp_kind
