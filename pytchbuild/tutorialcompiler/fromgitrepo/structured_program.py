@@ -1,6 +1,6 @@
 import ast
 from dataclasses import dataclass
-from typing import Literal
+from typing import Any, Literal
 from .errors import TutorialStructureError
 
 # Some of the following have camelCase because they're destined to be
@@ -189,3 +189,66 @@ class ScriptPath:
     """Location of a method within a Sprite/Stage."""
     actor: ActorIdentifier
     methodName: str  # Not clear whether/how this will be used.
+
+
+########################################################################
+
+@dataclass
+class EventHandlerSummary:
+    """Single script represented in Scratch-like form."""
+    method_name: str  # For use in unit tests
+    event: EventDescriptor
+    code_text: str
+
+
+########################################################################
+
+@dataclass
+class EventHandler:
+    """Python event handler as it appears in AST."""
+    actor_name: str
+    method_name: str
+    body_lineno_lb: int
+    decorators: [Any]
+    funcdef_lineno_lb: int
+    funcdef_lineno_ub: int
+    body_lines: [str]
+
+    def __post_init__(self):
+        n_decorators = len(self.decorators)
+        if n_decorators != 1:
+            raise TutorialStructureError(
+                f"expecting method {self.actor_name}.{self.method_name}"
+                f" to have one decorator but found {n_decorators}"
+            )
+
+    @property
+    def body_suite_text(self):
+        """Method body, deindented as if it were at top level."""
+
+        lines = [line.rstrip() for line in self.body_lines]
+        deindented_lines = [deindented_line(line) for line in lines]
+
+        # When a commit adds an "empty" script, it in fact acts a script
+        # with body just "pass".  This keeps the code syntactically valid.
+        # Map back to truly empty when presenting to the learner:
+        if deindented_lines == ["pass"]:
+            return ""
+        else:
+            return "\n".join(deindented_lines)
+
+    @property
+    def _decorator(self):
+        return self.decorators[0]
+
+    @property
+    def event(self):
+        return EventDescriptor_from_decorator_node(self._decorator)
+
+    @property
+    def summary(self):
+        return EventHandlerSummary(
+            self.method_name,
+            self.event,
+            self.body_suite_text
+        )
