@@ -274,3 +274,24 @@ class TestStructuredProgram:
             (Id("stage", "--ignored--"), "drop_apples"),
         ]
         assert got_script_projections == exp_script_projections
+
+    def test_valid_handler_from_path_valid(self, valid_program):
+        Id = SP.ActorIdentifier_make
+        paths_with_exp_codes = [
+            (
+                SP.ScriptPath(Id("sprite", "Apple"), "move_down_stage"),
+                "print(1)\nprint(2)\nprint(3)",
+            ),
+            (SP.ScriptPath(Id("stage", "--ignored--"), "award_point"), ""),
+        ]
+        for path, exp_code in paths_with_exp_codes:
+            handler = valid_program.handler_from_path(path)
+            got_code = handler.body_suite_text
+            assert got_code == exp_code
+
+    def test_valid_handler_from_path_invalid(self, valid_program):
+        Id = SP.ActorIdentifier_make
+        Path = SP.ScriptPath
+        with raises_TutorialStructureError("expecting exactly one"):
+            path = Path(Id("sprite", "Banana"), "nothing")
+            valid_program.handler_from_path(path)
