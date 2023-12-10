@@ -299,3 +299,16 @@ class ActorAppearance:
     """A costume/backdrop belonging to an actor."""
     actor_identifier: ActorIdentifier
     appearance_name: str
+
+
+########################################################################
+
+@dataclass
+class ActorScript:
+    """A script belonging to an actor."""
+    actor_identifier: ActorIdentifier
+    script: EventHandler
+
+    @property
+    def path(self):
+        return ScriptPath(self.actor_identifier, self.script.method_name)
