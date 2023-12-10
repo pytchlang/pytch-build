@@ -1,4 +1,5 @@
 import pytest
+import pytchbuild.tutorialcompiler.fromgitrepo.structured_program as SP
 import pytchbuild.tutorialcompiler.fromgitrepo.errors as TCE
 from pathlib import Path
 import ast
@@ -40,3 +41,27 @@ def zip2(xs, ys):
 
 def raises_TutorialStructureError(match):
     return pytest.raises(TCE.TutorialStructureError, match=match)
+
+
+class TestEventDescriptor:
+    def test_ctor_valid(self):
+        mk_EventDescriptor = SP.EventDescriptor_from_decorator_node
+        func_defs = func_defs_of_path("valid_decorators.py")
+
+        exp_names_with_event_descriptors = [
+            ("h1", SP.EventDescriptorGreenFlag.make()),
+            ("h2", SP.EventDescriptorStartAsClone.make()),
+            ("h3", SP.EventDescriptorMessageReceived.make("hello-world")),
+            ("h4", SP.EventDescriptorKeyPressed.make("b")),
+            ("h5", SP.EventDescriptorClicked.make()),
+            ("h6", SP.EventDescriptorClicked.make()),
+        ]
+
+        for func, (exp_name, exp_descriptor) in zip2(
+            func_defs,
+            exp_names_with_event_descriptors,
+        ):
+            assert func.name == exp_name
+            decorator = sole_decorator_of_func_def(func)
+            got_descriptor = mk_EventDescriptor(decorator)
+            assert got_descriptor == exp_descriptor
