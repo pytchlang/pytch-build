@@ -246,3 +246,15 @@ class TestStructuredProgram:
         got_actor_names = valid_program.all_actor_names
         exp_actor_names = ["Bowl", "Apple", "ScoreKeeper"]
         assert got_actor_names == exp_actor_names
+
+    def test_valid_appearances(self, valid_program):
+        got_appearances = valid_program.all_appearances
+        App = SP.ActorAppearance
+        Id = SP.ActorIdentifier_make
+        exp_appearances = [
+            App(Id("sprite", "Bowl"), "bowl.png"),
+            App(Id("sprite", "Bowl"), "basket.png"),
+            App(Id("sprite", "Apple"), "apple.png"),
+            App(Id("stage", "--ignored--"), "Dani.png"),
+        ]
+        assert got_appearances == exp_appearances
