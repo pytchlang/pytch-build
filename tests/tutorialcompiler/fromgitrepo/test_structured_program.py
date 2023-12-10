@@ -307,3 +307,45 @@ def apple_history(this_raw_repo):
         this_raw_repo.workdir,
         "unit-tests-catch-apple",
     )
+
+
+class TestRichCommits:
+    slugs_with_kinds_and_args = [
+        ("add-empty-Bowl", "add-sprite"),
+        ("add-Bowl-costume", "add-medialib-appearance", "the bowl"),
+        ("add-empty-move-with-keys-handler", "add-script"),
+        ("add-move-with-keys-initial-body", "edit-script"),
+        ("move-bowl-right", "edit-script"),
+        ("clamp-bowl-at-right", "edit-script"),
+        ("move-clamp-bowl-left", "edit-script"),
+        ("add-empty-Apple-class", "add-sprite"),
+        ("give-Apple-costume", "add-medialib-appearance", "the Apple"),
+        ("define-skeleton-apple-move-down-screen", "add-script"),
+        ("make-apple-fall-down-screen", "edit-script"),
+        ("hide-Apple-when-caught", "edit-script"),
+        ("define-skeleton-ScoreKeeper-sprite", "add-sprite"),
+        ("give-ScoreKeeper-costume", "add-medialib-appearance", "Dani"),
+        ("move-ScoreKeeper-to-right-place", "add-script"),
+        ("add-ScoreKeeper-score-attribute", "edit-script"),
+        ("announce-starting-score", "edit-script"),
+        ("add-empty-award-point-handler", "add-script"),
+        ("increment-score", "edit-script"),
+        ("refresh-score-speech", "edit-script"),
+        ("broadcast-when-apple-caught", "edit-script"),
+        ("choose-random-drop-x", "edit-script"),
+        ("drop-from-random-abscissa", "edit-script"),
+        ("launch-apple-on-message-not-green-flag", "change-hat-block"),
+        ("add-empty-drop-apples-loop-script", "add-script"),
+        ("add-broadcast-drop-apple-loop", "edit-script"),
+        ("show-apple-when-fall-starts", "edit-script"),
+    ]
+
+    all_kinds = set(
+        [
+            "add-sprite",
+            "add-medialib-appearance",
+            "add-script",
+            "edit-script",
+            "change-hat-block",
+        ]
+    )
