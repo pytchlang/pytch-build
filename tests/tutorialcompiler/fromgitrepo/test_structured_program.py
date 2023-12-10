@@ -90,3 +90,14 @@ class TestActorIdentifier:
     def test_ctor_invalid(self):
         with pytest.raises(ValueError, match="unknown kind"):
             SP.ActorIdentifier_make("banana", "banana")
+
+
+class TestHelpers:
+    def test_deindented_line(self):
+        assert SP.deindented_line("        pass") == "pass"
+        assert SP.deindented_line("        ") == ""
+        assert SP.deindented_line("") == ""
+        with pytest.raises(
+            TCE.TutorialStructureError, match="8 spaces but it did not"
+        ):
+            SP.deindented_line("    # not enough indentation")
