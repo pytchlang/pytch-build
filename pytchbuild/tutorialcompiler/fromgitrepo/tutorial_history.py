@@ -410,10 +410,7 @@ class ProjectCommit:
 
     @cached_property
     def old_and_new_code(self):
-        self.assert_modifies_python_code()
-        delta = self.sole_modify_against_parent
-        old_blob = self.repo[delta.old_file.id]
-        new_blob = self.repo[delta.new_file.id]
+        old_blob, new_blob = self.old_and_new_blobs
         old_code = old_blob.data.decode("utf-8")
         new_code = new_blob.data.decode("utf-8")
         return old_code, new_code
