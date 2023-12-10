@@ -748,3 +748,6 @@ class ProjectHistory:
     def code_patch_against_parent(self, slug):
         commit = self.commit_from_slug[slug]
         return commit.code_patch_against_parent
+
+    def old_and_new_code(self, slug):
+        return self.commit_from_slug[slug].old_and_new_code
