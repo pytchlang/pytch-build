@@ -119,6 +119,8 @@ class TestActorCode:
             actor_code = SP.ActorCode.new_empty(cls)
             assert actor_code.name == exp_name
             assert actor_code.kind == exp_kind
+            exp_identifier = SP.ActorIdentifier_make(exp_kind, exp_name)
+            assert actor_code.identifier == exp_identifier
 
     def test_new_empty_invalid(self):
         class_defs = class_defs_of_path("invalid_empty_classes.py")
