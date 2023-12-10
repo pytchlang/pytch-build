@@ -84,3 +84,9 @@ class TestEventDescriptor:
             decorator = sole_decorator_of_func_def(func)
             with raises_TutorialStructureError(exp_exception_match):
                 SP.EventDescriptor_from_decorator_node(decorator)
+
+
+class TestActorIdentifier:
+    def test_ctor_invalid(self):
+        with pytest.raises(ValueError, match="unknown kind"):
+            SP.ActorIdentifier_make("banana", "banana")
