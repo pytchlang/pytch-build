@@ -240,3 +240,7 @@ class EventHandler:
     @property
     def _decorator(self):
         return self.decorators[0]
+
+    @property
+    def event(self):
+        return EventDescriptor_from_decorator_node(self._decorator)
