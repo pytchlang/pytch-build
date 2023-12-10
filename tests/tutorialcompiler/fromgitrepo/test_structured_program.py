@@ -11,3 +11,17 @@ def fixture_code_text(relative_path):
 
 def fixture_code_ast(relative_path):
     return ast.parse(fixture_code_text(relative_path))
+
+
+def statements_of_kind(code, cls):
+    return [stmt for stmt in code.body if isinstance(stmt, cls)]
+
+
+def func_defs_of_path(relative_path):
+    code_ast = fixture_code_ast(relative_path)
+    return statements_of_kind(code_ast, ast.FunctionDef)
+
+
+def class_defs_of_path(relative_path):
+    code_ast = fixture_code_ast(relative_path)
+    return statements_of_kind(code_ast, ast.ClassDef)
