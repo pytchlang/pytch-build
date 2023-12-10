@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Literal
+from .cached_property import cached_property
 from .structured_program import (
     make_of_kind,
     ActorIdentifier,
@@ -67,3 +68,11 @@ class JrCommitChangeHatBlock:
 class StructuredPytchDiff:
     old_code: str
     new_code: str
+
+    @cached_property
+    def old_program(self):
+        return StructuredPytchProgram(self.old_code)
+
+    @cached_property
+    def new_program(self):
+        return StructuredPytchProgram(self.new_code)
