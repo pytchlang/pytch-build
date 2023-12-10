@@ -405,10 +405,7 @@ class ProjectCommit:
 
     @cached_property
     def code_patch_against_parent(self):
-        self.assert_modifies_python_code()
-        delta = self.sole_modify_against_parent
-        old_blob = self.repo[delta.old_file.id]
-        new_blob = self.repo[delta.new_file.id]
+        old_blob, new_blob = self.old_and_new_blobs
         return old_blob.diff(new_blob)
 
     @cached_property
