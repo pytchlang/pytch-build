@@ -241,3 +241,8 @@ class TestStructuredProgram:
             "drop_apples",
         ]
         assert got_handler_names == exp_handler_names
+
+    def test_valid_actor_names(self, valid_program):
+        got_actor_names = valid_program.all_actor_names
+        exp_actor_names = ["Bowl", "Apple", "ScoreKeeper"]
+        assert got_actor_names == exp_actor_names
