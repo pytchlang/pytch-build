@@ -356,3 +356,17 @@ class TestRichCommits:
             codes = apple_history.old_and_new_code(slug)
             diff = SD.StructuredPytchDiff(*codes)
             commit = diff.rich_commit(kind, *args)
+
+    def test_examples_wrong_kind(self, apple_history):
+        for slug, kind, *args in self.slugs_with_kinds_and_args:
+            codes = apple_history.old_and_new_code(slug)
+            diff = SD.StructuredPytchDiff(*codes)
+            wrong_kinds = self.all_kinds - {kind}
+            for wrong_kind in wrong_kinds:
+                with pytest.raises(TCE.TutorialStructureError):
+                    wrong_kind_args = (
+                        ["some costume"]
+                        if wrong_kind == "add-medialib-appearance"
+                        else []
+                    )
+                    diff.rich_commit(wrong_kind, *wrong_kind_args)
