@@ -1,4 +1,5 @@
 import pytest
+import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history as TH
 import pytchbuild.tutorialcompiler.fromgitrepo.structured_program as SP
 import pytchbuild.tutorialcompiler.fromgitrepo.errors as TCE
 from pathlib import Path
@@ -295,3 +296,14 @@ class TestStructuredProgram:
         with raises_TutorialStructureError("expecting exactly one"):
             path = Path(Id("sprite", "Banana"), "nothing")
             valid_program.handler_from_path(path)
+
+
+########################################################################
+
+
+@pytest.fixture(scope="session")
+def apple_history(this_raw_repo):
+    return TH.ProjectHistory(
+        this_raw_repo.workdir,
+        "unit-tests-catch-apple",
+    )
