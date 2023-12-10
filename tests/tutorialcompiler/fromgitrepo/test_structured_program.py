@@ -159,3 +159,49 @@ class TestStructuredProgram:
             assert handler.method_name == exp_name
             assert handler.event == exp_event
             assert handler.body_suite_text == exp_body
+
+    def test_valid_individual_classes(self, valid_program):
+        bowl = valid_program.top_level_classes["Bowl"]
+        assert bowl.name == "Bowl"
+        assert bowl.kind == "sprite"
+        assert bowl.appearances == ["bowl.png", "basket.png"]
+        self.assert_handlers(
+            bowl.handlers,
+            [("move_with_keys", SP.EventDescriptorGreenFlag.make(), "")],
+        )
+
+        apple = valid_program.top_level_classes["Apple"]
+        assert apple.name == "Apple"
+        assert apple.kind == "sprite"
+        assert apple.appearances == ["apple.png"]
+        self.assert_handlers(
+            apple.handlers,
+            [
+                (
+                    "move_down_stage",
+                    SP.EventDescriptorMessageReceived.make("drop-apple"),
+                    "print(1)\nprint(2)\nprint(3)",
+                )
+            ],
+        )
+
+        scorekeeper = valid_program.top_level_classes["ScoreKeeper"]
+        assert scorekeeper.name == "ScoreKeeper"
+        assert scorekeeper.kind == "stage"
+        assert scorekeeper.appearances == ["Dani.png"]
+        self.assert_handlers(
+            scorekeeper.handlers,
+            [
+                (
+                    "initialise",
+                    SP.EventDescriptorGreenFlag.make(),
+                    "print(100)",
+                ),
+                (
+                    "award_point",
+                    SP.EventDescriptorMessageReceived.make("award-point"),
+                    "",
+                ),
+                ("drop_apples", SP.EventDescriptorGreenFlag.make(), ""),
+            ],
+        )
