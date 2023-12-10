@@ -1,6 +1,7 @@
 import pytest
 import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history as TH
 import pytchbuild.tutorialcompiler.fromgitrepo.structured_program as SP
+import pytchbuild.tutorialcompiler.fromgitrepo.structured_diff as SD
 import pytchbuild.tutorialcompiler.fromgitrepo.errors as TCE
 from pathlib import Path
 import ast
@@ -349,3 +350,10 @@ class TestRichCommits:
             "change-hat-block",
         ]
     )
+
+    def test_examples(self, apple_history):
+        for slug, kind, *args in self.slugs_with_kinds_and_args:
+            codes = apple_history.old_and_new_code(slug)
+            diff = SD.StructuredPytchDiff(*codes)
+            # Ignore return value; test that it runs without error:
+            diff.rich_commit(kind, *args)
