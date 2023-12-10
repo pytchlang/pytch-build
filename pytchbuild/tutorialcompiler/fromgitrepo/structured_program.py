@@ -3,6 +3,9 @@ from dataclasses import dataclass
 from typing import Literal
 from .errors import TutorialStructureError
 
+# Some of the following have camelCase because they're destined to be
+# serialised as JSON ready for consumption by JavaScript.
+
 
 def make_of_kind(kind):
     def make(cls, *args):
@@ -157,3 +160,14 @@ def ActorIdentifier_make(kind, name):
         return ActorIdentifierSprite.make(name)
     else:
         raise ValueError(f'unknown kind "{kind}"')
+
+
+########################################################################
+#
+# Mirrors the front-end's ScriptPath.
+
+@dataclass(frozen=True)
+class ScriptPath:
+    """Location of a method within a Sprite/Stage."""
+    actor: ActorIdentifier
+    methodName: str  # Not clear whether/how this will be used.
