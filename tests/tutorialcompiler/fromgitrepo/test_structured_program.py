@@ -149,3 +149,13 @@ class TestActorCode:
             assert cls.name == exp_name
             with raises_TutorialStructureError(exp_exception_match):
                 SP.ActorCode.new_empty(cls)
+
+
+class TestStructuredProgram:
+    def assert_handlers(self, handlers, exp_details):
+        for handler, (exp_name, exp_event, exp_body) in zip2(
+            handlers, exp_details
+        ):
+            assert handler.method_name == exp_name
+            assert handler.event == exp_event
+            assert handler.body_suite_text == exp_body
