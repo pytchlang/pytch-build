@@ -1,4 +1,5 @@
 import pytest
+import pytchbuild.tutorialcompiler.fromgitrepo.errors as TCE
 from pathlib import Path
 import ast
 
@@ -35,3 +36,7 @@ def sole_decorator_of_func_def(func_def):
 
 def zip2(xs, ys):
     return zip(xs, ys, strict=True)
+
+
+def raises_TutorialStructureError(match):
+    return pytest.raises(TCE.TutorialStructureError, match=match)
