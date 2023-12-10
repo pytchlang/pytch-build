@@ -31,3 +31,7 @@ def sole_decorator_of_func_def(func_def):
     decorators = func_def.decorator_list
     assert len(decorators) == 1
     return decorators[0]
+
+
+def zip2(xs, ys):
+    return zip(xs, ys, strict=True)
