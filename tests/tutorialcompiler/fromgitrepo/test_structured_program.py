@@ -228,3 +228,16 @@ class TestStructuredProgram:
             code = fixture_code_text(path)
             with raises_TutorialStructureError(exp_exception_match):
                 SP.StructuredPytchProgram(code)
+
+    def test_valid_all_handlers(self, valid_program):
+        got_handler_names = [
+            handler.method_name for handler in valid_program.all_handlers()
+        ]
+        exp_handler_names = [
+            "move_with_keys",
+            "move_down_stage",
+            "initialise",
+            "award_point",
+            "drop_apples",
+        ]
+        assert got_handler_names == exp_handler_names
