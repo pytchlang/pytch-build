@@ -258,3 +258,19 @@ class TestStructuredProgram:
             App(Id("stage", "--ignored--"), "Dani.png"),
         ]
         assert got_appearances == exp_appearances
+
+    def test_valid_scripts(self, valid_program):
+        got_scripts = valid_program.all_scripts
+        got_script_projections = [
+            (script.actor_identifier, script.script.method_name)
+            for script in got_scripts
+        ]
+        Id = SP.ActorIdentifier_make
+        exp_script_projections = [
+            (Id("sprite", "Bowl"), "move_with_keys"),
+            (Id("sprite", "Apple"), "move_down_stage"),
+            (Id("stage", "--ignored--"), "initialise"),
+            (Id("stage", "--ignored--"), "award_point"),
+            (Id("stage", "--ignored--"), "drop_apples"),
+        ]
+        assert got_script_projections == exp_script_projections
