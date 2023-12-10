@@ -205,3 +205,26 @@ class TestStructuredProgram:
                 ("drop_apples", SP.EventDescriptorGreenFlag.make(), ""),
             ],
         )
+
+    def test_invalid(self):
+        paths_with_exp_exception_match = [
+            (
+                "invalid_class_costumes_not_list.py",
+                "list literal but found Constant",
+            ),
+            (
+                "invalid_class_costumes_contains_lambda.py",
+                "string literal but found Lambda",
+            ),
+            (
+                "invalid_class_costumes_contains_int.py",
+                "string literal but found Constant of class int",
+            ),
+            ("invalid_class_statement.py", "unexpected ClassDef"),
+            ("invalid_multiple_decorators.py", "Bowl.bad .* found 2"),
+            ("invalid_no_decorators.py", "Bowl.bad .* found 0"),
+        ]
+        for path, exp_exception_match in paths_with_exp_exception_match:
+            code = fixture_code_text(path)
+            with raises_TutorialStructureError(exp_exception_match):
+                SP.StructuredPytchProgram(code)
