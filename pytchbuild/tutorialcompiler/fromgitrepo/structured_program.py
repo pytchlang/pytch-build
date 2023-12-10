@@ -244,3 +244,11 @@ class EventHandler:
     @property
     def event(self):
         return EventDescriptor_from_decorator_node(self._decorator)
+
+    @property
+    def summary(self):
+        return EventHandlerSummary(
+            self.method_name,
+            self.event,
+            self.body_suite_text
+        )
