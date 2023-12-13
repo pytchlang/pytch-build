@@ -18,10 +18,8 @@ from .tutorial_markdown import (
     soup_from_markdown_text,
     ordered_commit_slugs_in_soup,
 )
-
-from .errors import InternalError, TutorialStructureError
-
 from .structured_diff import StructuredPytchDiff
+from .errors import InternalError, TutorialStructureError
 
 logger = colorlog.getLogger(__name__)
 
