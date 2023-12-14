@@ -20,8 +20,17 @@ whose JSON representation is as follows:
 
   {"name_of_tag": "value_of_tag"}
 
-At the moment, the only tag created is the difficulty level associated
-to each tutorial.
+At the moment, the only tags used are:
+
+* ``difficulty`` — what level of challenge the tutorial presents;
+  currently one of the strings ``"getting started"``, ``"beginner"``,
+  ``"medium"``, and ``"advanced"``;
+
+* ``programKind`` — what representation of a Pytch program does the
+  tutorial work with; currently one of the strings ``"flat"`` and
+  ``"per-method"``; can be omitted, in which case ``"flat"`` is
+  assumed; the strings here match the values of the type
+  ``PytchProgram["kind"]`` in the TypeScript front end.
 
 The property ``metadata_text()`` of the ``ProjectHistory class`` reads
 the content of the ``metadata.json`` files, from the last tip-commit
