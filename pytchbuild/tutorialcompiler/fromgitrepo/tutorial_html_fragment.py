@@ -149,30 +149,19 @@ def node_is_div_of_any_class(elt, acceptable_class_names):
 
 
 def node_is_patch(elt):
-    return (elt.name == "div"
-            and elt.has_attr("class")
-            and (
-                "patch-container" in elt.attrs["class"]
-                or "jr-commit" in elt.attrs["class"]
-            ))
+    return node_is_div_of_any_class(elt, ["patch-container", "jr-commit"])
 
 
 def node_is_work_in_progress_marker(elt):
-    return (elt.name == "div"
-            and elt.has_attr("class")
-            and "work-in-progress" in elt.attrs["class"])
+    return node_is_div_of_any_class(elt, ["work-in-progress"])
 
 
 def node_is_exclude_from_progress_trail_marker(elt):
-    return (elt.name == "div"
-            and elt.has_attr("class")
-            and "exclude-from-progress-trail" in elt.attrs["class"])
+    return node_is_div_of_any_class(elt, ["exclude-from-progress-trail"])
 
 
 def node_is_asset_credits_marker(elt):
-    return (elt.name == "div"
-            and elt.has_attr("class")
-            and "asset-credits" in elt.attrs["class"])
+    return node_is_div_of_any_class(elt, ["asset-credits"])
 
 
 def augment_jr_commit_elt(soup, elt, project_history):
