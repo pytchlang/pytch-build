@@ -1,5 +1,5 @@
 Tutorial metadata
-===================
+=================
 
 At the moment, the tutorials are represented as a list. However, this
 configuration will get difficult to navigate once the number of
@@ -13,15 +13,24 @@ Representation in the code
 --------------------------
 
 The data is saved in the file ``metadata.json``. Such files can be
-found in each tutorial directory.  The top-level representation is a
-dictionary, whose syntax is as follows:
+found in each tutorial directory.  The top-level entity is an object,
+whose JSON representation is as follows:
 
 .. code-block:: text
 
   {"name_of_tag": "value_of_tag"}
 
-At the moment, the only tag created is the difficulty level associated
-to each tutorial.
+At the moment, the only tags used are:
+
+* ``difficulty`` — what level of challenge the tutorial presents;
+  currently one of the strings ``"getting started"``, ``"beginner"``,
+  ``"medium"``, and ``"advanced"``;
+
+* ``programKind`` — what representation of a Pytch program does the
+  tutorial work with; currently one of the strings ``"flat"`` and
+  ``"per-method"``; can be omitted, in which case ``"flat"`` is
+  assumed; the strings here match the values of the type
+  ``PytchProgram["kind"]`` in the TypeScript front end.
 
 The property ``metadata_text()`` of the ``ProjectHistory class`` reads
 the content of the ``metadata.json`` files, from the last tip-commit
@@ -33,9 +42,12 @@ example of what can be found in the ``summary.html`` file:
 
 .. code-block:: html
 
-  <div class="tutorial-summary" data-metadata-json='{"difficulty": "advance"}'>
+  <div class="tutorial-summary" data-metadata-json='{"difficulty": "advanced"'>
   <!-- tutorial content -->
   </div>
+
+Each individual tutorial's metadata is also provided as the attribute
+``data-metadata-json`` in the top-level `div`.
 
 
 Representation in the output
