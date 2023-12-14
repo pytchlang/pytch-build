@@ -95,7 +95,19 @@ def div_from_elements(soup, div_class, elements):
 
 
 def div_from_chapter(soup, chapter):
-    return div_from_elements(soup, "chapter-content", chapter)
+    # Not hugely efficient to go through list twice, but it works.
+    exclude_from_progress_trail = any(
+        node_is_exclude_from_progress_trail_marker(elt) for elt in chapter
+    )
+    real_elts = [
+        elt
+        for elt in chapter
+        if not node_is_exclude_from_progress_trail_marker(elt)
+    ]
+    div = div_from_elements(soup, "chapter-content", real_elts)
+    if exclude_from_progress_trail:
+        div.attrs["data-exclude-from-progress-trail"] = "true"
+    return div
 
 
 def div_from_front_matter(
