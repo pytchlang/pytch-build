@@ -13,8 +13,8 @@ Representation in the code
 --------------------------
 
 The data is saved in the file ``metadata.json``. Such files can be
-found in each tutorial directory.  The top-level representation is a
-dictionary, whose syntax is as follows:
+found in each tutorial directory.  The top-level entity is an object,
+whose JSON representation is as follows:
 
 .. code-block:: text
 
