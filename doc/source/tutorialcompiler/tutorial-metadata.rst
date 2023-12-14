@@ -42,7 +42,7 @@ example of what can be found in the ``summary.html`` file:
 
 .. code-block:: html
 
-  <div class="tutorial-summary" data-metadata-json='{"difficulty": "advance"}'>
+  <div class="tutorial-summary" data-metadata-json='{"difficulty": "advanced"'>
   <!-- tutorial content -->
   </div>
 
