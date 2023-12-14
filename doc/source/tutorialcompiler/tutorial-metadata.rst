@@ -1,5 +1,5 @@
 Tutorial metadata
-===================
+=================
 
 At the moment, the tutorials are represented as a list. However, this
 configuration will get difficult to navigate once the number of
