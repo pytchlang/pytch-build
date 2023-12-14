@@ -46,6 +46,9 @@ example of what can be found in the ``summary.html`` file:
   <!-- tutorial content -->
   </div>
 
+Each individual tutorial's metadata is also provided as the attribute
+``data-metadata-json`` in the top-level `div`.
+
 
 Representation in the output
 ----------------------------
