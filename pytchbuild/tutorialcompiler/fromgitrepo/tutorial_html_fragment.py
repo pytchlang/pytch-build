@@ -138,6 +138,16 @@ def node_is_relevant(soup_node):
     return not node_is_whitespace_string
 
 
+def node_is_div_of_any_class(elt, acceptable_class_names):
+    if elt.name != "div" or not elt.has_attr("class"):
+        return False
+    elt_class_names = elt.attrs["class"]
+    return any(
+        acceptable_name in elt_class_names
+        for acceptable_name in acceptable_class_names
+    )
+
+
 def node_is_patch(elt):
     return (elt.name == "div"
             and elt.has_attr("class")
