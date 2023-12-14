@@ -95,7 +95,19 @@ def div_from_elements(soup, div_class, elements):
 
 
 def div_from_chapter(soup, chapter):
-    return div_from_elements(soup, "chapter-content", chapter)
+    # Not hugely efficient to go through list twice, but it works.
+    exclude_from_progress_trail = any(
+        node_is_exclude_from_progress_trail_marker(elt) for elt in chapter
+    )
+    real_elts = [
+        elt
+        for elt in chapter
+        if not node_is_exclude_from_progress_trail_marker(elt)
+    ]
+    div = div_from_elements(soup, "chapter-content", real_elts)
+    if exclude_from_progress_trail:
+        div.attrs["data-exclude-from-progress-trail"] = "true"
+    return div
 
 
 def div_from_front_matter(
@@ -139,6 +151,12 @@ def node_is_work_in_progress_marker(elt):
     return (elt.name == "div"
             and elt.has_attr("class")
             and "work-in-progress" in elt.attrs["class"])
+
+
+def node_is_exclude_from_progress_trail_marker(elt):
+    return (elt.name == "div"
+            and elt.has_attr("class")
+            and "exclude-from-progress-trail" in elt.attrs["class"])
 
 
 def node_is_asset_credits_marker(elt):
@@ -308,6 +326,19 @@ def tutorial_div_from_project_history(project_history):
     # should start with a <H2>.  TODO: Check this.
     for chapter in chapters[1:]:
         tutorial_div.append(div_from_chapter(soup, chapter))
+
+    exclude_chapter = [
+        chapter.attrs.get("data-exclude-from-progress-trail", "false")
+        == "true"
+        for chapter in tutorial_div
+    ]
+
+    for exclude_0, exclude_1 in zip(exclude_chapter, exclude_chapter[1:]):
+        if exclude_0 and not exclude_1:
+            raise TutorialStructureError(
+                "expecting excluded chapters to all be at"
+                " end of tutorial"
+            )
 
     return tutorial_div
 
