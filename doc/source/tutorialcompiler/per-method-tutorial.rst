@@ -98,6 +98,22 @@ argument; the other kinds take no arguments.
     Change exactly one script's decorator in exactly one Sprite or the
     Stage.
 
+Excluding chapters from "progress trail"
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The front end shows a progress trail of circles which are replaced
+with check-marks as the learner works through the tutorial.  Often the
+last chapter or two are not really part of the tutorial proper; they
+might be challenges to try, or the credits for the assets used.  To
+indicate that these chapters should not be counted as part of the
+progress the learner must make to complete the tutorial, the tutorial
+author can include the shortcode
+
+``{{< exclude-from-progress-trail >}}``
+
+somewhere in that chapter.  Straight after the heading is a good
+place.
+
 
 Summary theory of operation for compiler
 ----------------------------------------
