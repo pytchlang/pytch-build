@@ -112,7 +112,8 @@ author can include the shortcode
 ``{{< exclude-from-progress-trail >}}``
 
 somewhere in that chapter.  Straight after the heading is a good
-place.
+place.  Currently, all excluded chapters must be at the end of the
+tutorial.
 
 
 Summary theory of operation for compiler
