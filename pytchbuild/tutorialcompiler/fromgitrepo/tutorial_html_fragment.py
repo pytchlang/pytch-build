@@ -327,6 +327,19 @@ def tutorial_div_from_project_history(project_history):
     for chapter in chapters[1:]:
         tutorial_div.append(div_from_chapter(soup, chapter))
 
+    exclude_chapter = [
+        chapter.attrs.get("data-exclude-from-progress-trail", "false")
+        == "true"
+        for chapter in tutorial_div
+    ]
+
+    for exclude_0, exclude_1 in zip(exclude_chapter, exclude_chapter[1:]):
+        if exclude_0 and not exclude_1:
+            raise TutorialStructureError(
+                "expecting excluded chapters to all be at"
+                " end of tutorial"
+            )
+
     return tutorial_div
 
 
