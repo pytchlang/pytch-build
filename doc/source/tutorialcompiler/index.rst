@@ -22,6 +22,7 @@ workflow based on the *git* version control system.
    tutorial-text-dataflow
    tutorial-markdown
    tutorial-metadata
+   per-method-tutorial
    unit-testing
 
 And see also :doc:`../live-reload/index`.

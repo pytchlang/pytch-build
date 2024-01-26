@@ -389,17 +389,31 @@ class ProjectCommit:
         else:
             return []
 
-    @cached_property
-    def code_patch_against_parent(self):
+    def assert_modifies_python_code(self):
         if not self.modifies_python_code:
             raise TutorialStructureError(
                 f"commit {self.oid} does not modify the Python code"
             )
 
+    @cached_property
+    def old_and_new_blobs(self):
+        self.assert_modifies_python_code()
         delta = self.sole_modify_against_parent
         old_blob = self.repo[delta.old_file.id]
         new_blob = self.repo[delta.new_file.id]
+        return old_blob, new_blob
+
+    @cached_property
+    def code_patch_against_parent(self):
+        old_blob, new_blob = self.old_and_new_blobs
         return old_blob.diff(new_blob)
+
+    @cached_property
+    def old_and_new_code(self):
+        old_blob, new_blob = self.old_and_new_blobs
+        old_code = old_blob.data.decode("utf-8")
+        new_code = new_blob.data.decode("utf-8")
+        return old_code, new_code
 
 
 ################################################################################
@@ -736,3 +750,6 @@ class ProjectHistory:
     def code_patch_against_parent(self, slug):
         commit = self.commit_from_slug[slug]
         return commit.code_patch_against_parent
+
+    def old_and_new_code(self, slug):
+        return self.commit_from_slug[slug].old_and_new_code
