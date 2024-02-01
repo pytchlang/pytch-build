@@ -372,6 +372,11 @@ class StructuredPytchProgram:
         return list(self.top_level_classes.keys())
 
     @property
+    def actors(self):
+        """Fresh list of all actors, as `ActorCode` instances."""
+        return list(self.top_level_classes.values())
+
+    @property
     def all_appearances(self):
         """All costumes/backdrops in context of each one's actor."""
         return [
