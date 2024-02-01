@@ -3,9 +3,14 @@ from dataclasses import dataclass
 from typing import Any, Literal
 from .errors import TutorialStructureError
 from .utils import make_of_kind
-
-# Some of the following have camelCase because they're destined to be
-# serialised as JSON ready for consumption by JavaScript.
+from .interop import (
+    EventDescriptorGreenFlag,
+    EventDescriptorKeyPressed,
+    EventDescriptorMessageReceived,
+    EventDescriptorStartAsClone,
+    EventDescriptorClicked,
+    EventDescriptor,
+)
 
 
 ########################################################################
@@ -24,53 +29,6 @@ def deindented_line(line):
                 f" {EXPECTED_INDENT_LEN} spaces but it did not"
             )
         return line[EXPECTED_INDENT_LEN:]
-
-
-########################################################################
-#
-# Mirror the TypeScript ones in the "structured-program" part of the
-# front-end, used to represent the different kinds of hat-blocks
-# (events).
-
-@dataclass
-class EventDescriptorGreenFlag:
-    kind: Literal["green-flag"]
-    make = make_of_kind("green-flag")
-
-
-@dataclass
-class EventDescriptorKeyPressed:
-    kind: Literal["key-pressed"]
-    keyName: str
-    make = make_of_kind("key-pressed")
-
-
-@dataclass
-class EventDescriptorMessageReceived:
-    kind: Literal["message-received"]
-    message: str
-    make = make_of_kind("message-received")
-
-
-@dataclass
-class EventDescriptorStartAsClone:
-    kind: Literal["start-as-clone"]
-    make = make_of_kind("start-as-clone")
-
-
-@dataclass
-class EventDescriptorClicked:
-    kind: Literal["clicked"]
-    make = make_of_kind("clicked")
-
-
-EventDescriptor = (
-    EventDescriptorGreenFlag
-    | EventDescriptorKeyPressed
-    | EventDescriptorMessageReceived
-    | EventDescriptorStartAsClone
-    | EventDescriptorClicked
-)
 
 
 def EventDescriptor_from_decorator_node(node):
