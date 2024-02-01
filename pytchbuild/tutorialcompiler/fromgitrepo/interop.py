@@ -51,3 +51,12 @@ EventDescriptor = (
     | EventDescriptorStartAsClone
     | EventDescriptorClicked
 )
+
+
+########################################################################
+#
+# Types for exporting per-method tutorials as demos.
+
+@dataclass
+class AssetDescriptor:
+    fileBasename: str
