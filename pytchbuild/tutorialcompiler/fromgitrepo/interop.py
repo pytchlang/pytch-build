@@ -60,3 +60,25 @@ EventDescriptor = (
 @dataclass
 class AssetDescriptor:
     fileBasename: str
+
+
+# "Bare" (without IDs) versions of types, leaving the front-end to
+# create its own Uuids.
+
+@dataclass
+class NoIdEventHandler:
+    event: EventDescriptor
+    pythonCode: str
+
+
+@dataclass
+class NoIdActor:
+    kind: Literal["stage", "sprite"]
+    name: str
+    handlers: list[NoIdEventHandler]
+    assets: list[AssetDescriptor]
+
+
+@dataclass
+class NoIdsStructuredProject:
+    actors: list[NoIdActor]
