@@ -15,6 +15,7 @@ from .interop import (
 
 ########################################################################
 
+PLAIN_STAGE_BACKDROP = "solid-white.png"
 EXPECTED_INDENT_LEN = 8
 EXPECTED_INDENT = " " * EXPECTED_INDENT_LEN
 
@@ -239,6 +240,10 @@ class ActorCode:
             )
 
         return cls(cdef.name, kind, [], [])
+
+    @classmethod
+    def new_plain_stage(cls):
+        return cls("Stage", "stage", [PLAIN_STAGE_BACKDROP], [])
 
     @property
     def identifier(self):
