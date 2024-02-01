@@ -13,6 +13,11 @@ def fixture_code_text(relative_path):
     return full_path.open("rt").read()
 
 
+def structured_program_from_path(relative_path):
+    code = fixture_code_text(relative_path)
+    return SP.StructuredPytchProgram(code)
+
+
 def fixture_code_ast(relative_path):
     return ast.parse(fixture_code_text(relative_path))
 
