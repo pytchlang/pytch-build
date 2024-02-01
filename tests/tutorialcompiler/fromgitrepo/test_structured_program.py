@@ -13,6 +13,11 @@ def fixture_code_text(relative_path):
     return full_path.open("rt").read()
 
 
+def structured_program_from_path(relative_path):
+    code = fixture_code_text(relative_path)
+    return SP.StructuredPytchProgram(code)
+
+
 def fixture_code_ast(relative_path):
     return ast.parse(fixture_code_text(relative_path))
 
@@ -227,9 +232,8 @@ class TestStructuredProgram:
             ("invalid_no_decorators.py", "Bowl.bad .* found 0"),
         ]
         for path, exp_exception_match in paths_with_exp_exception_match:
-            code = fixture_code_text(path)
             with raises_TutorialStructureError(exp_exception_match):
-                SP.StructuredPytchProgram(code)
+                structured_program_from_path(path)
 
     def test_valid_all_handlers(self, valid_program):
         got_handler_names = [
