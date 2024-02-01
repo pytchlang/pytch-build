@@ -10,6 +10,7 @@ from .interop import (
     EventDescriptorStartAsClone,
     EventDescriptorClicked,
     EventDescriptor,
+    NoIdEventHandler,
 )
 
 
@@ -206,6 +207,9 @@ class EventHandler:
             self.event,
             self.body_suite_text
         )
+
+    def as_NoIdEventHandler(self):
+        return NoIdEventHandler(self.event, self.body_suite_text)
 
 
 ########################################################################
