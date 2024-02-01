@@ -19,6 +19,7 @@ class TutorialBundle:
     tutorial_html: bs4.element.Tag
     summary_html: bs4.element.Tag
     assets: List[Asset]
+    final_code_text: str
 
     @classmethod
     def from_project_history(cls, project_history):
@@ -26,7 +27,8 @@ class TutorialBundle:
             Path(project_history.top_level_directory_name),
             tutorial_div_from_project_history(project_history),
             summary_div_from_project_history(project_history),
-            project_history.all_assets
+            project_history.all_assets,
+            project_history.final_code_text,
         )
 
     def write_to_zipfile(self, out_zipfile):
