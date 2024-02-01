@@ -2,12 +2,12 @@ from dataclasses import dataclass
 from typing import Literal
 from .cached_property import cached_property
 from .structured_program import (
-    make_of_kind,
     ActorIdentifier,
     ScriptPath,
     EventDescriptor,
     StructuredPytchProgram,
 )
+from .utils import make_of_kind
 from .errors import TutorialStructureError
 
 
