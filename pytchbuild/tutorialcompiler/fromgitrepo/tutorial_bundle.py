@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Dict, Any
 from contextlib import closing
 from pathlib import Path
 import zipfile
@@ -20,6 +20,7 @@ class TutorialBundle:
     summary_html: bs4.element.Tag
     assets: List[Asset]
     final_code_text: str
+    metadata: Dict[str, Any]
 
     @classmethod
     def from_project_history(cls, project_history):
@@ -29,6 +30,7 @@ class TutorialBundle:
             summary_div_from_project_history(project_history),
             project_history.all_assets,
             project_history.final_code_text,
+            json.loads(project_history.metadata_text),
         )
 
     def write_to_zipfile(self, out_zipfile):
