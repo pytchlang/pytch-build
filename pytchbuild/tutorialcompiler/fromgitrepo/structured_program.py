@@ -11,6 +11,8 @@ from .interop import (
     EventDescriptorClicked,
     EventDescriptor,
     NoIdEventHandler,
+    NoIdActor,
+    AssetDescriptor,
 )
 
 
@@ -252,6 +254,14 @@ class ActorCode:
     @property
     def identifier(self):
         return ActorIdentifier_make(self.kind, self.name)
+
+    def as_NoIdActor(self):
+        return NoIdActor(
+            self.kind,
+            self.name,
+            [handler.as_NoIdEventHandler() for handler in self.handlers],
+            [AssetDescriptor(name) for name in self.appearances],  # TODO: Sounds
+        )
 
 
 ########################################################################
