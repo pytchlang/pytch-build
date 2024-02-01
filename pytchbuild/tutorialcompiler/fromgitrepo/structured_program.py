@@ -2,15 +2,10 @@ import ast
 from dataclasses import dataclass
 from typing import Any, Literal
 from .errors import TutorialStructureError
+from .utils import make_of_kind
 
 # Some of the following have camelCase because they're destined to be
 # serialised as JSON ready for consumption by JavaScript.
-
-
-def make_of_kind(kind):
-    def make(cls, *args):
-        return cls(kind, *args)
-    return classmethod(make)
 
 
 ########################################################################
