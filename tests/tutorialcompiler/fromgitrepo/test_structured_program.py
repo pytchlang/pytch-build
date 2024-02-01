@@ -307,6 +307,12 @@ class TestStructuredProgram:
         with raises_TutorialStructureError("expecting at most.*found 2"):
             sp.canonical_actors()
 
+    def assert_first_stage_second_sprite(self, structured_program):
+        actors = structured_program.canonical_actors()
+        assert len(actors) == 2
+        assert actors[0].kind == "stage"
+        assert actors[1].kind == "sprite"
+
 
 ########################################################################
 
