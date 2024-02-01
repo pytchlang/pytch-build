@@ -10,11 +10,16 @@ from .interop import (
     EventDescriptorStartAsClone,
     EventDescriptorClicked,
     EventDescriptor,
+    NoIdEventHandler,
+    NoIdActor,
+    NoIdsStructuredProject,
+    AssetDescriptor,
 )
 
 
 ########################################################################
 
+PLAIN_STAGE_BACKDROP = "solid-white.png"
 EXPECTED_INDENT_LEN = 8
 EXPECTED_INDENT = " " * EXPECTED_INDENT_LEN
 
@@ -206,6 +211,9 @@ class EventHandler:
             self.body_suite_text
         )
 
+    def as_NoIdEventHandler(self):
+        return NoIdEventHandler(self.event, self.body_suite_text)
+
 
 ########################################################################
 
@@ -240,9 +248,21 @@ class ActorCode:
 
         return cls(cdef.name, kind, [], [])
 
+    @classmethod
+    def new_plain_stage(cls):
+        return cls("Stage", "stage", [PLAIN_STAGE_BACKDROP], [])
+
     @property
     def identifier(self):
         return ActorIdentifier_make(self.kind, self.name)
+
+    def as_NoIdActor(self):
+        return NoIdActor(
+            self.kind,
+            self.name,
+            [handler.as_NoIdEventHandler() for handler in self.handlers],
+            [AssetDescriptor(name) for name in self.appearances],  # TODO: Sounds
+        )
 
 
 ########################################################################
@@ -353,6 +373,11 @@ class StructuredPytchProgram:
         return list(self.top_level_classes.keys())
 
     @property
+    def actors(self):
+        """Fresh list of all actors, as `ActorCode` instances."""
+        return list(self.top_level_classes.values())
+
+    @property
     def all_appearances(self):
         """All costumes/backdrops in context of each one's actor."""
         return [
@@ -395,3 +420,37 @@ class StructuredPytchProgram:
             )
 
         return scripts[0]
+
+    def canonical_actors(self):
+        """
+        Return a list of Actors corresponding to those in `self`, but
+        guaranteeing that the zeroth entry is the unique Stage in the
+        list.  If `self` has no Stage, create one.  If `self` has
+        more than one Stage, throw an error.  If `self` has exactly
+        one Stage, it is (if necessary) moved to the start of the
+        returned list.
+        """
+        actors = self.actors  # A fresh list
+        stage_idxs = [
+            idx for idx, actor in enumerate(actors)
+            if actor.kind == "stage"
+        ]
+        n_stages = len(stage_idxs)
+
+        if n_stages > 1:
+            raise TutorialStructureError(
+                "expecting at most one Stage"
+                f" but found {n_stages}"
+            )
+        if n_stages == 1:
+            stage = actors.pop(stage_idxs[0])
+            actors.insert(0, stage)
+        else:
+            actors.insert(0, ActorCode.new_plain_stage())
+
+        return actors
+
+    def as_NoIdsStructuredProject(self):
+        return NoIdsStructuredProject(
+            [actor.as_NoIdActor() for actor in self.canonical_actors()]
+        )
