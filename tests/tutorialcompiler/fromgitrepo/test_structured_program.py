@@ -318,6 +318,11 @@ class TestStructuredProgram:
         assert len(sp.actors) == 1
         self.assert_first_stage_second_sprite(sp)
 
+    def test_canonical_actors_one_last(self):
+        sp = structured_program_from_path("canon_actors_one_last.py")
+        assert len(sp.actors) == 2
+        self.assert_first_stage_second_sprite(sp)
+
 
 ########################################################################
 
