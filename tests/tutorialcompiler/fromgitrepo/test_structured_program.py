@@ -302,6 +302,11 @@ class TestStructuredProgram:
             path = Path(Id("sprite", "Banana"), "nothing")
             valid_program.handler_from_path(path)
 
+    def test_canonical_actors_too_many(self):
+        sp = structured_program_from_path("canon_actors_too_many.py")
+        with raises_TutorialStructureError("expecting at most.*found 2"):
+            sp.canonical_actors()
+
 
 ########################################################################
 
