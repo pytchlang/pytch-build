@@ -313,6 +313,11 @@ class TestStructuredProgram:
         assert actors[0].kind == "stage"
         assert actors[1].kind == "sprite"
 
+    def test_canonical_actors_none(self):
+        sp = structured_program_from_path("canon_actors_none.py")
+        assert len(sp.actors) == 1
+        self.assert_first_stage_second_sprite(sp)
+
 
 ########################################################################
 
