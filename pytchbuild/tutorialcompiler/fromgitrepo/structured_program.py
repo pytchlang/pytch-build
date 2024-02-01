@@ -419,3 +419,32 @@ class StructuredPytchProgram:
             )
 
         return scripts[0]
+
+    def canonical_actors(self):
+        """
+        Return a list of Actors corresponding to those in `self`, but
+        guaranteeing that the zeroth entry is the unique Stage in the
+        list.  If `self` has no Stage, create one.  If `self` has
+        more than one Stage, throw an error.  If `self` has exactly
+        one Stage, it is (if necessary) moved to the start of the
+        returned list.
+        """
+        actors = self.actors  # A fresh list
+        stage_idxs = [
+            idx for idx, actor in enumerate(actors)
+            if actor.kind == "stage"
+        ]
+        n_stages = len(stage_idxs)
+
+        if n_stages > 1:
+            raise TutorialStructureError(
+                "expecting at most one Stage"
+                f" but found {n_stages}"
+            )
+        if n_stages == 1:
+            stage = actors.pop(stage_idxs[0])
+            actors.insert(0, stage)
+        else:
+            actors.insert(0, ActorCode.new_plain_stage())
+
+        return actors
