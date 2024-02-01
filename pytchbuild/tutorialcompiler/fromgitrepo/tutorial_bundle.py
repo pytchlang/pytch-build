@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from typing import List, Dict, Any
 from contextlib import closing
 from pathlib import Path
@@ -11,6 +11,7 @@ from .tutorial_html_fragment import (
     tutorial_div_from_project_history,
     summary_div_from_project_history,
 )
+from .structured_program import StructuredPytchProgram
 
 
 @dataclass
@@ -31,6 +32,25 @@ class TutorialBundle:
             project_history.all_assets,
             project_history.final_code_text,
             json.loads(project_history.metadata_text),
+        )
+
+    def maybe_write_structured_json(self, out_zipfile):
+        program_kind = self.metadata.get("programKind", "flat")
+        if program_kind != "per-method":
+            return
+
+        program = (
+            StructuredPytchProgram(self.final_code_text)
+            .as_NoIdsStructuredProject()
+        )
+        program_json = json.dumps(asdict(program))
+
+        bundle_root_path = Path(self.top_level_directory_name)
+        path = bundle_root_path / "skeleton-structured-program.json"
+
+        out_zipfile.writestr(
+            str(path),
+            program_json.encode("utf-8")
         )
 
     def write_to_zipfile(self, out_zipfile):
