@@ -12,6 +12,7 @@ from .interop import (
     EventDescriptor,
     NoIdEventHandler,
     NoIdActor,
+    NoIdsStructuredProject,
     AssetDescriptor,
 )
 
@@ -448,3 +449,8 @@ class StructuredPytchProgram:
             actors.insert(0, ActorCode.new_plain_stage())
 
         return actors
+
+    def as_NoIdsStructuredProject(self):
+        return NoIdsStructuredProject(
+            [actor.as_NoIdActor() for actor in self.canonical_actors()]
+        )
