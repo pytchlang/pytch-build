@@ -344,7 +344,6 @@ def tutorial_div_from_project_history(project_history):
 
 def summary_div_from_project_history(project_history):
     soup = soup_from_markdown_text(project_history.summary_text)
-    metadata_string = project_history.metadata_text
 
     # Give all paragraphs holding images (which there should probably only be
     # one of, being the screenshot) an identifiable class.  The front-end is
@@ -355,11 +354,14 @@ def summary_div_from_project_history(project_history):
     for img in soup.findAll("img"):
         img.parent.attrs["class"] = "image-container"
 
+    # Round-trip to get compact representation:
+    metadata_json = json.dumps(json.loads(project_history.metadata_text))
+
     summary_div = soup.new_tag(
         "div",
         attrs={
             "class": "tutorial-summary",
-            "data-metadata-json": metadata_string
+            "data-metadata-json": metadata_json,
         }
     )
 
