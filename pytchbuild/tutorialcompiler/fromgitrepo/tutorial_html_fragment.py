@@ -365,7 +365,7 @@ def summary_div_from_project_history(project_history):
 
     for elt in soup:
         # In other situations, trying to append the original elt
-        # instance led to hard-to-track-down bugs.
+        # instance led to hard-to-track-down bugs, so copy.
         summary_div.append(copy.copy(elt))
 
     return summary_div
