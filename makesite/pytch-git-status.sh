@@ -14,7 +14,6 @@ export PYTCH_REPOS_BASE
             echo
             tput bold
             echo ------------------------------------------------------------------------
-            echo
             printf "%-16s  %s\n" "$x" "$(git rev-parse HEAD)"
             echo
             tput sgr0
