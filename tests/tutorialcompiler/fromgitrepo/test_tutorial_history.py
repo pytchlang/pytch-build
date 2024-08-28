@@ -289,7 +289,7 @@ class TestProjectHistory:
             TH.ProjectHistory(cloned_repo.workdir, "d5f7ae0")
 
     def test_tip_oid_string(self, this_raw_repo, project_history):
-        exp_oid = this_raw_repo.revparse_single("unit-tests-commits").oid
+        exp_oid = this_raw_repo.revparse_single("unit-tests-commits").id
         assert project_history.tip_oid_string == str(exp_oid)
 
     def test_top_level_directory_name(self, project_history):
@@ -343,7 +343,7 @@ class TestProjectHistory:
 
     def test_commit_from_slug(self, project_history):
         assert len(project_history.commit_from_slug) == 2
-        got_oid = project_history.commit_from_slug["add-Alien-skeleton"].oid
+        got_oid = str(project_history.commit_from_slug["add-Alien-skeleton"].oid)
         exp_oid = "e41e02c9be0398f0a89e275da6edf5d3110add54"
         assert str(got_oid) == exp_oid
 
