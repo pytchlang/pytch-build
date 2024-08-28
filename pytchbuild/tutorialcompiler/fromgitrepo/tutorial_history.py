@@ -156,7 +156,7 @@ class ProjectCommit:
 
     @cached_property
     def short_oid(self):
-        return self.oid.hex[:12]
+        return str(self.oid)[:12]
 
     @cached_property
     def summary_label(self):
@@ -499,7 +499,7 @@ class ProjectHistory:
     ):
         self.repo = pygit2.Repository(repo_directory)
         self.tutorial_text_source = tutorial_text_source
-        tip_oid = self.repo.revparse_single(tip_revision).oid
+        tip_oid = self.repo.revparse_single(tip_revision).id
         self.project_commits = self.commit_linear_ancestors(tip_oid)
 
         self.validate_structure()

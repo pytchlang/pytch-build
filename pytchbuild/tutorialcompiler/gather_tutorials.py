@@ -229,7 +229,7 @@ def sole_tree_entry(commit):
     entries = list(commit.tree)
     if len(entries) != 1:
         raise TutorialStructureError(
-            f"expecting just one entry in tree for {commit.oid}"
+            f"expecting just one entry in tree for {commit.id}"
         )
     return entries[0]
 
@@ -332,11 +332,11 @@ def commit_to_releases(repo, tutorials):
         "build-sources.yaml": build_sources_yaml,
     }
 
-    release_recipes_tip = str(repo.revparse_single(RELEASE_RECIPES_BRANCH_NAME).oid)
+    release_recipes_tip = str(repo.revparse_single(RELEASE_RECIPES_BRANCH_NAME).id)
     contributing_commit_oids = [release_recipes_tip] + tutorials.gathered_tip_oids
     tree_oid = create_union_tree(repo, contributing_commit_oids, extra_files)
 
-    releases_tip = str(repo.revparse_single(RELEASES_BRANCH_NAME).oid)
+    releases_tip = str(repo.revparse_single(RELEASES_BRANCH_NAME).id)
     parent_oids = [releases_tip] + contributing_commit_oids
 
     new_oid = repo.create_commit(f"refs/heads/{RELEASES_BRANCH_NAME}",
