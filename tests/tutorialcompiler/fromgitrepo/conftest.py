@@ -21,6 +21,7 @@ def discovered_repository_path():
     repo = pygit2.Repository(path)
 
     for branch_name in [
+            "unit-tests-catch-apple",
             "unit-tests-commits",
             "unit-tests-bad-commits",
             "unit-tests-commit-0",
