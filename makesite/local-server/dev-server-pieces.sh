@@ -36,6 +36,12 @@ tmux split-window -t 2 \
      PYTCH_LOCAL_SERVER_DIR="$PYTCH_LOCAL_SERVER_DIR" \
      "$PYTCH_LOCAL_SERVER_DIR"/dev-server-medialib.sh
 
+tmux split-window -t 4 \
+     env \
+     PYTCH_REPO_BASE="$PYTCH_REPO_BASE" \
+     PYTCH_LOCAL_SERVER_DIR="$PYTCH_LOCAL_SERVER_DIR" \
+     "$PYTCH_LOCAL_SERVER_DIR"/dev-server-static-blobs.sh
+
 exec \
      env \
      PYTCH_REPO_BASE="$PYTCH_REPO_BASE" \
