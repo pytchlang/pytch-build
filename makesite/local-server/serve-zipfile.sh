@@ -8,6 +8,9 @@ fi
 LOCAL_SERVER_DIR="$(realpath "$(dirname "$0")")"
 cd "$LOCAL_SERVER_DIR"
 
+THIS_REPO_ROOT="$(git rev-parse --show-toplevel)"
+TOPLEVEL_REPO_ROOT="$(realpath "$THIS_REPO_ROOT"/..)"
+
 # This is sometimes unnecessary, but it's very quick, so worthwhile to
 # make sure we have the latest image configuration:
 docker build --tag pytch-local-server .
@@ -33,6 +36,9 @@ chmod 755 "$CONTENTDIR"
 
 (
     cd "$CONTENTDIR"
+
+    rsync -a "$TOPLEVEL_REPO_ROOT"/pytch-static-blobs/data/ static-blobs
+
     if [ -e releases ]; then
         echo Release zipfile: setting up redirection
         cp releases/*/toplevel-dot-htaccess .htaccess
