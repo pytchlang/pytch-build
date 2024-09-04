@@ -1,6 +1,4 @@
-#!/bin/bash
-
-cd_or_fail() { cd "$1" || exit 1; }
+#!/bin/bash -e
 
 if [ -z "$1" ]; then
     echo "usage: $0 ZIP_FILENAME [ DEMOS_ZIP_FILENAME ]"
@@ -8,7 +6,10 @@ if [ -z "$1" ]; then
 fi
 
 LOCAL_SERVER_DIR="$(realpath "$(dirname "$0")")"
-cd_or_fail "$LOCAL_SERVER_DIR"
+cd "$LOCAL_SERVER_DIR"
+
+THIS_REPO_ROOT="$(git rev-parse --show-toplevel)"
+TOPLEVEL_REPO_ROOT="$(realpath "$THIS_REPO_ROOT"/..)"
 
 # This is sometimes unnecessary, but it's very quick, so worthwhile to
 # make sure we have the latest image configuration:
@@ -25,7 +26,7 @@ if [ -n "$2" ]; then
     mkdir "$CONTENTDIR"/demos
     unzip -q -d "$CONTENTDIR"/demos "$2"
     (
-        cd_or_fail "$CONTENTDIR"/demos
+        cd "$CONTENTDIR"/demos
         buildid="$(find . -name '????????????' -print)"
         ln -s "$buildid" fake-build-id-for-tests
     )
@@ -34,7 +35,10 @@ fi
 chmod 755 "$CONTENTDIR"
 
 (
-    cd_or_fail "$CONTENTDIR"
+    cd "$CONTENTDIR"
+
+    rsync -a "$TOPLEVEL_REPO_ROOT"/pytch-static-blobs/data/ static-blobs
+
     if [ -e releases ]; then
         echo Release zipfile: setting up redirection
         cp releases/*/toplevel-dot-htaccess .htaccess
