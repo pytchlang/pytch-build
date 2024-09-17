@@ -110,6 +110,26 @@ class StructuredPytchDiff:
 
         return added_objs.pop()
 
+    def sole_removed(self, old_objs, new_objs, name):
+        old_set = set(old_objs)
+        new_set = set(new_objs)
+
+        added_objs = new_set - old_set
+        if len(added_objs) > 0:
+            raise self.structure_error(
+                f"expecting every {name} in new code to have existed"
+                f" in old code, but found {added_objs!r} added"
+            )
+
+        removed_objs = old_set - new_set
+        if len(removed_objs) != 1:
+            raise self.structure_error(
+                f"expecting exactly one {name} to be removed in new code"
+                f" compared to old code, but found {removed_objs!r} removed"
+            )
+
+        return removed_objs.pop()
+
     def assert_lists_unchanged(self, old_objs, new_objs, name_plural):
         if new_objs != old_objs:
             raise self.structure_error(
