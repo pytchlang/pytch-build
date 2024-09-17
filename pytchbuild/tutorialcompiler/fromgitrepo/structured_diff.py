@@ -159,6 +159,17 @@ class StructuredPytchDiff:
             added_appearance.appearance_name,
         )
 
+    def delete_appearance_commit(self):
+        deleted_appearance = self.sole_removed(
+            set(self.old_program.all_appearances),
+            set(self.new_program.all_appearances),
+            "appearance",
+        )
+        return JrCommitDeleteAppearance.make(
+            deleted_appearance.actor_identifier,
+            deleted_appearance.appearance_name,
+        )
+
     def add_script_commit(self):
         added_path = self.sole_added(
             set(self.old_program.all_script_paths),
