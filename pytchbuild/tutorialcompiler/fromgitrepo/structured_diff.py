@@ -67,6 +67,7 @@ class JrCommitChangeHatBlock:
 
 @dataclass
 class StructuredPytchDiff:
+    label: str
     old_code: str
     new_code: str
 
