@@ -170,7 +170,8 @@ def augment_jr_commit_elt(soup, elt, project_history):
     commit_args = json.loads(elt.attrs["data-jr-commit-args"])
 
     old_code, new_code = project_history.old_and_new_code(commit_slug)
-    structured_diff = StructuredPytchDiff(old_code, new_code)
+    slug_label = f"{{#{commit_slug}}}"
+    structured_diff = StructuredPytchDiff(slug_label, old_code, new_code)
     rich_commit = structured_diff.rich_commit(commit_kind, *commit_args)
     rich_commit_json = json.dumps(dataclasses.asdict(rich_commit))
 
