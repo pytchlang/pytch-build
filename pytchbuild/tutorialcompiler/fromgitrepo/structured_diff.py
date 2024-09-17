@@ -88,14 +88,14 @@ class StructuredPytchDiff:
 
         removed_objs = old_set - new_set
         if len(removed_objs) > 0:
-            raise TutorialStructureError(
+            raise self.structure_error(
                 f"expecting every {name} from old code to still exist"
                 f" in new code, but found {removed_objs!r} removed"
             )
 
         added_objs = new_set - old_set
         if len(added_objs) != 1:
-            raise TutorialStructureError(
+            raise self.structure_error(
                 f"expecting exactly one new {name} to exist in new code"
                 f" compared to old code, but found {added_objs!r} added"
             )
@@ -104,7 +104,7 @@ class StructuredPytchDiff:
 
     def assert_lists_unchanged(self, old_objs, new_objs, name_plural):
         if new_objs != old_objs:
-            raise TutorialStructureError(
+            raise self.structure_error(
                 f"expecting the collection of {name_plural}"
                 " to be unchanged, but found"
                 f" old list {old_objs} to differ"
@@ -149,7 +149,7 @@ class StructuredPytchDiff:
         old_event = old_script.script.event
         new_event = new_script.script.event
         if new_event != old_event:
-            raise TutorialStructureError(
+            raise self.structure_error(
                 f"expecting event for script at {old_script.path}"
                 f" to be unchanged, but found {old_event} for old"
                 f" vs {new_event} for new"
@@ -160,7 +160,7 @@ class StructuredPytchDiff:
         old_code_lines = old_script.script.body_lines
         new_code_lines = new_script.script.body_lines
         if new_code_lines != old_code_lines:
-            raise TutorialStructureError(
+            raise self.structure_error(
                 f"expecting code for script at {old_script.path}"
                 f" to be unchanged, but found {old_code_lines} for old"
                 f" vs {new_code_lines} for new"
@@ -170,7 +170,7 @@ class StructuredPytchDiff:
         n_commits = len(commits)
         if n_commits != 1:
             paths = [commit.path for commit in commits]
-            raise TutorialStructureError(
+            raise self.structure_error(
                 "expecting exactly one script to have different"
                 f" code but found {n_commits}, at {paths}"
             )
@@ -207,7 +207,7 @@ class StructuredPytchDiff:
         n_commits = len(commits)
         if n_commits != 1:
             paths = [commit.path for commit in commits]
-            raise TutorialStructureError(
+            raise self.structure_error(
                 "expecting exactly one script to have a different"
                 f" hat-block but found {n_commits}, at {paths}"
             )
