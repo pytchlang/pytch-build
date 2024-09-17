@@ -34,6 +34,14 @@ class JrCommitAddMedialibAppearance:
 
 
 @dataclass
+class JrCommitDeleteAppearance:
+    kind: Literal["delete-appearance"]
+    actor: ActorIdentifier
+    appearanceFilename: str
+    make = make_of_kind("delete-appearance")
+
+
+@dataclass
 class JrCommitAddScript:
     kind: Literal["add-script"]
     path: ScriptPath
