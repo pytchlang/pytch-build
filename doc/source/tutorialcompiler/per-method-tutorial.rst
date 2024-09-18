@@ -84,6 +84,16 @@ argument; the other kinds take no arguments.  If the
     shown to the learner to help them find the correct appearance in
     the media library.
 
+``add-medialib-appearances-entry`` *ENTRY-NAME*
+
+    Add multiple elements to the list of Costumes (for a Sprite) or
+    Backdrops (for the Stage).  Such a commit should add multiple
+    string literals to the appropriate class variable.  The
+    *ENTRY-NAME* is a string shown to the learner to help them find
+    the correct 'entry' (group of appearances) in the media library.
+    It is assumed that the named medialib entry does in fact contain
+    all the added images (and no others).
+
 ``delete-appearance``
 
     Remove an element from the list of Costumes or Backdrops.  Such a
