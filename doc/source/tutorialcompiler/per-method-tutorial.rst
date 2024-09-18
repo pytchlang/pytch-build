@@ -83,6 +83,13 @@ argument; the other kinds take no arguments.  If the
     shown to the learner to help them find the correct appearance in
     the media library.
 
+``delete-appearance``
+
+    Remove an element from the list of Costumes or Backdrops.  Such a
+    commit should remove exactly one string literal from the
+    appropriate class variable.  The deleted string literal is shown
+    to the user so they can find the right appearance to delete.
+
 ``add-script``
 
     Add a script (decorated method) to a sprite.  The code added
