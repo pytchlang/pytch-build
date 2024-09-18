@@ -159,6 +159,38 @@ class StructuredPytchDiff:
             1,
         )
 
+    def add_medialib_appearances_entry_commit(self, entry_name):
+        old_appearances = set(self.old_program.all_appearances)
+        new_appearances = set(self.new_program.all_appearances)
+        if len(old_appearances - new_appearances) > 0:
+            raise self.structure_error(
+                "expecting no appearances to be removed"
+            )
+
+        added_appearances = new_appearances - old_appearances
+        if len(added_appearances) <= 1:
+            raise self.structure_error(
+                "expecting more than one appearance to be added"
+            )
+
+        actors_adding_appearances = set(
+            appearance.actor_identifier
+            for appearance in added_appearances
+        )
+        if len(actors_adding_appearances) != 1:
+            raise self.structure_error(
+                "expecting appearances to be added to exactly"
+                " one actor"
+            )
+
+        actor = actors_adding_appearances.pop()
+
+        return JrCommitAddMedialibAppearancesEntry.make(
+            actor,
+            entry_name,
+            len(added_appearances),
+        )
+
     def delete_appearance_commit(self):
         deleted_appearance = self.sole_removed(
             set(self.old_program.all_appearances),
