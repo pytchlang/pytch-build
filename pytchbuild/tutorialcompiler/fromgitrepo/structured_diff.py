@@ -29,7 +29,7 @@ class JrCommitAddMedialibAppearancesEntry:
     kind: Literal["add-medialib-appearances-entry"]
     actor: ActorIdentifier
     displayIdentifier: str
-    appearanceFilename: str
+    nItems: int
     make = make_of_kind("add-medialib-appearances-entry")
 
 
@@ -156,7 +156,7 @@ class StructuredPytchDiff:
         return JrCommitAddMedialibAppearancesEntry.make(
             added_appearance.actor_identifier,
             display_identifier,
-            added_appearance.appearance_name,
+            1,
         )
 
     def delete_appearance_commit(self):
