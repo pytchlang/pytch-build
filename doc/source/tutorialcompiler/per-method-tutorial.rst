@@ -50,7 +50,8 @@ tagged commit using a shortcode like
 where:
 
 * *COMMIT-SLUG* is the label identifying this commit, as found in its
-  special tag commit message (e.g., ``{#increment-score}``);
+  special tag commit message (e.g., for a commit with message
+  ``{#increment-score}``, the *commit-slug* is ``increment-score``);
 
 * *COMMIT-KIND* identifies the kind of commit this is, for example one
   which adds a new script to a sprite; see below for details of the
@@ -77,7 +78,7 @@ argument; the other kinds take no arguments.  If the
 
 ``add-medialib-appearance`` *DISPLAY-IDENTIFIER*
 
-    Add an entry to the list of Costumes (for a Sprite) or Backdrops
+    Add an element to the list of Costumes (for a Sprite) or Backdrops
     (for the Stage).  Such a commit should add a string literal to the
     appropriate class variable.  The *DISPLAY-IDENTIFIER* is a string
     shown to the learner to help them find the correct appearance in
