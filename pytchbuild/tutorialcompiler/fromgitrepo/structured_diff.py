@@ -25,12 +25,12 @@ class JrCommitAddSprite:
 
 
 @dataclass
-class JrCommitAddMedialibAppearance:
-    kind: Literal["add-medialib-appearance"]
+class JrCommitAddMedialibAppearancesEntry:
+    kind: Literal["add-medialib-appearances-entry"]
     actor: ActorIdentifier
     displayIdentifier: str
     appearanceFilename: str
-    make = make_of_kind("add-medialib-appearance")
+    make = make_of_kind("add-medialib-appearances-entry")
 
 
 @dataclass
@@ -153,7 +153,7 @@ class StructuredPytchDiff:
             set(self.new_program.all_appearances),
             "appearance",
         )
-        return JrCommitAddMedialibAppearance.make(
+        return JrCommitAddMedialibAppearancesEntry.make(
             added_appearance.actor_identifier,
             display_identifier,
             added_appearance.appearance_name,
