@@ -317,6 +317,8 @@ class StructuredPytchDiff:
                 return self.add_sprite_commit(*args)
             case "add-medialib-appearance":
                 return self.add_medialib_appearance_commit(*args)
+            case "add-medialib-appearances-entry":
+                return self.add_medialib_appearances_entry_commit(*args)
             case "delete-appearance":
                 return self.delete_appearance_commit(*args)
             case "add-script":
