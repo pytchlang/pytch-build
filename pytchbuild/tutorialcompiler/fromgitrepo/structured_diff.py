@@ -253,4 +253,4 @@ class StructuredPytchDiff:
             case "change-hat-block":
                 return self.change_hat_block_commit(*args)
 
-        raise ValueError(f'unknown commit-kind "{kind}"')
+        raise ValueError(f'{self.label}: unknown commit-kind "{kind}"')
