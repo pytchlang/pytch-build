@@ -79,6 +79,9 @@ class StructuredPytchDiff:
     def new_program(self):
         return StructuredPytchProgram(self.new_code)
 
+    def structure_error(self, msg):
+        return TutorialStructureError(f"{self.label}: {msg}")
+
     def sole_added(self, old_objs, new_objs, name):
         old_set = set(old_objs)
         new_set = set(new_objs)
