@@ -384,14 +384,14 @@ class TestRichCommits:
     def test_examples(self, apple_history):
         for slug, kind, *args in self.slugs_with_kinds_and_args:
             codes = apple_history.old_and_new_code(slug)
-            diff = SD.StructuredPytchDiff(*codes)
+            diff = SD.StructuredPytchDiff("text_examples()", *codes)
             # Ignore return value; test that it runs without error:
             diff.rich_commit(kind, *args)
 
     def test_examples_wrong_kind(self, apple_history):
         for slug, kind, *args in self.slugs_with_kinds_and_args:
             codes = apple_history.old_and_new_code(slug)
-            diff = SD.StructuredPytchDiff(*codes)
+            diff = SD.StructuredPytchDiff("text_examples_wrong_kind()", *codes)
             wrong_kinds = self.all_kinds - {kind}
             for wrong_kind in wrong_kinds:
                 with pytest.raises(TCE.TutorialStructureError):
