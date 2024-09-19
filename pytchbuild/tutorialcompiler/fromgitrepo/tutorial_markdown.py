@@ -4,7 +4,6 @@ import markdown
 import markdown.extensions.fenced_code
 from bs4 import BeautifulSoup
 import copy
-import json
 
 from .errors import TutorialStructureError
 
@@ -34,12 +33,13 @@ class ShortcodeProcessor(markdown.blockprocessors.BlockProcessor):
                              {"class": "patch-container",
                               "data-slug": args_str})
         elif kind == "jr-commit":
-            [slug, commit_kind, *commit_args] = args_str.split(" ")
+            [slug, commit_kind, *maybe_args_json] = args_str.split(" ", 2)
+            commit_args_json = maybe_args_json[0] if maybe_args_json else "[]"
             etree.SubElement(parent, "div",
                              {"class": "jr-commit",
                               "data-slug": slug,
                               "data-jr-commit-kind": commit_kind,
-                              "data-jr-commit-args": json.dumps(commit_args)})
+                              "data-jr-commit-args": commit_args_json})
         elif kind in self.simple_shortcode_kinds:
             etree.SubElement(parent, "div", {"class": kind})
         else:

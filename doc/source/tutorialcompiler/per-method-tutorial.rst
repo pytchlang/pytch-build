@@ -56,8 +56,9 @@ where:
   which adds a new script to a sprite; see below for details of the
   different kinds of commit;
 
-* *OPTIONAL-COMMIT-ARGS* are any arguments the particular commit-kind
-  requires; see below for details.
+* *OPTIONAL-COMMIT-ARGS* is JSON representing an array of the
+  arguments the particular commit-kind requires; see below for
+  details.
 
 Kinds of commit
 ~~~~~~~~~~~~~~~
@@ -65,7 +66,8 @@ Kinds of commit
 Currently the tutorial author must indicate what kind of change is
 being made by each commit, by supplying one of the following
 commit-kinds.  The ``add-medialib-appearance`` kind takes one
-argument; the other kinds take no arguments.
+argument; the other kinds take no arguments.  If the
+*optional-commit-args* string is absent, the empty array is used.
 
 ``add-sprite``
 
