@@ -118,6 +118,16 @@ argument; the other kinds take no arguments.  If the
     Change exactly one script's decorator in exactly one Sprite or the
     Stage.
 
+Representation of commits
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+There is almost a one-to-one mapping between the above *commit-kind*
+strings and the values of the ``kind`` slot of the various
+``CommitKind`` types.  The exception is that
+``add-medialib-appearance`` and ``add-medialib-appearances-entry`` are
+both mapped to ``add-medialib-appearances-entry``, because they're
+treated the same by the front end.
+
 Excluding chapters from "progress trail"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
