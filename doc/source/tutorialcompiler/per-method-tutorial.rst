@@ -50,7 +50,8 @@ tagged commit using a shortcode like
 where:
 
 * *COMMIT-SLUG* is the label identifying this commit, as found in its
-  special tag commit message (e.g., ``{#increment-score}``);
+  special tag commit message (e.g., for a commit with message
+  ``{#increment-score}``, the *commit-slug* is ``increment-score``);
 
 * *COMMIT-KIND* identifies the kind of commit this is, for example one
   which adds a new script to a sprite; see below for details of the
@@ -77,11 +78,21 @@ argument; the other kinds take no arguments.  If the
 
 ``add-medialib-appearance`` *DISPLAY-IDENTIFIER*
 
-    Add an entry to the list of Costumes (for a Sprite) or Backdrops
+    Add an element to the list of Costumes (for a Sprite) or Backdrops
     (for the Stage).  Such a commit should add a string literal to the
     appropriate class variable.  The *DISPLAY-IDENTIFIER* is a string
     shown to the learner to help them find the correct appearance in
     the media library.
+
+``add-medialib-appearances-entry`` *ENTRY-NAME*
+
+    Add multiple elements to the list of Costumes (for a Sprite) or
+    Backdrops (for the Stage).  Such a commit should add multiple
+    string literals to the appropriate class variable.  The
+    *ENTRY-NAME* is a string shown to the learner to help them find
+    the correct 'entry' (group of appearances) in the media library.
+    It is assumed that the named medialib entry does in fact contain
+    all the added images (and no others).
 
 ``delete-appearance``
 
@@ -106,6 +117,16 @@ argument; the other kinds take no arguments.  If the
 
     Change exactly one script's decorator in exactly one Sprite or the
     Stage.
+
+Representation of commits
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+There is almost a one-to-one mapping between the above *commit-kind*
+strings and the values of the ``kind`` slot of the various
+``CommitKind`` types.  The exception is that
+``add-medialib-appearance`` and ``add-medialib-appearances-entry`` are
+both mapped to ``add-medialib-appearances-entry``, because they're
+treated the same by the front end.
 
 Excluding chapters from "progress trail"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
