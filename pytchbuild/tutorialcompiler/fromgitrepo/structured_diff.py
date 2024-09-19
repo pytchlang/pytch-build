@@ -34,6 +34,14 @@ class JrCommitAddMedialibAppearance:
 
 
 @dataclass
+class JrCommitDeleteAppearance:
+    kind: Literal["delete-appearance"]
+    actor: ActorIdentifier
+    appearanceFilename: str
+    make = make_of_kind("delete-appearance")
+
+
+@dataclass
 class JrCommitAddScript:
     kind: Literal["add-script"]
     path: ScriptPath
@@ -102,6 +110,26 @@ class StructuredPytchDiff:
 
         return added_objs.pop()
 
+    def sole_removed(self, old_objs, new_objs, name):
+        old_set = set(old_objs)
+        new_set = set(new_objs)
+
+        added_objs = new_set - old_set
+        if len(added_objs) > 0:
+            raise self.structure_error(
+                f"expecting every {name} in new code to have existed"
+                f" in old code, but found {added_objs!r} added"
+            )
+
+        removed_objs = old_set - new_set
+        if len(removed_objs) != 1:
+            raise self.structure_error(
+                f"expecting exactly one {name} to be removed in new code"
+                f" compared to old code, but found {removed_objs!r} removed"
+            )
+
+        return removed_objs.pop()
+
     def assert_lists_unchanged(self, old_objs, new_objs, name_plural):
         if new_objs != old_objs:
             raise self.structure_error(
@@ -129,6 +157,17 @@ class StructuredPytchDiff:
             added_appearance.actor_identifier,
             display_identifier,
             added_appearance.appearance_name,
+        )
+
+    def delete_appearance_commit(self):
+        deleted_appearance = self.sole_removed(
+            set(self.old_program.all_appearances),
+            set(self.new_program.all_appearances),
+            "appearance",
+        )
+        return JrCommitDeleteAppearance.make(
+            deleted_appearance.actor_identifier,
+            deleted_appearance.appearance_name,
         )
 
     def add_script_commit(self):
@@ -246,6 +285,8 @@ class StructuredPytchDiff:
                 return self.add_sprite_commit(*args)
             case "add-medialib-appearance":
                 return self.add_medialib_appearance_commit(*args)
+            case "delete-appearance":
+                return self.delete_appearance_commit(*args)
             case "add-script":
                 return self.add_script_commit(*args)
             case "edit-script":
