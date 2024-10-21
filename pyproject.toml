@@ -32,7 +32,7 @@ pytchbuild-gather-asset-credits = "pytchbuild.gather_asset_credits:main"
 
 [tool.poetry.group.dev.dependencies]
 tox = ">=4.18"
-pytest = "^6.2"
+pytest = "^8.3"
 flake8 = ">=7.1"
 sphinx = ">=7.4"
 sphinx-rtd-theme = ">=2.0"
