@@ -19,7 +19,7 @@ class Bowl(pytch.Sprite):
 
 
 class Apple(pytch.Sprite):
-    Costumes = ["apple.png", "pear.png", "banana.png"]
+    Costumes = ["apple.png", "banana.png"]
 
     @pytch.when_I_receive("drop-apple")
     def move_down_stage(self):
