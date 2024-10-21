@@ -24,5 +24,6 @@ workflow based on the *git* version control system.
    tutorial-metadata
    per-method-tutorial
    unit-testing
+   regression-testing
 
 And see also :doc:`../live-reload/index`.
