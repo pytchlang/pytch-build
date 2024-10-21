@@ -370,6 +370,7 @@ class TestRichCommits:
         ("add-broadcast-drop-apple-loop", "edit-script"),
         ("show-apple-when-fall-starts", "edit-script"),
         ("add-two-costumes", "add-medialib-appearances-entry", "some fruits"),
+        ("remove-pear-costume", "delete-appearance"),
     ]
 
     all_kinds = set(
