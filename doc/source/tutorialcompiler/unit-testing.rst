@@ -18,6 +18,9 @@ Branches ``unit-tests-dupd-slugs-1`` and ``unit-tests-dupd-slugs-2``
   Branch with duplicated commit-slugs, for testing handling of that
   error.
 
+Branch ``unit-test-catch-apple``
+  Script-by-script ("per-method") style of program development.
+
 
 Fixtures
 --------
