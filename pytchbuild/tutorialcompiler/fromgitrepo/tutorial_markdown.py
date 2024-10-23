@@ -4,7 +4,6 @@ import markdown
 import markdown.extensions.fenced_code
 from bs4 import BeautifulSoup
 import copy
-import json
 
 from .errors import TutorialStructureError
 
