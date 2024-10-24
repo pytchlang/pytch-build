@@ -128,6 +128,22 @@ matching that point can be made with:
   pytchbuild-gather-tutorials --from-release v2.3.1 -o /tmp/tuts-2.3.1.zip
 
 
+Verifying branch heads
+----------------------
+
+When the ``pytch-tutorials`` repo is on the ``releases`` branch, there
+is a file ``build-sources.yaml`` at the root of the repository.
+(:ref:`Details here <build-sources-yaml>`.)  The tool
+
+.. code-block:: bash
+
+  pytchbuild-verify-branch-heads
+
+compares the commit SHAs recorded in that file with the current tips
+of the branches recorded in the ``index.yaml`` file and reports on any
+differences.
+
+
 Details: Commits on ``releases``
 --------------------------------
 
@@ -138,6 +154,11 @@ branch, followed by the then-current tips of the tutorials' branches,
 i.e., as they were when they were used to build the tutorial
 collection.  In this way, tutorials' individual historical commit
 histories are preserved.
+
+.. _build-sources-yaml:
+
+The ``build-sources.yaml`` file
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To ease the reconstruction of the historical state of the tutorial
 bundle, the ``--make-release`` option also writes a file

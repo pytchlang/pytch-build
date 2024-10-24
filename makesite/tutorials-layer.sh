@@ -63,6 +63,8 @@ fi
 
 poetry env use -q python3
 poetry install
+
+# shellcheck disable=SC1091
 source "$(poetry env info --path)"/bin/activate
 
 mkdir -p "$LAYER_WORKDIR"
@@ -71,6 +73,13 @@ LAYER_ZIPFILE="$LAYER_WORKDIR"/layer.zip
 (
     cd_or_fail "$TUTORIALS_REPO_ROOT"
 
+    current_tutorials_branch="$(git rev-parse --abbrev-ref HEAD)"
+    if [ "$current_tutorials_branch" = releases ]; then
+        if ! pytchbuild-verify-branch-heads; then
+            exit 1
+        fi
+    fi
+
     # Always use the working copy (which we've checked is clean) of the
     # tutorials index.  This is correct both for releases and for the
     # case where we're on a (branch taken off) "release-recipes".
@@ -78,6 +87,11 @@ LAYER_ZIPFILE="$LAYER_WORKDIR"/layer.zip
         --index-source=WORKING_DIRECTORY \
         -o "$LAYER_ZIPFILE"
 )
+
+if [ ! -e "$LAYER_ZIPFILE" ]; then
+    >&2 echo "Tutorials layer zipfile missing"
+    exit 1
+fi
 
 # We need the content in a "tutorials" directory.  Seems a bit
 # annoying to unzip and then re-zip the contents but it does the job.
