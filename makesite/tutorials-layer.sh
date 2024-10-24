@@ -63,6 +63,8 @@ fi
 
 poetry env use -q python3
 poetry install
+
+# shellcheck disable=SC1091
 source "$(poetry env info --path)"/bin/activate
 
 mkdir -p "$LAYER_WORKDIR"
