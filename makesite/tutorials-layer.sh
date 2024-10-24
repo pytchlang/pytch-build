@@ -71,6 +71,13 @@ LAYER_ZIPFILE="$LAYER_WORKDIR"/layer.zip
 (
     cd_or_fail "$TUTORIALS_REPO_ROOT"
 
+    current_tutorials_branch="$(git rev-parse --abbrev-ref HEAD)"
+    if [ "$current_tutorials_branch" = releases ]; then
+        if ! pytchbuild-verify-branch-heads; then
+            exit 1
+        fi
+    fi
+
     # Always use the working copy (which we've checked is clean) of the
     # tutorials index.  This is correct both for releases and for the
     # case where we're on a (branch taken off) "release-recipes".
