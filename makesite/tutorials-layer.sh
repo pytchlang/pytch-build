@@ -86,6 +86,11 @@ LAYER_ZIPFILE="$LAYER_WORKDIR"/layer.zip
         -o "$LAYER_ZIPFILE"
 )
 
+if [ ! -e "$LAYER_ZIPFILE" ]; then
+    >&2 echo "Tutorials layer zipfile missing"
+    exit 1
+fi
+
 # We need the content in a "tutorials" directory.  Seems a bit
 # annoying to unzip and then re-zip the contents but it does the job.
 
