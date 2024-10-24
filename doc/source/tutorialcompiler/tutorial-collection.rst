@@ -139,6 +139,11 @@ i.e., as they were when they were used to build the tutorial
 collection.  In this way, tutorials' individual historical commit
 histories are preserved.
 
+.. _build-sources-yaml:
+
+The ``build-sources.yaml`` file
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 To ease the reconstruction of the historical state of the tutorial
 bundle, the ``--make-release`` option also writes a file
 ``build-sources.yaml`` into the root of the repository tree for the
