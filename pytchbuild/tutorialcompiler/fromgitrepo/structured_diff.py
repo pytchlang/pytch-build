@@ -168,7 +168,8 @@ class StructuredPytchDiff:
             )
 
         added_appearances = new_appearances - old_appearances
-        if len(added_appearances) <= 1:
+        n_appearances = len(added_appearances)
+        if n_appearances <= 1:
             raise self.structure_error(
                 "expecting more than one appearance to be added"
             )
@@ -188,7 +189,7 @@ class StructuredPytchDiff:
         return JrCommitAddMedialibAppearancesEntry.make(
             actor,
             entry_name,
-            len(added_appearances),
+            n_appearances,
         )
 
     def delete_appearance_commit(self):
