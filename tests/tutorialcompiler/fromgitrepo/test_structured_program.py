@@ -403,3 +403,13 @@ class TestRichCommits:
                         else []
                     )
                     diff.rich_commit(wrong_kind, *wrong_kind_args)
+
+    def test_examples_template_detection(self, apple_history):
+        slugs_with_exp_kinds = [
+            info[:2] for info in self.slugs_with_kinds_and_args
+        ]
+        for slug, exp_kind in slugs_with_exp_kinds:
+            codes = apple_history.old_and_new_code(slug)
+            diff = SD.StructuredPytchDiff(slug, *codes)
+            rich_commit_template = diff.detected_rich_commit_template()
+            assert rich_commit_template.kind == exp_kind
