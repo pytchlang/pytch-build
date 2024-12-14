@@ -61,6 +61,14 @@ where:
   arguments the particular commit-kind requires; see below for
   details.
 
+Generating learner-tasks for all code commits
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The tool ``pytchbuild-emit-commit-slugs-markdown`` will emit, to
+stdout, markdown text consisting of a sequence of learner-task blocks,
+one per code commit in the history.  This can be copied into the
+``tutorial.md`` file as a basis for writing the tutorial text.
+
 Kinds of commit
 ~~~~~~~~~~~~~~~
 

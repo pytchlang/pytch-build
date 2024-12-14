@@ -101,6 +101,15 @@ is included as a data attribute.  This was used for an experimental
 HTML fragment considerably.  Remove it?  Recover it from the sequence
 of patches?)
 
+Generating commit shortcodes for all code commits
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The tool ``pytchbuild-emit-commit-slugs-markdown`` will emit, to
+stdout, markdown text consisting of a sequence of ``commit``
+shortcodes, one per code commit in the history.  This can be copied
+into the ``tutorial.md`` file as a basis for writing the tutorial
+text.
+
 Project assets
 ~~~~~~~~~~~~~~
 
