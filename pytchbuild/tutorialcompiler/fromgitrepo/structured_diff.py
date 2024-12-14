@@ -336,3 +336,34 @@ class StructuredPytchDiff:
                 return self.change_hat_block_commit(*args)
 
         raise ValueError(f'{self.label}: unknown commit-kind "{kind}"')
+
+    def detected_rich_commit_template(self):
+        for (method, args) in [
+                (self.add_sprite_commit, ()),
+                (self.add_medialib_appearance_commit, ("DISPLAY-OR-NAME-SEE-BELOW",)),
+                (self.add_medialib_appearances_entry_commit, ("TODO-ENTRY-NAME",)),
+                (self.delete_appearance_commit, ()),
+                (self.add_script_commit, ()),
+                (self.edit_script_commit, ()),
+                (self.change_hat_block_commit, ()),
+        ]:
+            try:
+                rich_commit = method(*args)
+                kind = rich_commit.kind
+                # This is a fudge to recover the original kind:
+                if kind == "add-medialib-appearances-entry":
+                    if rich_commit.nItems == 1:
+                        return JrCommitTemplate(
+                            "add-medialib-appearance",
+                            ["TODO-DISPLAY-IDENTIFIER"]
+                        )
+                    else:
+                        return JrCommitTemplate(
+                            "add-medialib-appearances-entry",
+                            ["TODO-ENTRY-NAME"]
+                        )
+                else:
+                    return JrCommitTemplate(kind, args)
+            except:  # noqa: E722
+                pass
+        raise ValueError(f"{self.label}: could not detect commit-kind")
