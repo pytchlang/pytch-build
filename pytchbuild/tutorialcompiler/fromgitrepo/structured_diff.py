@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Literal
+from typing import Literal, Any
 from .cached_property import cached_property
 from .structured_program import (
     ActorIdentifier,
@@ -9,6 +9,12 @@ from .structured_program import (
 )
 from .utils import make_of_kind
 from .errors import TutorialStructureError
+
+
+@dataclass
+class JrCommitTemplate:
+    kind: str
+    args: [Any]
 
 
 #########################################################################
