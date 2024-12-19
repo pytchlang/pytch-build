@@ -12,6 +12,12 @@ import json
 
 @dataclass
 class MediaLibraryItem:
+    """A named individual graphic asset
+
+    MediaLibraryItem instances are gathered into MediaLibraryEntry
+    instances.
+    """
+
     # The field names end up as JSON, and ultimately as properties of
     # the front-end type "ClipArtGalleryItem", so use camelCase.
     name: str
