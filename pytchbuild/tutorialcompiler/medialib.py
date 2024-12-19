@@ -94,8 +94,11 @@ class MediaLibraryEntry:
         entries_by_key = defaultdict(set)
         for entry in singleton_entries:
             entry_by_id[entry.id] = entry
-            item = entry.items[0]
-            key = (item.name, item.relativeUrl)
+            key_tail = tuple(
+                (item.name, item.relativeUrl)
+                for item in entry.items
+            )
+            key = (entry.name,) + key_tail
             entries_by_key[key].add(entry.id)
 
         canonical_singleton_entries = [
