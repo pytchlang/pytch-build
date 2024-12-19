@@ -18,7 +18,7 @@ block_singleton = MLib.MediaLibraryEntry(1001, "block", [block], ["block"])
 other_block_singleton = MLib.MediaLibraryEntry(1002, "block", [block], ["cube"])
 fruit_entry = MLib.MediaLibraryEntry(1003, "fruit", [banana, apple], ["fruit", "food"])
 other_fruit_entry = MLib.MediaLibraryEntry(1004, "fruit", [banana, apple], ["healthy"])
-other_healthy_entry = MLib.MediaLibraryEntry(1005, "healthy-foods", [banana, apple], ["healthy"])
+healthy_entry = MLib.MediaLibraryEntry(1005, "healthy-foods", [banana, apple], ["healthy"])
 
 entries = [
     block_singleton,
@@ -26,7 +26,7 @@ entries = [
     other_fruit_entry,
     MLib.MediaLibraryEntry(1006, "animals", [cow, horse], ["farm", "animal"]),
     other_block_singleton,
-    other_healthy_entry,
+    healthy_entry,
 ]
 
 
