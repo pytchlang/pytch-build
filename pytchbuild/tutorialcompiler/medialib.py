@@ -85,11 +85,8 @@ class MediaLibraryEntry:
 
     @classmethod
     def gather_equivalent(cls, entries):
-        """Unify singleton MediaLibraryEntry instances by name and content
+        """Unify identical MediaLibraryEntry instances by name and content
         """
-        singleton_entries = [e for e in entries if e.n_items == 1]
-        proper_entries = [e for e in entries if e.n_items > 1]
-
         entry_by_id = {}
         entries_by_key = defaultdict(set)
         for entry in entries:
