@@ -92,7 +92,7 @@ class MediaLibraryEntry:
 
         entry_by_id = {}
         entries_by_key = defaultdict(set)
-        for entry in singleton_entries:
+        for entry in entries:
             entry_by_id[entry.id] = entry
             key_tail = tuple(
                 (item.name, item.relativeUrl)
@@ -101,15 +101,12 @@ class MediaLibraryEntry:
             key = (entry.name,) + key_tail
             entries_by_key[key].add(entry.id)
 
-        canonical_singleton_entries = [
+        canonical_entries = [
             cls.unify_equivalent([entry_by_id[id] for id in entry_ids])
             for entry_ids in entries_by_key.values()
         ]
 
-        canonical_assets = canonical_singleton_entries + proper_entries
-        canonical_assets.sort(key=attrgetter("lowercase_name"))
-
-        return canonical_assets
+        return sorted(canonical_entries, key=attrgetter("lowercase_name"))
 
 
 @dataclass
