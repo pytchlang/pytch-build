@@ -17,13 +17,25 @@ block = mkItem("block")
 block_singleton = MLib.MediaLibraryEntry(1001, "block", [block], ["block"])
 other_block_singleton = MLib.MediaLibraryEntry(1002, "block", [block], ["cube"])
 fruit_entry = MLib.MediaLibraryEntry(1003, "fruit", [banana, apple], ["fruit", "food"])
+other_fruit_entry = MLib.MediaLibraryEntry(1004, "fruit", [banana, apple], ["healthy"])
+other_healthy_entry = MLib.MediaLibraryEntry(1005, "healthy-foods", [banana, apple], ["healthy"])
 
 entries = [
     block_singleton,
     fruit_entry,
-    MLib.MediaLibraryEntry(1004, "animals", [cow, horse], ["farm", "animal"]),
+    other_fruit_entry,
+    MLib.MediaLibraryEntry(1006, "animals", [cow, horse], ["farm", "animal"]),
     other_block_singleton,
+    other_healthy_entry,
 ]
+
+
+def assert_entry(entry, exp_name, exp_n_items, exp_tags, m_exp_first_url=None):
+    assert entry.name == exp_name
+    assert entry.n_items == exp_n_items
+    assert entry.tags == exp_tags
+    if m_exp_first_url is not None:
+        assert entry.items[0].relativeUrl == m_exp_first_url
 
 
 class TestMediaLibraryEntry:
@@ -62,20 +74,14 @@ class TestMediaLibraryEntry:
 
     def test_gather_equivalent(self):
         cgroups = MLib.MediaLibraryEntry.gather_equivalent(entries)
-        assert len(cgroups) == 3
-        assert cgroups[0].name == "animals"
-        assert cgroups[0].n_items == 2
-        assert cgroups[0].tags == ["farm", "animal"]
-        assert cgroups[1].name == "block"
-        assert cgroups[1].n_items == 1
-        assert cgroups[1].items[0].relativeUrl == "block.jpg"
-        assert cgroups[1].tags == ["block", "cube"]
-        assert cgroups[2].name == "fruit"
-        assert cgroups[2].n_items == 2
-        assert cgroups[2].tags == ["fruit", "food"]
+        assert len(cgroups) == 4
+        assert_entry(cgroups[0], "animals", 2, ["farm", "animal"])
+        assert_entry(cgroups[1], "block", 1, ["block", "cube"], "block.jpg")
+        assert_entry(cgroups[2], "fruit", 2, ["food", "fruit", "healthy"])
+        assert_entry(cgroups[3], "healthy-foods", 2, ["healthy"])
 
     def test_n_items(self):
-        assert [e.n_items for e in entries] == [1, 2, 2, 1]
+        assert [e.n_items for e in entries] == [1, 2, 2, 2, 1, 2]
 
 
 class TestMediaLibraryItem:

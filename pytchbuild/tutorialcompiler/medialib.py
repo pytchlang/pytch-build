@@ -12,6 +12,12 @@ import json
 
 @dataclass
 class MediaLibraryItem:
+    """A named individual graphic asset
+
+    MediaLibraryItem instances are gathered into MediaLibraryEntry
+    instances.
+    """
+
     # The field names end up as JSON, and ultimately as properties of
     # the front-end type "ClipArtGalleryItem", so use camelCase.
     name: str
@@ -33,6 +39,13 @@ class MediaLibraryItem:
 
 @dataclass
 class MediaLibraryEntry:
+    """A named, tagged bundle of MediaLibraryItem instances
+
+    In the front-end, the user is presented with a catalogue of
+    MediaLibraryEntry instances, and can choose to add a subset of
+    them to their project.
+    """
+
     # The field names end up as JSON, and ultimately as properties of
     # the front-end type "ClipArtGalleryEntry".
     id: int
@@ -71,29 +84,26 @@ class MediaLibraryEntry:
         return replace(groups[0], tags=sorted(all_tags))
 
     @classmethod
-    def gather_equivalent(cls, groups):
-        """Unify singleton asset-groups by name and content
+    def gather_equivalent(cls, entries):
+        """Unify identical MediaLibraryEntry instances by name and content
         """
-        singleton_groups = [g for g in groups if g.n_items == 1]
-        proper_groups = [g for g in groups if g.n_items > 1]
+        entry_by_id = {}
+        entries_by_key = defaultdict(set)
+        for entry in entries:
+            entry_by_id[entry.id] = entry
+            key_tail = tuple(
+                (item.name, item.relativeUrl)
+                for item in entry.items
+            )
+            key = (entry.name,) + key_tail
+            entries_by_key[key].add(entry.id)
 
-        group_by_id = {}
-        groups_by_key = defaultdict(set)
-        for group in singleton_groups:
-            group_by_id[group.id] = group
-            asset = group.items[0]
-            key = (asset.name, asset.relativeUrl)
-            groups_by_key[key].add(group.id)
-
-        canonical_singleton_groups = [
-            cls.unify_equivalent([group_by_id[id] for id in group_ids])
-            for group_ids in groups_by_key.values()
+        canonical_entries = [
+            cls.unify_equivalent([entry_by_id[id] for id in entry_ids])
+            for entry_ids in entries_by_key.values()
         ]
 
-        canonical_assets = canonical_singleton_groups + proper_groups
-        canonical_assets.sort(key=attrgetter("lowercase_name"))
-
-        return canonical_assets
+        return sorted(canonical_entries, key=attrgetter("lowercase_name"))
 
 
 @dataclass
