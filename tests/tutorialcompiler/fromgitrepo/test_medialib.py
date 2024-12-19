@@ -66,7 +66,7 @@ class TestMediaLibraryEntry:
 
     def test_gather_equivalent(self):
         cgroups = MLib.MediaLibraryEntry.gather_equivalent(entries)
-        assert len(cgroups) == 3
+        assert len(cgroups) == 4
         assert cgroups[0].name == "animals"
         assert cgroups[0].n_items == 2
         assert cgroups[0].tags == ["farm", "animal"]
@@ -76,7 +76,10 @@ class TestMediaLibraryEntry:
         assert cgroups[1].tags == ["block", "cube"]
         assert cgroups[2].name == "fruit"
         assert cgroups[2].n_items == 2
-        assert cgroups[2].tags == ["fruit", "food"]
+        assert cgroups[2].tags == ["food", "fruit", "healthy"]
+        assert cgroups[3].name == "healthy-foods"
+        assert cgroups[3].n_items == 2
+        assert cgroups[3].tags == ["healthy"]
 
     def test_n_items(self):
         assert [e.n_items for e in entries] == [1, 2, 2, 2, 1, 2]
