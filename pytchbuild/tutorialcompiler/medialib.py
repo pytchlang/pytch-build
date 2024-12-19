@@ -84,26 +84,26 @@ class MediaLibraryEntry:
         return replace(groups[0], tags=sorted(all_tags))
 
     @classmethod
-    def gather_equivalent(cls, groups):
-        """Unify singleton asset-groups by name and content
+    def gather_equivalent(cls, entries):
+        """Unify singleton MediaLibraryEntry instances by name and content
         """
-        singleton_groups = [g for g in groups if g.n_items == 1]
-        proper_groups = [g for g in groups if g.n_items > 1]
+        singleton_entries = [e for e in entries if e.n_items == 1]
+        proper_entries = [e for e in entries if e.n_items > 1]
 
-        group_by_id = {}
-        groups_by_key = defaultdict(set)
-        for group in singleton_groups:
-            group_by_id[group.id] = group
-            asset = group.items[0]
-            key = (asset.name, asset.relativeUrl)
-            groups_by_key[key].add(group.id)
+        entry_by_id = {}
+        entries_by_key = defaultdict(set)
+        for entry in singleton_entries:
+            entry_by_id[entry.id] = entry
+            item = entry.items[0]
+            key = (item.name, item.relativeUrl)
+            entries_by_key[key].add(entry.id)
 
-        canonical_singleton_groups = [
-            cls.unify_equivalent([group_by_id[id] for id in group_ids])
-            for group_ids in groups_by_key.values()
+        canonical_singleton_entries = [
+            cls.unify_equivalent([entry_by_id[id] for id in entry_ids])
+            for entry_ids in entries_by_key.values()
         ]
 
-        canonical_assets = canonical_singleton_groups + proper_groups
+        canonical_assets = canonical_singleton_entries + proper_entries
         canonical_assets.sort(key=attrgetter("lowercase_name"))
 
         return canonical_assets
