@@ -79,7 +79,7 @@ class TestMediaLibraryEntry:
         assert cgroups[2].tags == ["fruit", "food"]
 
     def test_n_items(self):
-        assert [e.n_items for e in entries] == [1, 2, 2, 1]
+        assert [e.n_items for e in entries] == [1, 2, 2, 2, 1, 2]
 
 
 class TestMediaLibraryItem:
