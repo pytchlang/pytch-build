@@ -39,6 +39,13 @@ class MediaLibraryItem:
 
 @dataclass
 class MediaLibraryEntry:
+    """A named, tagged bundle of MediaLibraryItem instances
+
+    In the front-end, the user is presented with a catalogue of
+    MediaLibraryEntry instances, and can choose to add a subset of
+    them to their project.
+    """
+
     # The field names end up as JSON, and ultimately as properties of
     # the front-end type "ClipArtGalleryEntry".
     id: int
