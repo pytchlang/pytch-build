@@ -30,6 +30,14 @@ entries = [
 ]
 
 
+def assert_entry(entry, exp_name, exp_n_items, exp_tags, m_exp_first_url=None):
+    assert entry.name == exp_name
+    assert entry.n_items == exp_n_items
+    assert entry.tags == exp_tags
+    if m_exp_first_url is not None:
+        assert entry.items[0].relativeUrl == m_exp_first_url
+
+
 class TestMediaLibraryEntry:
     def test_as_output_dict(self):
         got_dict = entries[1].as_output_dict()
