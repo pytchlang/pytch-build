@@ -75,19 +75,10 @@ class TestMediaLibraryEntry:
     def test_gather_equivalent(self):
         cgroups = MLib.MediaLibraryEntry.gather_equivalent(entries)
         assert len(cgroups) == 4
-        assert cgroups[0].name == "animals"
-        assert cgroups[0].n_items == 2
-        assert cgroups[0].tags == ["farm", "animal"]
-        assert cgroups[1].name == "block"
-        assert cgroups[1].n_items == 1
-        assert cgroups[1].items[0].relativeUrl == "block.jpg"
-        assert cgroups[1].tags == ["block", "cube"]
-        assert cgroups[2].name == "fruit"
-        assert cgroups[2].n_items == 2
-        assert cgroups[2].tags == ["food", "fruit", "healthy"]
-        assert cgroups[3].name == "healthy-foods"
-        assert cgroups[3].n_items == 2
-        assert cgroups[3].tags == ["healthy"]
+        assert_entry(cgroups[0], "animals", 2, ["farm", "animal"])
+        assert_entry(cgroups[1], "block", 1, ["block", "cube"], "block.jpg")
+        assert_entry(cgroups[2], "fruit", 2, ["food", "fruit", "healthy"])
+        assert_entry(cgroups[3], "healthy-foods", 2, ["healthy"])
 
     def test_n_items(self):
         assert [e.n_items for e in entries] == [1, 2, 2, 2, 1, 2]
