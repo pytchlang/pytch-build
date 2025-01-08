@@ -22,6 +22,16 @@ dependencies = [
     "requests (>=2.32.3,<3.0.0)"
 ]
 
+[project.scripts]
+pytchbuild = "pytchbuild.cli:main"
+pytchbuild-watch = "pytchbuild.watch:main"
+pytchbuild-gather-tutorials = "pytchbuild.gather_tutorials:main"
+pytchbuild-new-tutorial = "pytchbuild.new_tutorial:main"
+pytchbuild-gather-asset-media = "pytchbuild.gather_asset_media:main"
+pytchbuild-gather-asset-credits = "pytchbuild.gather_asset_credits:main"
+pytchbuild-verify-branch-heads = "pytchbuild.verify_branch_heads:main"
+pytchbuild-emit-commit-slugs-markdown = "pytchbuild.emit_commit_slugs_markdown:main"
+
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
