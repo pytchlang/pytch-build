@@ -267,9 +267,8 @@ class ReloadServer:
                 msg = await queue.get()
                 print(f"serve_client() [{qid}]: passing on \"{msg}\"")
                 await connection.send(msg.as_json())
-        except websockets.ConnectionClosed as closure:
-            print(f"serve_client() [{qid}]: connection closed:"
-                  f" {closure.code} / \"{closure.reason}\"")
+        except websockets.ConnectionClosed:
+            print(f"serve_client() [{qid}]: connection closed")
         finally:
             self.message_broker.unregister(qid)
             print(f"serve_client() [{qid}]: unregistered; leaving")
