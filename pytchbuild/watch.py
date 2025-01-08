@@ -254,7 +254,7 @@ class ReloadServer:
     def __init__(self, message_broker):
         self.message_broker = message_broker
 
-    async def serve_client(self, websocket, path):
+    async def serve_client(self, websocket):
         print("serve_client(): entering")
         await websocket.send(json.dumps({"kind": "info", "message": "connected"}))
 
