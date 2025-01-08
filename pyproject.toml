@@ -6,7 +6,7 @@ authors = [
     {name = "Ben North",email = "ben.north@tcd.ie"}
 ]
 license = {text = "GPL-3.0-or-later"}
-readme = "README.md"
+readme = "README.rst"
 requires-python = ">=3.10,<4.0"
 dependencies = [
 ]
@@ -15,3 +15,8 @@ dependencies = [
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+packages = [
+    { include = "pytchbuild" },
+]
