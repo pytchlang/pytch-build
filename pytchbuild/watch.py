@@ -254,9 +254,9 @@ class ReloadServer:
     def __init__(self, message_broker):
         self.message_broker = message_broker
 
-    async def serve_client(self, websocket):
+    async def serve_client(self, connection):
         print("serve_client(): entering")
-        await websocket.send(json.dumps({"kind": "info", "message": "connected"}))
+        await connection.send(json.dumps({"kind": "info", "message": "connected"}))
 
         queue = asyncio.Queue()
         qid = self.message_broker.register(queue)
@@ -266,7 +266,7 @@ class ReloadServer:
                 print(f"serve_client() [{qid}]: waiting for msg")
                 msg = await queue.get()
                 print(f"serve_client() [{qid}]: passing on \"{msg}\"")
-                await websocket.send(msg.as_json())
+                await connection.send(msg.as_json())
         except websockets.ConnectionClosed as closure:
             print(f"serve_client() [{qid}]: connection closed:"
                   f" {closure.code} / \"{closure.reason}\"")
