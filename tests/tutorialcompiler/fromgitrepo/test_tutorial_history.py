@@ -357,6 +357,60 @@ class TestProjectHistory:
             "boing/tutorial-assets/not-a-real-png.png",
         ]
 
+    @pytest.mark.parametrize(
+        "label, orderedProjectAssets_value, exp_error_re",
+        [
+            (
+                "good",
+                [
+                    "graphics/alien.png",
+                    "graphics/small-blue.png",
+                    "bell-ping.mp3",
+                    "graphics/small-red.png"
+                ],
+                None
+            ),
+            (
+                "missing-one",
+                [
+                    "graphics/alien.png",
+                    "bell-ping.mp3",
+                    "graphics/small-red.png"
+                ],
+                "disagree with assets"
+            ),
+            (
+                "extra-one",
+                [
+                    "graphics/alien.png",
+                    "bell-ping.mp3",
+                    "graphics/small-blue.png",
+                    "explosion.mp3",
+                    "graphics/small-red.png"
+                ],
+                "disagree with assets"
+            ),
+            (
+                "contains-dup",
+                [
+                    "graphics/alien.png",
+                    "bell-ping.mp3",
+                    "bell-ping.mp3",
+                    "graphics/small-blue.png",
+                    "graphics/small-red.png"
+                ],
+                "duplicates found"
+            ),
+        ])
+    def test_ordered_assets(
+            self,
+            clean_cloned_repo,
+            label,
+            orderedProjectAssets_value,
+            exp_error_re
+    ):
+        pass
+
     def test_all_asset_credits(self, fresh_project_history, caplog):
         with caplog.at_level(logging.WARNING):
             credits = fresh_project_history.all_asset_credits
