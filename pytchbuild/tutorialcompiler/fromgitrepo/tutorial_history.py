@@ -559,6 +559,19 @@ class ProjectHistory:
 
     @cached_property
     def all_assets(self):
+        """List of all assets added or updated during the history of the project
+
+        If an asset is added and then modified, the most recent
+        content of that asset is used.
+
+        If the metadata property "orderedProjectAssets" is not
+        present, the assets are in no particular order.
+
+        If the metadata property "orderedProjectAssets" is present,
+        its value should be a list of strings, giving the pathnames
+        (relative to <tutorial-slug>/project-assets) of all assets;
+        the entries of this "all_assets" property are in that order.
+        """
         commit_assets_all = self._assets_from_commits
 
         metadata = json.loads(self.metadata_text)
