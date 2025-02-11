@@ -537,7 +537,7 @@ class ProjectHistory:
         return str(self.project_commits[0].oid)
 
     @cached_property
-    def all_assets(self):
+    def _assets_from_commits(self):
         """List of all assets added or updated during the history of the project
 
         If an asset is added and then modified, the most recent
