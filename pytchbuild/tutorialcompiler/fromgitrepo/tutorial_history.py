@@ -557,6 +557,50 @@ class ProjectHistory:
                     asset_from_path[asset.path] = asset
         return list(asset_from_path.values())
 
+    @cached_property
+    def all_assets(self):
+        commit_assets_all = self._assets_from_commits
+
+        metadata = json.loads(self.metadata_text)
+        asset_paths = metadata.get("orderedProjectAssets")
+        if asset_paths is None:
+            return commit_assets_all
+
+        asset_paths_set = set(asset_paths)
+        if len(asset_paths_set) != len(asset_paths):
+            raise TutorialStructureError(
+                "duplicates found in metadata.orderedProjectAssets"
+            )
+
+        commit_project_assets = [
+            a for a in commit_assets_all if a.is_project_asset
+        ]
+        commit_nonproject_assets = [
+            a for a in commit_assets_all if not a.is_project_asset
+        ]
+
+        commit_paths_set = set(
+            a.project_asset_local_path for a in commit_project_assets
+        )
+
+        if asset_paths_set != commit_paths_set:
+            raise TutorialStructureError(
+                "assets found in metadata.orderedProjectAssets"
+                f" {sorted(asset_paths_set)}"
+                " disagree with assets found in commits"
+                f" {sorted(commit_paths_set)}"
+            )
+
+        asset_from_path = dict(
+            (a.project_asset_local_path, a) for a in commit_project_assets
+        )
+
+        ordered_project_assets = [
+            asset_from_path[ap] for ap in asset_paths
+        ]
+
+        return ordered_project_assets + commit_nonproject_assets
+
     def medialib_contribution(self, tag, id_iter):
         metadata = json.loads(self.metadata_text)
 
