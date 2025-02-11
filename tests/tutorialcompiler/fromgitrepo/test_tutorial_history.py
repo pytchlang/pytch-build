@@ -4,6 +4,7 @@ import logging
 import io
 import json
 import itertools
+from pathlib import Path
 
 import pygit2
 from PIL import Image
@@ -409,7 +410,38 @@ class TestProjectHistory:
             orderedProjectAssets_value,
             exp_error_re
     ):
-        pass
+        repo = clean_cloned_repo
+        origin_branch = "refs/remotes/origin/unit-tests-commits"
+        target_oid = repo.lookup_reference(origin_branch).target
+        repo.create_branch("test-ordered-assets", repo.get(target_oid))
+        repo.checkout("refs/heads/test-ordered-assets")
+
+        metadata_path = Path(repo.workdir) / "boing/metadata.json"
+        metadata_obj = json.load(metadata_path.open())
+        metadata_obj["orderedProjectAssets"] = orderedProjectAssets_value
+        metadata_path.write_text(json.dumps(metadata_obj))
+
+        project_history = TH.ProjectHistory(
+            clean_cloned_repo.workdir,
+            "test-ordered-assets",
+            TH.ProjectHistory.TutorialTextSource.WORKING_DIRECTORY
+        )
+
+        if exp_error_re is None:
+            assets = project_history.all_assets
+            got_paths = [
+                a.project_asset_local_path
+                for a in assets
+                if a.is_project_asset
+            ]
+            exp_paths = orderedProjectAssets_value
+            assert got_paths == exp_paths
+        else:
+            with pytest.raises(
+                    TCE.TutorialStructureError,
+                    match=exp_error_re
+            ):
+                project_history.all_assets
 
     def test_all_asset_credits(self, fresh_project_history, caplog):
         with caplog.at_level(logging.WARNING):
