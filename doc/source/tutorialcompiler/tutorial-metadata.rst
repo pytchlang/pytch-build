@@ -32,6 +32,19 @@ At the moment, the only tags used are:
   assumed; the strings here match the values of the type
   ``PytchProgram["kind"]`` in the TypeScript front end.
 
+* ``groupedProjectAssets`` (optional) — which project assets should be
+  grouped into "entries" for the purposes of the media library.
+  Should be an array of objects, each of which has properties:
+
+  * ``name`` — the name of the media library entry to create;
+  * ``assets`` — an array of asset paths (within ``project-assets``)
+    to be gathered into that entry.
+
+  For each asset not mentioned in a ``groupedProjectAssets``, a
+  singleton entry is created with the same name as the (only) asset
+  within it.  If ``groupedProjectAssets`` does not appear in the
+  metadata, all assets are created as singleton media library entries.
+
 * ``orderedProjectAssets`` (optional) — only relevant to "flat"
   tutorials, in which case it determines the order in which the
   project assets are added when creating a tutorial-following project
