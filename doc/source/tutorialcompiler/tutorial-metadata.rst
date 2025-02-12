@@ -54,13 +54,14 @@ At the moment, the only tags used are:
   containing a complete list of the pathnames (within
   ``project-assets``) of all assets.
 
-The property ``metadata_text()`` of the ``ProjectHistory class`` reads
-the content of the ``metadata.json`` files, from the last tip-commit
-or from the working directory.  Then the property
-``summary_div_from_project_history()`` adds an HTML attribute called
-``data-metadata-json`` to the ``summary_div`` object. The content of
-that attribute will be the ``metadata_text`` property.  This is an
-example of what can be found in the ``summary.html`` file:
+The property :py:attr:`metadata_text` of the
+:py:class:`ProjectHistory` reads the content of the ``metadata.json``
+file, from the last tip-commit or from the working directory.  Then
+the property :py:attr:`summary_div_from_project_history` adds an HTML
+attribute called ``data-metadata-json`` to the ``summary_div``
+object. The content of that attribute will be the
+:py:attr:`metadata_text` property.  This is an example of what can be
+found in the ``summary.html`` file:
 
 .. code-block:: html
 
