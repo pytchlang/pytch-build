@@ -73,7 +73,10 @@ the files written are (using made-up examples for the project assets):
   how the ``tutorial.md`` file is processed.
 
 * ``catch-the-rabbit/project-assets.json`` — a manifest describing the
-  assets the project itself needs (e.g., graphics or sounds).
+  assets the project itself needs (e.g., graphics or sounds); only
+  used by "flat" tutorials; order of assets can be set by an
+  ``orderedProjectAssets`` :ref:`entry in the metadata
+  <tutorial-metadata>`.
 
 * ``catch-the-rabbit/project-assets/rabbit.png``,
   ``catch-the-rabbit/project-assets/carrot.png``, etc. — project
