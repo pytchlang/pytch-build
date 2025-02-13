@@ -14,7 +14,7 @@ class ShortcodeProcessor(markdown.blockprocessors.BlockProcessor):
 
     simple_shortcode_kinds = [
         "run-finished-project", "work-in-progress", "asset-credits",
-        "learner-task", "/learner-task", "learner-task-help",
+        "learner-task", "/learner-task", "learner-task-help", "parsons-puzzle",
         "exclude-from-progress-trail",
     ]
 
@@ -81,8 +81,11 @@ def gather_learner_task_divs(flat_soup):
     containing inner DIVs for:
 
     The introduction, which is everything up to (but excluding) the
-    first learner-task-help DIV, and is turned into a
-    learner-task-intro DIV.
+    first learner-task-help DIV or the parsons-puzzle DIV if present, 
+    and is turned into a learner-task-intro DIV.
+
+    The parsons-puzzle Div contains just an unordered list of entries,
+    each of which is the data relating to one block of the puzzle.
 
     Zero or more help sections, each of which is turned into a
     learner-task-help DIV.
@@ -100,7 +103,17 @@ def gather_learner_task_divs(flat_soup):
             for elt in elts:
                 if node_is_from_shortcode(elt, "/learner-task"):
                     break
-                if node_is_from_shortcode(elt, "learner-task-help"):
+                if node_is_from_shortcode(elt, "parsons-puzzle"):
+                    if len(chunk_div.contents) == 0:
+                        raise empty_chunk_error
+                    task_div.append(chunk_div)
+                    chunk_div = new_div(soup, "parsons-puzzle")
+                    # iterator just to get the next element, only go through the loop once
+                    for elt in elts: 
+                        chunk_div.append(copy.copy(elt))
+                        if True:
+                            break
+                elif node_is_from_shortcode(elt, "learner-task-help"):
                     if len(chunk_div.contents) == 0:
                         raise empty_chunk_error
                     task_div.append(chunk_div)
