@@ -29,9 +29,9 @@ This document assumes that:
 Creating a zipfile of all tutorials
 -----------------------------------
 
-Running the command::
+Then running the command::
 
-    pytchbuild-gather-tutorials -o /tmp/tutorials.zip
+    poetry run -P ../pytch-build pytchbuild-gather-tutorials -o /tmp/tutorials.zip
 
 will read the current working copy of the ``index.yaml`` file, and use
 it to create the zipfile given by the ``-o`` argument.
@@ -106,7 +106,8 @@ branch.
 Either way, the maintainer runs, from somewhere in the tutorials
 repo::
 
-    pytchbuild-gather-tutorials --make-release -o /tmp/tutorials.zip
+    poetry run -P ../pytch-build \
+      pytchbuild-gather-tutorials --make-release -o /tmp/tutorials.zip
 
 This will produce the tutorials bundle zipfile as usual, but then also
 make a commit to the ``releases`` branch.  The commit to ``releases``
@@ -136,7 +137,8 @@ matching that point can be made with:
 
 .. code-block:: bash
 
-  pytchbuild-gather-tutorials --from-release v2.3.1 -o /tmp/tuts-2.3.1.zip
+  poetry run -P ../pytch-build \
+    pytchbuild-gather-tutorials --from-release v2.3.1 -o /tmp/tuts-2.3.1.zip
 
 
 Verifying branch heads
@@ -144,11 +146,11 @@ Verifying branch heads
 
 When the ``pytch-tutorials`` repo is on the ``releases`` branch, there
 is a file ``build-sources.yaml`` at the root of the repository.
-(:ref:`Details here <build-sources-yaml>`.)  The tool
+(:ref:`Details here <build-sources-yaml>`.)  The command
 
 .. code-block:: bash
 
-  pytchbuild-verify-branch-heads
+  poetry run -P ../pytch-build pytchbuild-verify-branch-heads
 
 compares the commit SHAs recorded in that file with the current tips
 of the branches recorded in the ``index.yaml`` file and reports on any
