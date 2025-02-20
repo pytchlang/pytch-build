@@ -1,3 +1,5 @@
+.. _tutorial-metadata:
+
 Tutorial metadata
 =================
 
@@ -32,13 +34,36 @@ At the moment, the only tags used are:
   assumed; the strings here match the values of the type
   ``PytchProgram["kind"]`` in the TypeScript front end.
 
-The property ``metadata_text()`` of the ``ProjectHistory class`` reads
-the content of the ``metadata.json`` files, from the last tip-commit
-or from the working directory.  Then the property
-``summary_div_from_project_history()`` adds an HTML attribute called
-``data-metadata-json`` to the ``summary_div`` object. The content of
-that attribute will be the ``metadata_text`` property.  This is an
-example of what can be found in the ``summary.html`` file:
+* ``groupedProjectAssets`` (optional) — which project assets should be
+  grouped into "entries" for the purposes of the media library.
+  Should be an array of objects, each of which has properties:
+
+  * ``name`` — the name of the media library entry to create;
+  * ``assets`` — an array of asset paths (within ``project-assets``)
+    to be gathered into that entry.
+
+  For each asset not mentioned in a ``groupedProjectAssets``, a
+  singleton entry is created with the same name as the (only) asset
+  within it.  If ``groupedProjectAssets`` does not appear in the
+  metadata, all assets are created as singleton media library entries.
+
+* ``orderedProjectAssets`` (optional) — only relevant to "flat"
+  tutorials, in which case it determines the order in which the
+  project assets are added when creating a tutorial-following project
+  or a demo.  If not present, the assets are added in order of the
+  most recent commit affecting (adding or modifying) them, with
+  most-recently affected assets first.  If present, must be an array
+  containing a complete list of the pathnames (within
+  ``project-assets``) of all assets.
+
+The property :py:attr:`metadata_text` of the
+:py:class:`ProjectHistory` reads the content of the ``metadata.json``
+file, from the last tip-commit or from the working directory.  Then
+the property :py:attr:`summary_div_from_project_history` adds an HTML
+attribute called ``data-metadata-json`` to the ``summary_div``
+object. The content of that attribute will be the
+:py:attr:`metadata_text` property.  This is an example of what can be
+found in the ``summary.html`` file:
 
 .. code-block:: html
 
