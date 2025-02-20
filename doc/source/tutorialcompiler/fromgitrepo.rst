@@ -35,10 +35,11 @@ Creating a new tutorial
 
 There is an **experimental** tool for creating the necessary file and
 repo structures for a new tutorial.  Within the ``pytch-tutorials``
-repo, and with the ``pytchbuild`` virtual environment activated, run
-something like::
+repo, and assuming the ``pytch-build`` repo is a sibling to the
+``pytch-tutorials`` repo, run something like::
 
-  pytchbuild-new-tutorial \
+  poetry run -P ../pytch-build \
+    pytchbuild-new-tutorial \
     --tutorial-name="Collect the diamonds" \
     --tutorial-branch=bn/collect-diamonds-01 \
     --tutorial-slug="collect-diamonds"
