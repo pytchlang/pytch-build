@@ -42,7 +42,7 @@ repo, and assuming the ``pytch-build`` repo is a sibling to the
     pytchbuild-new-tutorial \
     --tutorial-name="Collect the diamonds" \
     --tutorial-branch=bn/collect-diamonds-01 \
-    --tutorial-slug="collect-diamonds"
+    --tutorial-slug=collect-diamonds
 
 Where the three inputs give the short human-readable name, the branch
 name to be created, and the name of the directory to be created.
