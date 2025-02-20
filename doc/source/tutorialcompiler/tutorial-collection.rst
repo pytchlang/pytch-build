@@ -15,6 +15,17 @@ The utility can also, if requested, create a new *release* of the
 tutorial collection.
 
 
+Assumptions for examples in this document
+-----------------------------------------
+
+This document assumes that:
+
+* Your current directory is the working directory for the
+  ``pytch-tutorials`` repo.
+* You have the ``pytch-build`` repo checked out in a sibling directory
+  to where the ``pytch-tutorials`` repo is checked out.
+
+
 Creating a zipfile of all tutorials
 -----------------------------------
 
