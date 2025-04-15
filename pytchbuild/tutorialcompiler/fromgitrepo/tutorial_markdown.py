@@ -82,10 +82,20 @@ def gather_learner_task_divs(flat_soup):
 
     The introduction, which is everything up to (but excluding) the
     first learner-task-help DIV or the parsons-puzzle DIV if present, 
-    and is turned into a learner-task-intro DIV.
+    and is turned into a learner-task-intro DIV.  If a Parsons Puzzle
+    is present, this into should be left blank as it will be
+    overwritten by the predefined puzzle instructions.  Any introductory
+    text can be added to the chapter, just before the learner task.
 
-    The parsons-puzzle Div contains just an unordered list of entries,
-    each of which is the data relating to one block of the puzzle.
+    The parsons-puzzle Div contains just a string indicating the
+    handler kind required and an unordered list of entries, each of
+    which is the data relating to one block of the puzzle. This block 
+    data should be in the form `- <Index> <Indent> <Code>`.  Each
+    space seperated value maps to the index of the block in the correct
+    solution, the indent of the block in the correct solution, and the
+    code for the block respectively.  The blocks will appear in the
+    order they are listed so they should be scrambled in the unordered
+    list.
 
     Zero or more help sections, each of which is turned into a
     learner-task-help DIV.
