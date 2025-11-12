@@ -615,6 +615,7 @@ class ProjectHistory:
         return ordered_project_assets + commit_nonproject_assets
 
     def medialib_contribution(self, tag, id_iter):
+        tags = [tag]
         metadata = json.loads(self.metadata_text)
 
         entry_dicts = metadata.get("groupedProjectAssets", [])
@@ -629,14 +630,14 @@ class ProjectHistory:
                 continue
             item = MLItem.from_project_asset(asset)
             if not media_processor.accept_item(local_path, item):
-                entry = MLEntry(next(id_iter), item.name, [item], [tag])
+                entry = MLEntry(next(id_iter), item.name, [item], tags)
                 singleton_entries.append(entry)
             data_from_content_id[item.relativeUrl] = asset.data
 
         media_processor.assert_awaiting_nothing()
 
         entries = (
-            media_processor.as_entries([tag], id_iter)
+            media_processor.as_entries(tags, id_iter)
             + singleton_entries
         )
 
