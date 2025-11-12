@@ -206,8 +206,9 @@ class TutorialCollection:
         id_iter = itertools.count(64000)
         library_data = MediaLibraryData.new_empty()
         for n, t in self.tutorials.items():
-            tag = f'Tutorial "{n}"'
-            tutorial_data = t.project_history.medialib_contribution(tag, id_iter)
+            slug = t.project_history.top_level_directory_name
+            tags = [f'Tutorial "{n}"', f'_tutorial/{slug}']
+            tutorial_data = t.project_history.medialib_contribution(tags, id_iter)
             library_data.accumulate(tutorial_data)
 
         return library_data.with_entries_unified()
