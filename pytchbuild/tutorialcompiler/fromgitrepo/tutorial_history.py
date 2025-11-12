@@ -614,8 +614,11 @@ class ProjectHistory:
 
         return ordered_project_assets + commit_nonproject_assets
 
-    def medialib_contribution(self, tag, id_iter):
-        tags = [tag]
+    def medialib_contribution(self, tag_or_tags, id_iter):
+        tags = (
+            [tag_or_tags] if isinstance(tag_or_tags, str)
+            else tag_or_tags
+        )
         metadata = json.loads(self.metadata_text)
 
         entry_dicts = metadata.get("groupedProjectAssets", [])
