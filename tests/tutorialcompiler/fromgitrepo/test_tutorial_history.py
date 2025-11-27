@@ -477,6 +477,18 @@ class TestProjectHistory:
         assert n_adds == 4
         assert n_dels == 0
 
+    @pytest.mark.parametrize(
+        "tag_arg, exp_sorted_tags",
+        [
+            pytest.param("boats", ["boats"], id="single_string"),
+            pytest.param(["planes", "boats"], ["boats", "planes"], id="list_of_two"),
+        ])
+    def test_medialib_contribution_tagging(self, project_history, tag_arg, exp_sorted_tags):
+        ids = itertools.count(50000)
+        media_data = project_history.medialib_contribution(tag_arg, ids)
+        for entry in media_data.entries:
+            assert sorted(entry.tags) == exp_sorted_tags
+
     def test_medialib_contribution(self, project_history):
         ids = itertools.count(50000)
         media_data = project_history.medialib_contribution("helicopters", ids)
