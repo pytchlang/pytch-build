@@ -44,6 +44,7 @@ from ..medialib import (
     MediaLibraryEntry as MLEntry,
     MediaLibraryData,
 )
+from .structured_program import StructuredPytchProgram
 from .interop import (
     NoIdsStructuredProject,
     JrTutorialPersistentInteractionState,
@@ -761,6 +762,19 @@ class ProjectHistory:
                 return f_in.read()
         else:
             raise InternalError("unknown tutorial_text_source")
+
+    def project_checkpoint(self, m_slug, interaction_state):
+        code_text = (
+            self.initial_code_text if m_slug is None
+            else self.code_text_from_slug(m_slug)
+        )
+
+        skeleton = (
+            StructuredPytchProgram(code_text)
+            .as_NoIdsStructuredProject()
+        )
+
+        return ProjectCheckpoint(skeleton, interaction_state)
 
     @cached_property
     def metadata_text(self):
