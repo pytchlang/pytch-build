@@ -44,6 +44,10 @@ from ..medialib import (
     MediaLibraryEntry as MLEntry,
     MediaLibraryData,
 )
+from .interop import (
+    NoIdsStructuredProject,
+    JrTutorialPersistentInteractionState,
+)
 
 logger = colorlog.getLogger(__name__)
 
@@ -479,6 +483,14 @@ class MediaEntriesProcessor:
             MLEntry(next(id_iter), processor.name, processor.items, tags)
             for processor in self.processors
         ]
+
+
+################################################################################
+
+@dataclass
+class ProjectCheckpoint:
+    programSkeleton: NoIdsStructuredProject
+    interactionState: JrTutorialPersistentInteractionState
 
 
 ################################################################################
