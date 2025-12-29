@@ -10,6 +10,7 @@ import pygit2
 from PIL import Image
 import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history as TH
 import pytchbuild.tutorialcompiler.fromgitrepo.errors as TCE
+import pytchbuild.tutorialcompiler.fromgitrepo.interop as TCI
 
 
 def _assert_data_content(exp_content):
@@ -329,6 +330,20 @@ class TestProjectHistory:
         assert len(skeleton.actors) == exp_n_actors
         assert skeleton.actors[0].kind == "stage"
         assert all(actor.kind == "sprite" for actor in skeleton.actors[1:])
+
+    def test_project_checkpoint_base(self, shoot_fruit_history):
+        tut_state = TCI.JrTutorialPersistentInteractionState(2, 7)
+        checkpoint = shoot_fruit_history.project_checkpoint(None, tut_state)
+        self.assert_no_ids_project_actors(checkpoint, exp_n_actors=1)
+        assert checkpoint.interactionState.chapterIndex == 2
+        assert checkpoint.interactionState.nTasksDone == 7
+
+    def test_project_checkpoint_commit(self, shoot_fruit_history):
+        tut_state = TCI.JrTutorialPersistentInteractionState(2, 7)
+        checkpoint = shoot_fruit_history.project_checkpoint("show-score", tut_state)
+        self.assert_no_ids_project_actors(checkpoint, exp_n_actors=2)
+        stage_code = checkpoint.programSkeleton.actors[0].handlers[0].pythonCode
+        assert stage_code.endswith('show_variable("score")')
 
     def test_metadata_text(self, project_history):
         metadata = json.loads(project_history.metadata_text)
