@@ -520,6 +520,12 @@ class ProjectHistory:
             )
 
     def commit_linear_ancestors(self, tip_oid):
+        """History of commits from `tip_oid` to the "base"
+
+        Commits are ordered from most recent to oldest, meaning that the [0]
+        entry of the returned list is the commit given by `tip_oid`, and the
+        [-1] entry of the returned list is the "base" commit.
+        """
         project_commits = [ProjectCommit(self.repo, tip_oid)]
         while not project_commits[-1].is_base:
             # TODO: Handle merges (more than one parent).
