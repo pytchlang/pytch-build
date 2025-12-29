@@ -45,6 +45,11 @@ from ..medialib import (
     MediaLibraryData,
 )
 from .structured_program import StructuredPytchProgram
+from .tutorial_markdown import soup_from_markdown_text
+from .tutorial_html_fragment import (
+    node_is_div_of_any_class,
+    maybe_task_commit_slug,
+)
 from .interop import (
     NoIdsStructuredProject,
     JrTutorialPersistentInteractionState,
@@ -775,6 +780,48 @@ class ProjectHistory:
         )
 
         return ProjectCheckpoint(skeleton, interaction_state)
+
+    @cached_property
+    def chapter_checkpoints(self):
+        """Chapter-by-chapter structure of code and tutorial progress
+        """
+        code_commit = None
+        n_tasks = 0
+        checkpoints = []
+
+        def append_checkpoint():
+            tut_state = JrTutorialPersistentInteractionState(
+                len(checkpoints),
+                n_tasks
+            )
+            checkpoint = self.project_checkpoint(code_commit, tut_state)
+            checkpoints.append(checkpoint)
+
+        append_checkpoint()
+
+        # Go through and pick out the important nodes, tracking latest
+        # commit-slug as we go.  "Important" nodes are:
+        #
+        #     Chapter headings
+        #
+        #     Learner tasks (which we need to count, and which also
+        #     might update "latest commit-slug")
+
+        tutorial_soup = soup_from_markdown_text(self.tutorial_text)
+        for node in tutorial_soup:
+            if node.name is None:
+                continue
+
+            if node.name.lower() == "h2":
+                # Start of new chapter.
+                append_checkpoint()
+            elif node_is_div_of_any_class(node, ["learner-task"]):
+                # Learner task, perhaps with commit.
+                n_tasks += 1
+                if (slug := maybe_task_commit_slug(node)) is not None:
+                    code_commit = slug
+
+        return checkpoints
 
     @cached_property
     def metadata_text(self):
