@@ -3,14 +3,15 @@ from .utils import make_of_kind
 from typing import Literal
 
 
+# Use camelCase because these types are destined to be serialised as
+# JSON ready for consumption by JavaScript.
+
+
 ########################################################################
 #
 # Mirror the TypeScript ones in the "structured-program" part of the
 # front-end, used to represent the different kinds of hat-blocks
 # (events).
-#
-# Use camelCase because these types are destined to be serialised as
-# JSON ready for consumption by JavaScript.
 
 @dataclass
 class EventDescriptorGreenFlag:
