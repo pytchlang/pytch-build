@@ -241,3 +241,30 @@ class TestPredicates:
         soup = BeautifulSoup(html, "html.parser")
         node = next(soup.children)
         assert THF.node_is_patch(node) == exp_is_patch
+
+    @pytest.mark.parametrize(
+        'html,exp_slug',
+        [
+            pytest.param("Hello", None, id="nav-string"),
+            pytest.param("<div>Hello</div>", None, id="div"),
+            pytest.param(
+                '<div class="learner-task">Hello</div>',
+                None,
+                id="lt-no-commits"
+            ),
+            pytest.param(
+                '''<div class="learner-task">
+                     <div class="jr-commit" data-slug="banana">
+                       Hello
+                     </div>
+                   </div>''',
+                "banana",
+                id="lt-commit"
+            ),
+        ]
+    )
+    def test_maybe_task_commit_slug(self, html, exp_slug):
+        soup = BeautifulSoup(html, "html.parser")
+        node = next(soup.children)
+        slug = THF.maybe_task_commit_slug(node)
+        assert slug == exp_slug
