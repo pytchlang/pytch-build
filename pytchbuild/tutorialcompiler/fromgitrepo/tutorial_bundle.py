@@ -22,6 +22,7 @@ class TutorialBundle:
     assets: List[Asset]
     final_code_text: str
     metadata: Dict[str, Any]
+    chapter_checkpoints: List[Any]
 
     @classmethod
     def from_project_history(cls, project_history):
@@ -32,6 +33,7 @@ class TutorialBundle:
             project_history.all_assets,
             project_history.final_code_text,
             json.loads(project_history.metadata_text),
+            project_history.chapter_checkpoints,
         )
 
     def maybe_write_structured_json(self, out_zipfile):
