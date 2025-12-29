@@ -83,3 +83,9 @@ class NoIdActor:
 @dataclass
 class NoIdsStructuredProject:
     actors: list[NoIdActor]
+
+
+@dataclass
+class JrTutorialPersistentInteractionState:
+    chapterIndex: int
+    nTasksDone: int
