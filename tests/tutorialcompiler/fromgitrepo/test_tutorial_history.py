@@ -324,6 +324,12 @@ class TestProjectHistory:
                        else "# Working summary for Boing")
         assert project_history.summary_text.startswith(target_text)
 
+    def assert_no_ids_project_actors(self, checkpoint, exp_n_actors):
+        skeleton = checkpoint.programSkeleton
+        assert len(skeleton.actors) == exp_n_actors
+        assert skeleton.actors[0].kind == "stage"
+        assert all(actor.kind == "sprite" for actor in skeleton.actors[1:])
+
     def test_metadata_text(self, project_history):
         metadata = json.loads(project_history.metadata_text)
         TTS = TH.ProjectHistory.TutorialTextSource
