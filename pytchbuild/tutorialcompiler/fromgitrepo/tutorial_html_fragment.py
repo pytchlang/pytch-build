@@ -152,6 +152,38 @@ def node_is_patch(elt):
     return node_is_div_of_any_class(elt, ["patch-container", "jr-commit"])
 
 
+def maybe_task_commit_slug(elt):
+    """
+    For `elt` a learner task containing a commit, that commit's slug.
+
+    If the given `elt` is a learner-task div containing a "hint"
+    containing a commit, return the commit-slug of that commit.
+    Otherwise, return `None`.  (A `TutorialStructureError` is also
+    possible if `elt` is malformed.)
+    """
+    if not node_is_div_of_any_class(elt, ["learner-task"]):
+        return None
+
+    commit_divs = elt.find_all("div", class_="jr-commit")
+    n_commit_divs = len(commit_divs)
+
+    if n_commit_divs == 0:
+        return None
+
+    if n_commit_divs > 1:
+        raise TutorialStructureError(
+            "multiple jr-commit DIVs within learner task"
+        )
+
+    m_slug = commit_divs[0].attrs.get("data-slug")
+    if m_slug is None:
+        raise TutorialStructureError(
+            "no data-slug within jr-commit DIV"
+        )
+
+    return m_slug
+
+
 def node_is_work_in_progress_marker(elt):
     return node_is_div_of_any_class(elt, ["work-in-progress"])
 

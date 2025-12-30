@@ -10,6 +10,7 @@ import pygit2
 from PIL import Image
 import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history as TH
 import pytchbuild.tutorialcompiler.fromgitrepo.errors as TCE
+import pytchbuild.tutorialcompiler.fromgitrepo.interop as TCI
 
 
 def _assert_data_content(exp_content):
@@ -22,6 +23,14 @@ def _assert_data_length(exp_length):
     def do_assert(got_data):
         assert len(got_data) == exp_length
     return do_assert
+
+
+@pytest.fixture(scope="session")
+def shoot_fruit_history(cloned_repo):
+    return TH.ProjectHistory(
+        cloned_repo.workdir,
+        "origin/unit-tests-sbs-shoot-fruit",
+    )
 
 
 class TestAsset:
@@ -315,6 +324,72 @@ class TestProjectHistory:
         target_text = ("# Summary for Boing" if text_source == TTS.TIP_REVISION
                        else "# Working summary for Boing")
         assert project_history.summary_text.startswith(target_text)
+
+    def assert_no_ids_project_actors(self, checkpoint, exp_n_actors):
+        skeleton = checkpoint.programSkeleton
+        assert len(skeleton.actors) == exp_n_actors
+        assert skeleton.actors[0].kind == "stage"
+        assert all(actor.kind == "sprite" for actor in skeleton.actors[1:])
+
+    def test_project_checkpoint_base(self, shoot_fruit_history):
+        tut_state = TCI.JrTutorialPersistentInteractionState(2, 7)
+        checkpoint = shoot_fruit_history.project_checkpoint(None, tut_state)
+        self.assert_no_ids_project_actors(checkpoint, exp_n_actors=1)
+        assert checkpoint.interactionState.chapterIndex == 2
+        assert checkpoint.interactionState.nTasksDone == 7
+
+    def test_project_checkpoint_commit(self, shoot_fruit_history):
+        tut_state = TCI.JrTutorialPersistentInteractionState(2, 7)
+        checkpoint = shoot_fruit_history.project_checkpoint("show-score", tut_state)
+        self.assert_no_ids_project_actors(checkpoint, exp_n_actors=2)
+        stage_code = checkpoint.programSkeleton.actors[0].handlers[0].pythonCode
+        assert stage_code.endswith('show_variable("score")')
+
+    def test_chapter_checkpoints(self, shoot_fruit_history):
+        checkpoints = shoot_fruit_history.chapter_checkpoints
+        assert len(checkpoints) == 12
+
+        assert all(
+            cp.interactionState.chapterIndex == checkpoint_idx
+            for checkpoint_idx, cp in enumerate(checkpoints)
+        )
+
+        exp_n_tasks_dones = [0, 0, 3, 9, 12, 14, 16, 21, 24, 29, 30, 33]
+        assert all(
+            checkpoint.interactionState.nTasksDone == exp_n_tasks_done
+            for checkpoint, exp_n_tasks_done
+            in zip(checkpoints, exp_n_tasks_dones, strict=True)
+        )
+
+        exp_slugs = [
+            None,
+            None,
+            "remove-default-backdrop",
+            "add-Fruit-init-size-script-body",
+            "hide-when-hit",
+            "wait-then-show",
+            "go-to-random-position",
+            "show-score",
+            "award-point-when-hit",
+            "clamp-score-at-zero",
+            "clamp-score-at-zero",
+            "switch-to-random-costume",
+        ]
+
+        ignored_tut_state = TCI.JrTutorialPersistentInteractionState(0, 0)
+        exp_skeletons = [
+            (shoot_fruit_history
+             .project_checkpoint(slug, ignored_tut_state)
+             .programSkeleton
+             )
+            for slug in exp_slugs
+        ]
+
+        assert all(
+            checkpoint.programSkeleton == exp_skeleton
+            for checkpoint, exp_skeleton
+            in zip(checkpoints, exp_skeletons, strict=True)
+        )
 
     def test_metadata_text(self, project_history):
         metadata = json.loads(project_history.metadata_text)

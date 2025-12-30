@@ -44,6 +44,16 @@ from ..medialib import (
     MediaLibraryEntry as MLEntry,
     MediaLibraryData,
 )
+from .structured_program import StructuredPytchProgram
+from .tutorial_markdown import soup_from_markdown_text
+from .tutorial_html_fragment import (
+    node_is_div_of_any_class,
+    maybe_task_commit_slug,
+)
+from .interop import (
+    NoIdsStructuredProject,
+    JrTutorialPersistentInteractionState,
+)
 
 logger = colorlog.getLogger(__name__)
 
@@ -483,6 +493,14 @@ class MediaEntriesProcessor:
 
 ################################################################################
 
+@dataclass
+class ProjectCheckpoint:
+    programSkeleton: NoIdsStructuredProject
+    interactionState: JrTutorialPersistentInteractionState
+
+
+################################################################################
+
 class ProjectHistory:
     """Development history of a Pytch project within a tutorial context
     """
@@ -520,6 +538,12 @@ class ProjectHistory:
             )
 
     def commit_linear_ancestors(self, tip_oid):
+        """History of commits from `tip_oid` to the "base"
+
+        Commits are ordered from most recent to oldest, meaning that the [0]
+        entry of the returned list is the commit given by `tip_oid`, and the
+        [-1] entry of the returned list is the "base" commit.
+        """
         project_commits = [ProjectCommit(self.repo, tip_oid)]
         while not project_commits[-1].is_base:
             # TODO: Handle merges (more than one parent).
@@ -743,6 +767,61 @@ class ProjectHistory:
                 return f_in.read()
         else:
             raise InternalError("unknown tutorial_text_source")
+
+    def project_checkpoint(self, m_slug, interaction_state):
+        code_text = (
+            self.initial_code_text if m_slug is None
+            else self.code_text_from_slug(m_slug)
+        )
+
+        skeleton = (
+            StructuredPytchProgram(code_text)
+            .as_NoIdsStructuredProject()
+        )
+
+        return ProjectCheckpoint(skeleton, interaction_state)
+
+    @cached_property
+    def chapter_checkpoints(self):
+        """Chapter-by-chapter structure of code and tutorial progress
+        """
+        code_commit = None
+        n_tasks = 0
+        checkpoints = []
+
+        def append_checkpoint():
+            tut_state = JrTutorialPersistentInteractionState(
+                len(checkpoints),
+                n_tasks
+            )
+            checkpoint = self.project_checkpoint(code_commit, tut_state)
+            checkpoints.append(checkpoint)
+
+        append_checkpoint()
+
+        # Go through and pick out the important nodes, tracking latest
+        # commit-slug as we go.  "Important" nodes are:
+        #
+        #     Chapter headings
+        #
+        #     Learner tasks (which we need to count, and which also
+        #     might update "latest commit-slug")
+
+        tutorial_soup = soup_from_markdown_text(self.tutorial_text)
+        for node in tutorial_soup:
+            if node.name is None:
+                continue
+
+            if node.name.lower() == "h2":
+                # Start of new chapter.
+                append_checkpoint()
+            elif node_is_div_of_any_class(node, ["learner-task"]):
+                # Learner task, perhaps with commit.
+                n_tasks += 1
+                if (slug := maybe_task_commit_slug(node)) is not None:
+                    code_commit = slug
+
+        return checkpoints
 
     @cached_property
     def metadata_text(self):
