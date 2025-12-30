@@ -41,17 +41,18 @@ class TutorialBundle:
         if program_kind != "per-method":
             return
 
+        bundle_root_path = Path(self.top_level_directory_name)
+
         program = (
             StructuredPytchProgram(self.final_code_text)
             .as_NoIdsStructuredProject()
         )
         program_json = json.dumps(asdict(program))
 
-        bundle_root_path = Path(self.top_level_directory_name)
-        path = bundle_root_path / "skeleton-structured-program.json"
+        skeleton_path = bundle_root_path / "skeleton-structured-program.json"
 
         out_zipfile.writestr(
-            str(path),
+            str(skeleton_path),
             program_json.encode("utf-8")
         )
 
