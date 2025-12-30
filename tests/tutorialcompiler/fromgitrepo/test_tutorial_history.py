@@ -24,6 +24,14 @@ def _assert_data_length(exp_length):
     return do_assert
 
 
+@pytest.fixture(scope="session")
+def shoot_fruit_history(cloned_repo):
+    return TH.ProjectHistory(
+        cloned_repo.workdir,
+        "origin/unit-tests-sbs-shoot-fruit",
+    )
+
+
 class TestAsset:
     sample_asset = TH.Asset("alien.png", b"not-a-real-PNG-file")
 
