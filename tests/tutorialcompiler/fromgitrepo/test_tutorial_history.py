@@ -345,6 +345,52 @@ class TestProjectHistory:
         stage_code = checkpoint.programSkeleton.actors[0].handlers[0].pythonCode
         assert stage_code.endswith('show_variable("score")')
 
+    def test_chapter_checkpoints(self, shoot_fruit_history):
+        checkpoints = shoot_fruit_history.chapter_checkpoints
+        assert len(checkpoints) == 12
+
+        assert all(
+            cp.interactionState.chapterIndex == checkpoint_idx
+            for checkpoint_idx, cp in enumerate(checkpoints)
+        )
+
+        exp_n_tasks_dones = [0, 0, 3, 9, 12, 14, 16, 21, 24, 29, 30, 33]
+        assert all(
+            checkpoint.interactionState.nTasksDone == exp_n_tasks_done
+            for checkpoint, exp_n_tasks_done
+            in zip(checkpoints, exp_n_tasks_dones, strict=True)
+        )
+
+        exp_slugs = [
+            None,
+            None,
+            "remove-default-backdrop",
+            "add-Fruit-init-size-script-body",
+            "hide-when-hit",
+            "wait-then-show",
+            "go-to-random-position",
+            "show-score",
+            "award-point-when-hit",
+            "clamp-score-at-zero",
+            "clamp-score-at-zero",
+            "switch-to-random-costume",
+        ]
+
+        ignored_tut_state = TCI.JrTutorialPersistentInteractionState(0, 0)
+        exp_skeletons = [
+            (shoot_fruit_history
+             .project_checkpoint(slug, ignored_tut_state)
+             .programSkeleton
+             )
+            for slug in exp_slugs
+        ]
+
+        assert all(
+            checkpoint.programSkeleton == exp_skeleton
+            for checkpoint, exp_skeleton
+            in zip(checkpoints, exp_skeletons, strict=True)
+        )
+
     def test_metadata_text(self, project_history):
         metadata = json.loads(project_history.metadata_text)
         TTS = TH.ProjectHistory.TutorialTextSource
