@@ -545,7 +545,7 @@ class ProjectHistory:
             if n_occurrences > 1
         ]
         if repeated_slugs:
-            raise TutorialStructureError(
+            self.raise_structure_error(
                 f"duplicate commit-identifier slug/s {repeated_slugs}"
             )
 
@@ -561,7 +561,7 @@ class ProjectHistory:
             # TODO: Handle merges (more than one parent).
             parent_ids = project_commits[-1].commit.parent_ids
             if not parent_ids:
-                raise TutorialStructureError(
+                self.raise_structure_error(
                     f"did not find {{base}} commit in ancestors of {tip_oid}"
                 )
             oid = parent_ids[0]
@@ -617,7 +617,7 @@ class ProjectHistory:
 
         asset_paths_set = set(asset_paths)
         if len(asset_paths_set) != len(asset_paths):
-            raise TutorialStructureError(
+            self.raise_structure_error(
                 "duplicates found in metadata.orderedProjectAssets"
             )
 
@@ -633,7 +633,7 @@ class ProjectHistory:
         )
 
         if asset_paths_set != commit_paths_set:
-            raise TutorialStructureError(
+            self.raise_structure_error(
                 "assets found in metadata.orderedProjectAssets"
                 f" {sorted(asset_paths_set)}"
                 " disagree with assets found in commits"
