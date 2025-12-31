@@ -1,8 +1,17 @@
 import pygit2
 import click
+import colorlog
 
 from .tutorialcompiler.fromgitrepo import git_repository
 from .tutorialcompiler.gather_tutorials import TutorialCollection, commit_to_releases
+
+
+log_handler = colorlog.StreamHandler()
+log_handler.setFormatter(colorlog.ColoredFormatter(
+    "%(log_color)s%(levelname)s : %(message)s"))
+
+logger = colorlog.getLogger()  # Root logger
+logger.addHandler(log_handler)
 
 
 @click.command()
