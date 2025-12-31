@@ -907,3 +907,24 @@ class ProjectHistory:
 
     def old_and_new_code(self, slug):
         return self.commit_from_slug[slug].old_and_new_code
+
+    @cached_property
+    def project_assets_from_code(self):
+        """All Costume/Backdrop image filenames from code history
+
+        Return a list of unique image filenames that appear as
+        Costumes or Backdrops at any commit labelled with a slug.
+
+        Assumes the project is a "per-method" project.
+        """
+        all_appearance_names = set()
+
+        for slug in self.ordered_commit_slugs:
+            code_text = self.code_text_from_slug(slug)
+            program = StructuredPytchProgram(code_text)
+            all_appearance_names.update(
+                appearance.appearance_name
+                for appearance in program.all_appearances
+            )
+
+        return sorted(all_appearance_names)
