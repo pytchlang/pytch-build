@@ -928,3 +928,37 @@ class ProjectHistory:
             )
 
         return sorted(all_appearance_names)
+
+    def validate_assets_consistency(self):
+        #
+        # TODO: Extend to "flat" tutorials.
+        #
+        metadata = json.loads(self.metadata_text)
+        program_kind = metadata.get("programKind", "flat")
+        if program_kind != "per-method":
+            return
+
+        code_assets = set(self.project_assets_from_code)
+        stored_assets = set(
+            a.project_asset_local_path
+            for a in self.all_project_assets
+        )
+
+        intentionally_unused_assets \
+            = set(metadata.get("intentionallyUnusedAssets", []))
+
+        if unexpectedly_used := code_assets & intentionally_unused_assets:
+            self.raise_structure_error(
+                f"assets {unexpectedly_used} are used in the code"
+                " but marked as intentionally unused"
+            )
+
+        if (code_assets | intentionally_unused_assets) != stored_assets:
+            self.raise_structure_error(
+                "assets added/updated in commit history"
+                f" {sorted(stored_assets)}"
+                " disagree with assets found in code.py"
+                f" {sorted(code_assets)}"
+                " combined with intentionally-unused assets"
+                f" {sorted(intentionally_unused_assets)}"
+            )
