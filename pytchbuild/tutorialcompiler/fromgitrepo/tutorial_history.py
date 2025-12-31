@@ -709,6 +709,8 @@ class ProjectHistory:
         entries = list(final_tree)
         n_entries = len(entries)
         if n_entries != 1:
+            # Can't use raise_structure_error() because that calls
+            # top_level_directory_name.
             raise TutorialStructureError(
                 f"top-level tree has {n_entries} entries (expecting just one)"
             )
