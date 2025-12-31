@@ -536,6 +536,7 @@ class ProjectHistory:
 
     def validate_structure(self):
         self.validate_slug_uniqueness()
+        self.validate_assets_consistency()
 
     def validate_slug_uniqueness(self):
         occurrences_of_slug = Counter(self.ordered_commit_slugs)
@@ -907,3 +908,58 @@ class ProjectHistory:
 
     def old_and_new_code(self, slug):
         return self.commit_from_slug[slug].old_and_new_code
+
+    @cached_property
+    def project_assets_from_code(self):
+        """All Costume/Backdrop image filenames from code history
+
+        Return a list of unique image filenames that appear as
+        Costumes or Backdrops at any commit labelled with a slug.
+
+        Assumes the project is a "per-method" project.
+        """
+        all_appearance_names = set()
+
+        for slug in self.ordered_commit_slugs:
+            code_text = self.code_text_from_slug(slug)
+            program = StructuredPytchProgram(code_text)
+            all_appearance_names.update(
+                appearance.appearance_name
+                for appearance in program.all_appearances
+            )
+
+        return sorted(all_appearance_names)
+
+    def validate_assets_consistency(self):
+        #
+        # TODO: Extend to "flat" tutorials.
+        #
+        metadata = json.loads(self.metadata_text)
+        program_kind = metadata.get("programKind", "flat")
+        if program_kind != "per-method":
+            return
+
+        code_assets = set(self.project_assets_from_code)
+        stored_assets = set(
+            a.project_asset_local_path
+            for a in self.all_project_assets
+        )
+
+        intentionally_unused_assets \
+            = set(metadata.get("intentionallyUnusedAssets", []))
+
+        if unexpectedly_used := code_assets & intentionally_unused_assets:
+            self.raise_structure_error(
+                f"assets {unexpectedly_used} are used in the code"
+                " but marked as intentionally unused"
+            )
+
+        if (code_assets | intentionally_unused_assets) != stored_assets:
+            self.raise_structure_error(
+                "assets added/updated in commit history"
+                f" {sorted(stored_assets)}"
+                " disagree with assets found in code.py"
+                f" {sorted(code_assets)}"
+                " combined with intentionally-unused assets"
+                f" {sorted(intentionally_unused_assets)}"
+            )

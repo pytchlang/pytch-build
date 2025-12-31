@@ -552,6 +552,33 @@ class TestProjectHistory:
         assert n_adds == 4
         assert n_dels == 0
 
+    def test_project_assets_from_code(self, shoot_fruit_history):
+        assets = shoot_fruit_history.project_assets_from_code
+
+        # We expect the result to include "solid-white.png" even
+        # though that Backdrop is deleted from the stage early on in
+        # development.
+        exp_assets = sorted([
+            "solid-white.png",
+            "leafy-background.png",
+            "Apple-1.png",
+            "Apple-2.png",
+            "Apple-3.png",
+            "Apple-4.png",
+            "GoldApple-1.png",
+            "Lemon-1.png",
+            "Lemon-2.png",
+            "Lemon-3.png",
+            "Lemon-4.png",
+            "Orange-1.png",
+            "Orange-2.png",
+            "Orange-3.png",
+            "Orange-4.png",
+            "Strawberry-1.png"
+        ])
+
+        assert assets == exp_assets
+
     @pytest.mark.parametrize(
         "tag_arg, exp_sorted_tags",
         [
