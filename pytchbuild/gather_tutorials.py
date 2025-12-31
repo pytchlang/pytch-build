@@ -4,6 +4,7 @@ import colorlog
 
 from .tutorialcompiler.fromgitrepo import git_repository
 from .tutorialcompiler.gather_tutorials import TutorialCollection, commit_to_releases
+from .tutorialcompiler.fromgitrepo.errors import TutorialStructureError
 
 
 log_handler = colorlog.StreamHandler()
@@ -63,16 +64,22 @@ def main(output_file, repository_path, index_source, make_release, from_release)
         else getattr(TutorialCollection.IndexSource, index_source)
     )
 
-    tutorials = (
-        TutorialCollection.from_repo_path(repository_path, index_source)
-        if from_release is None
-        else TutorialCollection.from_releases_commit(repository_path, from_release)
-    )
+    try:
+        tutorials = (
+            TutorialCollection.from_repo_path(repository_path, index_source)
+            if from_release is None
+            else TutorialCollection.from_releases_commit(repository_path, from_release)
+        )
 
-    releases_commit_oid = None
+        releases_commit_oid = None
 
-    if make_release:
-        with git_repository(repository_path) as repo:
-            releases_commit_oid = commit_to_releases(repo, tutorials)
+        if make_release:
+            with git_repository(repository_path) as repo:
+                releases_commit_oid = commit_to_releases(repo, tutorials)
 
-    tutorials.write_new_zipfile(releases_commit_oid, output_file)
+        tutorials.write_new_zipfile(releases_commit_oid, output_file)
+    except TutorialStructureError as err:
+        colorlog.error(str(err))
+        return 1
+    else:
+        return 0
