@@ -522,6 +522,18 @@ class ProjectHistory:
 
         self.validate_structure()
 
+    def raise_structure_error(self, message):
+        # If an error occurs early, or during the computation of the
+        # list of commits, we won't be able to find the top-level
+        # directory name.
+        try:
+            label = self.top_level_directory_name
+        except:  # noqa
+            label = "UNKNOWN-TUTORIAL"
+
+        full_message = f"{label}: {message}"
+        raise TutorialStructureError(full_message)
+
     def validate_structure(self):
         self.validate_slug_uniqueness()
 
