@@ -536,6 +536,7 @@ class ProjectHistory:
 
     def validate_structure(self):
         self.validate_slug_uniqueness()
+        self.validate_assets_consistency()
 
     def validate_slug_uniqueness(self):
         occurrences_of_slug = Counter(self.ordered_commit_slugs)
