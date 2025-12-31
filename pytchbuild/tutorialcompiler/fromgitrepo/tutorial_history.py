@@ -522,6 +522,18 @@ class ProjectHistory:
 
         self.validate_structure()
 
+    def raise_structure_error(self, message):
+        # If an error occurs early, or during the computation of the
+        # list of commits, we won't be able to find the top-level
+        # directory name.
+        try:
+            label = self.top_level_directory_name
+        except:  # noqa
+            label = "UNKNOWN-TUTORIAL"
+
+        full_message = f"{label}: {message}"
+        raise TutorialStructureError(full_message)
+
     def validate_structure(self):
         self.validate_slug_uniqueness()
 
@@ -533,7 +545,7 @@ class ProjectHistory:
             if n_occurrences > 1
         ]
         if repeated_slugs:
-            raise TutorialStructureError(
+            self.raise_structure_error(
                 f"duplicate commit-identifier slug/s {repeated_slugs}"
             )
 
@@ -549,7 +561,7 @@ class ProjectHistory:
             # TODO: Handle merges (more than one parent).
             parent_ids = project_commits[-1].commit.parent_ids
             if not parent_ids:
-                raise TutorialStructureError(
+                self.raise_structure_error(
                     f"did not find {{base}} commit in ancestors of {tip_oid}"
                 )
             oid = parent_ids[0]
@@ -605,7 +617,7 @@ class ProjectHistory:
 
         asset_paths_set = set(asset_paths)
         if len(asset_paths_set) != len(asset_paths):
-            raise TutorialStructureError(
+            self.raise_structure_error(
                 "duplicates found in metadata.orderedProjectAssets"
             )
 
@@ -621,7 +633,7 @@ class ProjectHistory:
         )
 
         if asset_paths_set != commit_paths_set:
-            raise TutorialStructureError(
+            self.raise_structure_error(
                 "assets found in metadata.orderedProjectAssets"
                 f" {sorted(asset_paths_set)}"
                 " disagree with assets found in commits"
@@ -697,6 +709,8 @@ class ProjectHistory:
         entries = list(final_tree)
         n_entries = len(entries)
         if n_entries != 1:
+            # Can't use raise_structure_error() because that calls
+            # top_level_directory_name.
             raise TutorialStructureError(
                 f"top-level tree has {n_entries} entries (expecting just one)"
             )
