@@ -43,19 +43,6 @@ class TutorialBundle:
 
         bundle_root_path = Path(self.top_level_directory_name)
 
-        program = (
-            StructuredPytchProgram(self.final_code_text)
-            .as_NoIdsStructuredProject()
-        )
-        program_json = json.dumps(asdict(program))
-
-        skeleton_path = bundle_root_path / "skeleton-structured-program.json"
-
-        out_zipfile.writestr(
-            str(skeleton_path),
-            program_json.encode("utf-8")
-        )
-
         checkpoints_path = bundle_root_path / "chapter-starts.json"
         checkpoints_json = json.dumps(
             [asdict(cp) for cp in self.chapter_checkpoints]
