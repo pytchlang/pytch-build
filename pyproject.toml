@@ -43,7 +43,7 @@ packages = [
 ]
 
 [tool.poetry.group.dev.dependencies]
-tox = "^4.23.2"
+tox = "^4.32.0"
 pytest = "^8.3.4"
 flake8 = "^7.1.1"
 sphinx = "^8.1.3"
