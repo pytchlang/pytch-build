@@ -11,7 +11,6 @@ from .tutorial_html_fragment import (
     tutorial_div_from_project_history,
     summary_div_from_project_history,
 )
-from .structured_program import StructuredPytchProgram
 
 
 @dataclass
@@ -36,30 +35,20 @@ class TutorialBundle:
             project_history.chapter_checkpoints,
         )
 
-    def maybe_write_structured_json(self, out_zipfile):
+    def maybe_write_chapter_starts(self, out_zipfile):
         program_kind = self.metadata.get("programKind", "flat")
         if program_kind != "per-method":
             return
 
         bundle_root_path = Path(self.top_level_directory_name)
 
-        program = (
-            StructuredPytchProgram(self.final_code_text)
-            .as_NoIdsStructuredProject()
-        )
-        program_json = json.dumps(asdict(program))
-
-        skeleton_path = bundle_root_path / "skeleton-structured-program.json"
-
-        out_zipfile.writestr(
-            str(skeleton_path),
-            program_json.encode("utf-8")
-        )
-
         checkpoints_path = bundle_root_path / "chapter-starts.json"
+        checkpoints_json = json.dumps(
+            [asdict(cp) for cp in self.chapter_checkpoints]
+        )
         out_zipfile.writestr(
             str(checkpoints_path),
-            json.dumps([asdict(cp) for cp in self.chapter_checkpoints]),
+            checkpoints_json.encode("utf-8"),
         )
 
     def write_to_zipfile(self, out_zipfile):
@@ -78,7 +67,7 @@ class TutorialBundle:
         assets_manifest_bytes = json.dumps(project_asset_paths).encode("utf-8")
         out_zipfile.writestr(str(assets_manifest_path), assets_manifest_bytes)
 
-        self.maybe_write_structured_json(out_zipfile)
+        self.maybe_write_chapter_starts(out_zipfile)
 
         for asset in self.assets:
             out_zipfile.writestr(asset.path, asset.data)

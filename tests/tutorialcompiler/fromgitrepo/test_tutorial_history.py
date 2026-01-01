@@ -347,14 +347,16 @@ class TestProjectHistory:
 
     def test_chapter_checkpoints(self, shoot_fruit_history):
         checkpoints = shoot_fruit_history.chapter_checkpoints
-        assert len(checkpoints) == 12
+        assert len(checkpoints) == 13
 
         assert all(
             cp.interactionState.chapterIndex == checkpoint_idx
             for checkpoint_idx, cp in enumerate(checkpoints)
         )
 
-        exp_n_tasks_dones = [0, 0, 3, 9, 12, 14, 16, 21, 24, 29, 30, 33]
+        exp_n_tasks_dones = [
+            0, 0, 3, 9, 12, 14, 16, 21, 24, 29, 30, 33, 33,
+        ]
         assert all(
             checkpoint.interactionState.nTasksDone == exp_n_tasks_done
             for checkpoint, exp_n_tasks_done
@@ -373,6 +375,7 @@ class TestProjectHistory:
             "award-point-when-hit",
             "clamp-score-at-zero",
             "clamp-score-at-zero",
+            "switch-to-random-costume",
             "switch-to-random-costume",
         ]
 
