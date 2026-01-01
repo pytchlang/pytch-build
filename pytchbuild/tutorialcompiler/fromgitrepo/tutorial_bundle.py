@@ -57,9 +57,12 @@ class TutorialBundle:
         )
 
         checkpoints_path = bundle_root_path / "chapter-starts.json"
+        checkpoints_json = json.dumps(
+            [asdict(cp) for cp in self.chapter_checkpoints]
+        )
         out_zipfile.writestr(
             str(checkpoints_path),
-            json.dumps([asdict(cp) for cp in self.chapter_checkpoints]),
+            checkpoints_json.encode("utf-8"),
         )
 
     def write_to_zipfile(self, out_zipfile):
