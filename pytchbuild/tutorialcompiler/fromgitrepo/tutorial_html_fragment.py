@@ -384,7 +384,7 @@ def summary_div_from_project_history(project_history):
     # directory anyway, so it also may as well be the front-end's job to make it
     # relative to "tutorial-assets".
 
-    for img in soup.findAll("img"):
+    for img in soup.find_all("img"):
         img.parent.attrs["class"] = "image-container"
 
     # Round-trip to get compact representation:
