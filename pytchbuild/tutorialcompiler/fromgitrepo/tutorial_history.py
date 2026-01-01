@@ -836,6 +836,9 @@ class ProjectHistory:
                 if (slug := maybe_task_commit_slug(node)) is not None:
                     code_commit = slug
 
+        # "One past the end" for the completed project.
+        append_checkpoint()
+
         return checkpoints
 
     @cached_property
