@@ -7,7 +7,7 @@ authors = [
 ]
 license = {text = "GPL-3.0-or-later"}
 readme = "README.rst"
-requires-python = ">=3.11,<4.0"
+requires-python = ">=3.12,<4.0"
 dependencies = [
     "pygit2 (>=1.19.1,<2.0.0)",
     "markdown (>=3.10,<4.0)",
