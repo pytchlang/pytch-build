@@ -11,7 +11,6 @@ from .tutorial_html_fragment import (
     tutorial_div_from_project_history,
     summary_div_from_project_history,
 )
-from .structured_program import StructuredPytchProgram
 
 
 @dataclass
