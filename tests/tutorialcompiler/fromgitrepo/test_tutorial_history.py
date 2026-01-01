@@ -354,7 +354,9 @@ class TestProjectHistory:
             for checkpoint_idx, cp in enumerate(checkpoints)
         )
 
-        exp_n_tasks_dones = [0, 0, 3, 9, 12, 14, 16, 21, 24, 29, 30, 33]
+        exp_n_tasks_dones = [
+            0, 0, 3, 9, 12, 14, 16, 21, 24, 29, 30, 33,
+        ]
         assert all(
             checkpoint.interactionState.nTasksDone == exp_n_tasks_done
             for checkpoint, exp_n_tasks_done
