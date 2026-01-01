@@ -1,5 +1,7 @@
 name: Build package and run tests
 on:
+  workflow_dispatch:
+    branches: "*"
   push:
     branches: "*"
 jobs:
