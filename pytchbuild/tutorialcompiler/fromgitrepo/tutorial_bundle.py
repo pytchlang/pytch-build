@@ -35,7 +35,7 @@ class TutorialBundle:
             project_history.chapter_checkpoints,
         )
 
-    def maybe_write_structured_json(self, out_zipfile):
+    def maybe_write_chapter_starts(self, out_zipfile):
         program_kind = self.metadata.get("programKind", "flat")
         if program_kind != "per-method":
             return
@@ -67,7 +67,7 @@ class TutorialBundle:
         assets_manifest_bytes = json.dumps(project_asset_paths).encode("utf-8")
         out_zipfile.writestr(str(assets_manifest_path), assets_manifest_bytes)
 
-        self.maybe_write_structured_json(out_zipfile)
+        self.maybe_write_chapter_starts(out_zipfile)
 
         for asset in self.assets:
             out_zipfile.writestr(asset.path, asset.data)
