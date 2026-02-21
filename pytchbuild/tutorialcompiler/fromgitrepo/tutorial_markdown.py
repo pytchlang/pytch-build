@@ -12,7 +12,7 @@ class ShortcodeProcessor(markdown.blockprocessors.BlockProcessor):
     RE_SHORTCODE = re.compile(r"^\s*\{\{< ([-/\w]+)( (.*))? >\}\}\s*$")
 
     simple_shortcode_kinds = [
-        "run-finished-project", "work-in-progress", "asset-credits",
+        "work-in-progress", "asset-credits",
         "learner-task", "/learner-task", "learner-task-help",
         "exclude-from-progress-trail",
     ]
