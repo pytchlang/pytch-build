@@ -9,12 +9,12 @@ tmux split-window -d -b -v \
      env \
      PYTCH_REPO_BASE="$PYTCH_REPO_BASE" \
      VITE_DEPLOY_BASE_URL="" \
-     VITE_STATIC_BLOBS_BASE=http://localhost:8129 \
      VITE_SKULPT_BASE=http://localhost:8124 \
      VITE_TUTORIALS_BASE=http://localhost:8125 \
      VITE_DEMOS_BASE=http://localhost:8126 \
      VITE_MEDIALIB_BASE=http://localhost:8127 \
      VITE_LESSON_SPECIMENS_BASE=http://localhost:8128 \
+     VITE_STATIC_BLOBS_BASE=http://localhost:8129 \
      VITE_LIVE_RELOAD_WEBSOCKET=yes \
      VITE_VERSION_TAG=local-development-build \
      "$PYTCH_LOCAL_SERVER_DIR"/dev-server-webapp.sh
