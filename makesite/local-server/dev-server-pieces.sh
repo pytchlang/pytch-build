@@ -43,6 +43,12 @@ tmux split-window -t 4 \
      PYTCH_LOCAL_SERVER_DIR="$PYTCH_LOCAL_SERVER_DIR" \
      "$PYTCH_LOCAL_SERVER_DIR"/dev-server-static-blobs.sh
 
+tmux split-window -t 1 \
+     env \
+     PYTCH_REPO_BASE="$PYTCH_REPO_BASE" \
+     PYTCH_LOCAL_SERVER_DIR="$PYTCH_LOCAL_SERVER_DIR" \
+     "$PYTCH_LOCAL_SERVER_DIR"/dev-server-demo-catalogue.sh
+
 exec \
      env \
      PYTCH_REPO_BASE="$PYTCH_REPO_BASE" \
