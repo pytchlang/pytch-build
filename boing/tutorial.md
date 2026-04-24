@@ -2,9 +2,7 @@
 
 This is a fun game.  It comes from "Code the Classics".
 
-You can see how it turns out:
-
-{{< run-finished-project >}}
+You can see how it turns out by using the "Demo" button instead.
 
 Hope you enjoy making it!
 
