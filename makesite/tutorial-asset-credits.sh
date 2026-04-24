@@ -1,13 +1,11 @@
-#!/bin/bash
-
-cd_or_fail() { cd "$1" || exit 1; }
+#!/bin/bash -e
 
 : "${PYTCH_DEPLOYMENT_ID:?}"
 
 BUILD_DIR="$(realpath "$(dirname "$0")")"
 REPO_ROOT="$(realpath "$BUILD_DIR"/..)"
 
-cd_or_fail "$REPO_ROOT"
+cd "$REPO_ROOT"
 
 # Previous script has already checked build requirements.
 
@@ -18,7 +16,7 @@ MEDIALIB_REPO_ROOT="$(realpath "$REPO_ROOT"/../pytch-medialib)"
 source .venv/bin/activate
 
 (
-    cd_or_fail "$TUTORIALS_REPO_ROOT"
+    cd "$TUTORIALS_REPO_ROOT"
 
     pytchbuild-gather-asset-credits \
         --index-source=WORKING_DIRECTORY \

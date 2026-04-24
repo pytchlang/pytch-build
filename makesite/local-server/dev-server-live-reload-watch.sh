@@ -1,6 +1,4 @@
-#!/bin/bash
-
-cd_or_fail() { cd "$1" || exit 1; }
+#!/bin/bash -e
 
 # Use 'true' from PATH instead of shell builtin
 enable -n true
@@ -12,7 +10,7 @@ enable -n true
     exit 1
 }
 
-cd_or_fail "$PYTCH_REPO_BASE"/pytch-tutorials
+cd "$PYTCH_REPO_BASE"/pytch-tutorials
 
 if [ -z "$PYTCH_IN_PROGRESS_TUTORIAL" ]; then
     echo "PYTCH_IN_PROGRESS_TUTORIAL not set; not watching any tutorial/code"

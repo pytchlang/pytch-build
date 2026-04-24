@@ -1,10 +1,8 @@
-#!/bin/bash
-
-cd_or_fail() { cd "$1" || exit 1; }
+#!/bin/bash -e
 
 media_distdir="$PYTCH_REPO_BASE"/pytch-medialib/dist
 mkdir -p "$media_distdir"
-cd_or_fail "$media_distdir"
+cd "$media_distdir"
 
 # shellcheck disable=SC1091
 . "$PYTCH_REPO_BASE"/pytch-build/.venv/bin/activate || {
