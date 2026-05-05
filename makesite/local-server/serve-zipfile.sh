@@ -18,8 +18,8 @@ docker build --tag pytch-local-server .
 CONTENTDIR=$(mktemp -d -t pytch-local-server-content-XXXXXXXXXXXX)
 CONTAINERNAME=$(basename "$CONTENTDIR")
 
-echo Serving contents of "$1" from http://localhost:5888/
-
+echo
+echo Unpacking content from "$1"
 unzip -q -d "$CONTENTDIR" "$1"
 
 if [ -n "$2" ]; then
@@ -34,9 +34,28 @@ fi
 
 chmod 755 "$CONTENTDIR"
 
+
+########################################################################
+# Include discoverable demo content in what is served.
+
+DEMO_CATALOGUE_CONTENT="$TOPLEVEL_REPO_ROOT"/pytch-demo-catalogue-content
+DEMO_CATALOGUE_BUILD_TOOL="$TOPLEVEL_REPO_ROOT"/pytch-demo-catalogue-build-tool
+
+if [ -d "$DEMO_CATALOGUE_CONTENT" ] && [ -d "$DEMO_CATALOGUE_BUILD_TOOL" ]; then
+    echo Building discoverable demo catalogue
+    poetry run -P "$DEMO_CATALOGUE_BUILD_TOOL"/build-tool \
+           build-dist \
+               --log-level=info \
+               "$DEMO_CATALOGUE_CONTENT" "$CONTENTDIR"/demo-catalogue
+fi
+
+
+########################################################################
+
 (
     cd "$CONTENTDIR"
 
+    echo Copying static blobs
     rsync -a "$TOPLEVEL_REPO_ROOT"/pytch-static-blobs/data/ static-blobs
 
     if [ -e releases ]; then
@@ -52,6 +71,8 @@ chmod 755 "$CONTENTDIR"
         fi
     fi
 
+    echo
+    echo "Serving from http://localhost:5888/${app_path}app"
     echo
     echo "Example Cypress command, within pytch-webapp directory:"
     echo "CYPRESS_BASE_URL=http://localhost:5888/${app_path}app/ CY_PARALLEL_N_THREADS=28 nice npm run cy:parallel"

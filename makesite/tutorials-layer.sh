@@ -1,13 +1,11 @@
-#!/bin/bash
-
-cd_or_fail() { cd "$1" || exit 1; }
+#!/bin/bash -e
 
 : "${PYTCH_DEPLOYMENT_ID:?}"
 
 BUILD_DIR="$(realpath "$(dirname "$0")")"
 REPO_ROOT="$(realpath "$BUILD_DIR"/..)"
 
-cd_or_fail "$REPO_ROOT"
+cd "$REPO_ROOT"
 
 if [ "$(git status --porcelain | wc -l)" -ne 0 ]; then
     (
@@ -71,7 +69,7 @@ mkdir -p "$LAYER_WORKDIR"
 LAYER_ZIPFILE="$LAYER_WORKDIR"/layer.zip
 
 (
-    cd_or_fail "$TUTORIALS_REPO_ROOT"
+    cd "$TUTORIALS_REPO_ROOT"
 
     current_tutorials_branch="$(git rev-parse --abbrev-ref HEAD)"
     if [ "$current_tutorials_branch" = releases ]; then
@@ -113,7 +111,7 @@ medialib_outputdir="$CONTENT_DIR"/medialib/"$PYTCH_DEPLOYMENT_ID"
 mkdir -p "$medialib_outputdir"
 
 (
-    cd_or_fail "$TUTORIALS_REPO_ROOT"
+    cd "$TUTORIALS_REPO_ROOT"
 
     pytchbuild-gather-asset-media \
         --index-source=WORKING_DIRECTORY \
@@ -127,7 +125,7 @@ mkdir -p "$medialib_outputdir"
 
 rm "$LAYER_ZIPFILE"
 (
-    cd_or_fail "$CONTENT_DIR"
+    cd "$CONTENT_DIR"
     find tutorials -type d -print0 | xargs -0 chmod 755
     find tutorials -type f -print0 | xargs -0 chmod 644
     zip -q -r "$LAYER_ZIPFILE" tutorials medialib

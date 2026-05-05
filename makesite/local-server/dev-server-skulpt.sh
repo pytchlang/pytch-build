@@ -1,8 +1,6 @@
-#!/bin/bash
+#!/bin/bash -e
 
-cd_or_fail() { cd "$1" || exit 1; }
-
-cd_or_fail "$PYTCH_REPO_BASE"/pytch-vm/dist
+cd "$PYTCH_REPO_BASE"/pytch-vm/dist
 
 echo Serving Skulpt layer from "$(pwd)"
 
