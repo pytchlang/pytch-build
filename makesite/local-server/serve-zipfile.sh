@@ -53,8 +53,8 @@ chmod 755 "$CONTENTDIR"
     fi
 
     echo
-    echo Cypress command within pytch-webapp directory:
-    echo CYPRESS_BASE_URL=http://localhost:5888/"${app_path}"app/ ./node_modules/.bin/cypress open
+    echo "Example Cypress command, within pytch-webapp directory:"
+    echo "CYPRESS_BASE_URL=http://localhost:5888/${app_path}app/ CY_PARALLEL_N_THREADS=28 nice npm run cy:parallel"
     echo
 )
 
