@@ -34,6 +34,24 @@ fi
 
 chmod 755 "$CONTENTDIR"
 
+
+########################################################################
+# Include discoverable demo content in what is served.
+
+DEMO_CATALOGUE_CONTENT="$TOPLEVEL_REPO_ROOT"/pytch-demo-catalogue-content
+DEMO_CATALOGUE_BUILD_TOOL="$TOPLEVEL_REPO_ROOT"/pytch-demo-catalogue-build-tool
+
+if [ -d "$DEMO_CATALOGUE_CONTENT" ] && [ -d "$DEMO_CATALOGUE_BUILD_TOOL" ]; then
+    echo Building discoverable demo catalogue
+    poetry run -P "$DEMO_CATALOGUE_BUILD_TOOL"/build-tool \
+           build-dist \
+               --log-level=info \
+               "$DEMO_CATALOGUE_CONTENT" "$CONTENTDIR"/demo-catalogue
+fi
+
+
+########################################################################
+
 (
     cd "$CONTENTDIR"
 
