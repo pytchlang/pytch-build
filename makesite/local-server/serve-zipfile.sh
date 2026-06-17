@@ -18,8 +18,8 @@ docker build --tag pytch-local-server .
 CONTENTDIR=$(mktemp -d -t pytch-local-server-content-XXXXXXXXXXXX)
 CONTAINERNAME=$(basename "$CONTENTDIR")
 
-echo Serving contents of "$1" from http://localhost:5888/
-
+echo
+echo Unpacking content from "$1"
 unzip -q -d "$CONTENTDIR" "$1"
 
 if [ -n "$2" ]; then
@@ -55,6 +55,7 @@ fi
 (
     cd "$CONTENTDIR"
 
+    echo Copying static blobs
     rsync -a "$TOPLEVEL_REPO_ROOT"/pytch-static-blobs/data/ static-blobs
 
     if [ -e releases ]; then
@@ -70,6 +71,8 @@ fi
         fi
     fi
 
+    echo
+    echo "Serving from http://localhost:5888/${app_path}app"
     echo
     echo "Example Cypress command, within pytch-webapp directory:"
     echo "CYPRESS_BASE_URL=http://localhost:5888/${app_path}app/ CY_PARALLEL_N_THREADS=28 nice npm run cy:parallel"
