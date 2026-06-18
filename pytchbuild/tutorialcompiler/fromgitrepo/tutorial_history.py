@@ -957,7 +957,10 @@ class ProjectHistory:
                 " but marked as intentionally unused"
             )
 
-        if (code_assets | intentionally_unused_assets) != stored_assets:
+        expected_assets = code_assets | intentionally_unused_assets
+        if expected_assets != stored_assets:
+            exp_not_in_repo = expected_assets - stored_assets
+            in_repo_not_exp = stored_assets - expected_assets
             self.raise_structure_error(
                 "assets added/updated in commit history"
                 f" {sorted(stored_assets)}"
@@ -965,4 +968,6 @@ class ProjectHistory:
                 f" {sorted(code_assets)}"
                 " combined with intentionally-unused assets"
                 f" {sorted(intentionally_unused_assets)}"
+                f"; expected-but-not-in-repo {sorted(exp_not_in_repo)}"
+                f"; in-repo-but-not-expected {sorted(in_repo_not_exp)}"
             )
