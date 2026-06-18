@@ -4,4 +4,4 @@ import math
 
 
 class Stage(pytch.Stage):
-    Backdrops = ["solid-white.png"]
+    Backdrops = ["solid-white.png", "green-rect.png"]
