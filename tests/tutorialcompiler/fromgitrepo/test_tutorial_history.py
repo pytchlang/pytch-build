@@ -678,3 +678,25 @@ class TestProjectHistory:
                 match=r"small-blue.png.*part of 2"
         ):
             fresh_project_history.medialib_contribution("fruit", ids)
+
+    def test_validate_assets_consistency(self, cloned_repo):
+        exp_message_match = re.escape(
+            "grow-trees:"
+            " assets added/updated in commit history"
+            " ['blue-rect.png', 'green-rect.png', 'red-rect.png']"
+            " disagree with assets found in code.py"
+            " ['green-rect.png', 'solid-white.png']"
+            " combined with intentionally-unused assets"
+            " ['blue-rect.png']"
+            "; expected-but-not-in-repo ['solid-white.png']"
+            "; in-repo-but-not-expected ['red-rect.png']"
+        )
+
+        with pytest.raises(
+                TCE.TutorialStructureError,
+                match=exp_message_match
+        ):
+            TH.ProjectHistory(
+                cloned_repo.workdir,
+                "origin/unit-tests-mismatched-assets",
+            )
