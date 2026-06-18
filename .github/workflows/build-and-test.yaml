@@ -12,6 +12,6 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install poetry
-        uses: snok/install-poetry@v1.4.1
+        uses: snok/install-poetry@v1.4.2
       - run: poetry install
       - run: poetry run tox
