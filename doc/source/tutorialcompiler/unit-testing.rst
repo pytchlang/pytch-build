@@ -21,6 +21,9 @@ Branches ``unit-tests-dupd-slugs-1`` and ``unit-tests-dupd-slugs-2``
 Branch ``unit-tests-catch-apple``
   Script-by-script ("per-method") style of program development.
 
+Branch ``unit-tests-sbs-shoot-fruit``
+  Script-by-script tutorial for testing checkpoints and assets.
+
 
 Fixtures
 --------
