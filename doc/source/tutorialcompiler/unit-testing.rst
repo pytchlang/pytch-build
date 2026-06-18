@@ -24,6 +24,11 @@ Branch ``unit-tests-catch-apple``
 Branch ``unit-tests-sbs-shoot-fruit``
   Script-by-script tutorial for testing checkpoints and assets.
 
+Branch ``unit-tests-mismatched-assets``
+  History with deliberately inconsistent sets of assets between the
+  stored code, the commit history, and the metadata entry saying which
+  assets are intentionally unused.
+
 
 Fixtures
 --------
