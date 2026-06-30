@@ -434,6 +434,7 @@ class TestProjectHistory:
             "boing/project-assets/graphics/small-blue.png",
             "boing/project-assets/graphics/small-red.png",
             "boing/tutorial-assets/not-a-real-png.png",
+            "boing/tutorial-assets/some-text.txt",
         ]
 
     @pytest.mark.parametrize(
