@@ -437,6 +437,13 @@ class TestProjectHistory:
             "boing/tutorial-assets/some-text.txt",
         ]
 
+    def test_modified_tutorial_asset(self, project_history):
+        text_asset = [
+            a for a in project_history.all_assets
+            if a.path == "boing/tutorial-assets/some-text.txt"
+        ][0]
+        assert text_asset.data.decode() == "Third content\n"
+
     @pytest.mark.parametrize(
         "label, orderedProjectAssets_value, exp_error_re",
         [
