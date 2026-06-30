@@ -338,6 +338,10 @@ class ProjectCommit:
         return self.adds_assets(self.path_is_a_tutorial_asset, "tutorial")
 
     @cached_property
+    def modifies_tutorial_assets(self):
+        return self.modifies_assets(self.path_is_a_tutorial_asset, "tutorial")
+
+    @cached_property
     def adds_asset_source(self):
         return self.adds_assets(self.path_is_an_asset_source, "asset-source")
 
