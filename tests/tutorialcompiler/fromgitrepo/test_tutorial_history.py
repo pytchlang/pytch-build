@@ -94,6 +94,8 @@ class TestProjectCommit:
             ("c87cb28d", 'modify-assets("boing/project-assets/graphics/alien.png")'),
             ("bf0e5cfa", 'add-assets("boing/tutorial-assets/not-a-real-png.png")'),
             ("b36564cb", "asset-source"),
+            ("1500b6a7", 'modify-assets("boing/tutorial-assets/some-text.txt")'),
+            ("c9de7f68", 'modify-assets("boing/tutorial-assets/some-text.txt")'),
         ])
     def test_summary_label(self, this_raw_repo, oid, exp_summary):
         pc = TH.ProjectCommit(this_raw_repo, oid)
@@ -434,7 +436,15 @@ class TestProjectHistory:
             "boing/project-assets/graphics/small-blue.png",
             "boing/project-assets/graphics/small-red.png",
             "boing/tutorial-assets/not-a-real-png.png",
+            "boing/tutorial-assets/some-text.txt",
         ]
+
+    def test_modified_tutorial_asset(self, project_history):
+        text_asset = [
+            a for a in project_history.all_assets
+            if a.path == "boing/tutorial-assets/some-text.txt"
+        ][0]
+        assert text_asset.data.decode() == "Third content\n"
 
     @pytest.mark.parametrize(
         "label, orderedProjectAssets_value, exp_error_re",

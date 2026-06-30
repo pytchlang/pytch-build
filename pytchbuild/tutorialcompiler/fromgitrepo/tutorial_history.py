@@ -179,7 +179,7 @@ class ProjectCommit:
         if self.adds_project_assets or self.adds_tutorial_assets:
             asset_paths = ", ".join(f'"{a.path}"' for a in self.added_assets)
             return f"add-assets({asset_paths})"
-        if self.modifies_project_assets:
+        if self.modified_assets:
             asset_paths = ", ".join(f'"{a.path}"' for a in self.modified_assets)
             return f"modify-assets({asset_paths})"
         if self.adds_asset_source:
@@ -338,6 +338,10 @@ class ProjectCommit:
         return self.adds_assets(self.path_is_a_tutorial_asset, "tutorial")
 
     @cached_property
+    def modifies_tutorial_assets(self):
+        return self.modifies_assets(self.path_is_a_tutorial_asset, "tutorial")
+
+    @cached_property
     def adds_asset_source(self):
         return self.adds_assets(self.path_is_an_asset_source, "asset-source")
 
@@ -365,7 +369,7 @@ class ProjectCommit:
 
     @cached_property
     def modified_assets(self):
-        if self.modifies_project_assets:
+        if self.modifies_project_assets or self.modifies_tutorial_assets:
             return [Asset.from_delta(self.repo, delta)
                     for delta in self.diff_against_parent_or_empty.deltas]
         else:

@@ -23,5 +23,6 @@ def test_bundle_zipfile(project_history):
         "boing/project-assets/graphics/small-red.png",
         "boing/summary.html",
         "boing/tutorial-assets/not-a-real-png.png",
+        "boing/tutorial-assets/some-text.txt",
         "boing/tutorial.html",
     ]
