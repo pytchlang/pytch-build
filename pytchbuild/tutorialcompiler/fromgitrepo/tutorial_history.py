@@ -179,7 +179,7 @@ class ProjectCommit:
         if self.adds_project_assets or self.adds_tutorial_assets:
             asset_paths = ", ".join(f'"{a.path}"' for a in self.added_assets)
             return f"add-assets({asset_paths})"
-        if self.modifies_project_assets:
+        if self.modified_assets:
             asset_paths = ", ".join(f'"{a.path}"' for a in self.modified_assets)
             return f"modify-assets({asset_paths})"
         if self.adds_asset_source:
