@@ -369,7 +369,7 @@ class ProjectCommit:
 
     @cached_property
     def modified_assets(self):
-        if self.modifies_project_assets:
+        if self.modifies_project_assets or self.modifies_tutorial_assets:
             return [Asset.from_delta(self.repo, delta)
                     for delta in self.diff_against_parent_or_empty.deltas]
         else:
