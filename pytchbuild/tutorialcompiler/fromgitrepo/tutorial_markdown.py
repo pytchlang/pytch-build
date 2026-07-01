@@ -2,7 +2,7 @@ import re
 import xml.etree.ElementTree as etree
 import markdown
 import markdown.extensions.fenced_code
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, NavigableString, Tag
 import copy
 
 from .errors import TutorialStructureError
@@ -132,6 +132,53 @@ def plain_soup_from_markdown_text(markdown_text):
     """
     html = markdown.markdown(markdown_text, extensions=["fenced_code"])
     return BeautifulSoup(html, "html.parser")
+
+
+# Whitespace and punctuation permitted between the leading backtick-quoted
+# asset basenames of a credit bullet (e.g., "`a.png`, `b.png`").
+RE_BASENAME_SEPARATOR = re.compile(r"[\s,]*")
+
+
+def leading_code_texts(li):
+    """The leading run of ``<code>`` texts of a ``<li>``, or ``None``.
+
+    A *credit item* is a list item whose first content is a
+    backtick-quoted string (rendered as ``<code>``).  A single bullet
+    may name several assets as a run of ``<code>`` elements separated
+    only by whitespace/commas.
+
+    Return the list of the text contents of that leading run of
+    ``<code>`` elements if ``li`` is a credit item, or ``None`` if it
+    is not (i.e., its leading content is prose rather than a
+    backtick-quoted name).
+
+    """
+    texts = []
+    for child in li.children:
+        if isinstance(child, Tag):
+            if child.name == "code":
+                texts.append(child.get_text())
+                continue
+            # Any other element ends the leading run; it is a credit item
+            # if and only if we have already seen at least one <code>.
+            break
+        elif isinstance(child, NavigableString):
+            if texts:
+                # Between/after basenames: only whitespace/commas may occur
+                # before the credit body proper begins.
+                if RE_BASENAME_SEPARATOR.fullmatch(str(child)):
+                    continue
+                break
+            else:
+                # Before the first basename only whitespace is permitted; any
+                # other leading text means this bullet is not a credit item.
+                if str(child).strip() == "":
+                    continue
+                return None
+        else:
+            break
+
+    return texts or None
 
 
 def slugs_for_class(soup, cls):
