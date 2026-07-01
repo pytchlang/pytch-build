@@ -8,7 +8,6 @@ import zipfile
 import copy
 import pygit2
 import itertools
-import re
 import html
 import subprocess
 import shutil
