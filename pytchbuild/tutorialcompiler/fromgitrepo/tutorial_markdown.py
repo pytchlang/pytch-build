@@ -125,6 +125,15 @@ def soup_from_markdown_text(markdown_text):
     return soup
 
 
+def plain_soup_from_markdown_text(markdown_text):
+    """Soup of ``markdown_text`` with no custom shortcode processing.
+
+    Fenced code blocks are supported.
+    """
+    html = markdown.markdown(markdown_text, extensions=["fenced_code"])
+    return BeautifulSoup(html, "html.parser")
+
+
 def slugs_for_class(soup, cls):
     """List of "data-slug" attrs for elements of given `cls`."""
     return [
