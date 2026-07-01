@@ -869,6 +869,28 @@ class ProjectHistory:
             raise InternalError("unknown tutorial_text_source")
 
     @cached_property
+    def credits_text(self):
+        """The ``credits.md`` text, depending on ``tutorial_text_source``
+
+        A missing ``credits.md`` raises a ``TutorialStructureError``.
+        """
+        if self.tutorial_text_source == self.TutorialTextSource.TIP_REVISION:
+            tip_commit = self.project_commits[0]
+            return tip_commit.text_file_contents(self.credits_text_path)
+        elif self.tutorial_text_source == self.TutorialTextSource.WORKING_DIRECTORY:
+            full_path = self.workdir_path / self.credits_text_path
+            try:
+                with full_path.open("rt") as f_in:
+                    return f_in.read()
+            except FileNotFoundError:
+                raise TutorialStructureError(
+                    f'file "{self.credits_text_path}" not found'
+                    " in working directory"
+                )
+        else:
+            raise InternalError("unknown tutorial_text_source")
+
+    @cached_property
     def initial_code_text(self):
         """The initial Python code
 
