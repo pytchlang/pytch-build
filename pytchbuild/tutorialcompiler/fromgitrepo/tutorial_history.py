@@ -527,9 +527,11 @@ class ProjectHistory:
             repo_directory,
             tip_revision,
             tutorial_text_source=TutorialTextSource.TIP_REVISION,
+            should_validate_credits=True,
     ):
         self.repo = pygit2.Repository(repo_directory)
         self.tutorial_text_source = tutorial_text_source
+        self.should_validate_credits = should_validate_credits
         tip_oid = self.repo.revparse_single(tip_revision).id
         self.project_commits = self.commit_linear_ancestors(tip_oid)
 
@@ -550,6 +552,8 @@ class ProjectHistory:
     def validate_structure(self):
         self.validate_slug_uniqueness()
         self.validate_assets_consistency()
+        if self.should_validate_credits:
+            self.validate_credits()
 
     def validate_slug_uniqueness(self):
         occurrences_of_slug = Counter(self.ordered_commit_slugs)
