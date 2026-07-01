@@ -45,7 +45,10 @@ from ..medialib import (
     MediaLibraryData,
 )
 from .structured_program import StructuredPytchProgram
-from .tutorial_markdown import soup_from_markdown_text
+from .tutorial_markdown import (
+    soup_from_markdown_text,
+    AssetListCredit,
+)
 from .tutorial_html_fragment import (
     node_is_div_of_any_class,
     maybe_task_commit_slug,
@@ -696,6 +699,14 @@ class ProjectHistory:
     @cached_property
     def all_project_assets(self):
         return [a for a in self.all_assets if a.is_project_asset]
+
+    @cached_property
+    def all_asset_credits(self):
+        """List of :py:class:`AssetListCredit` objects, parsed from ``credits.md``
+
+        The credits are in the document order of ``credits.md``.
+        """
+        return AssetListCredit.list_from_credits_text(self.credits_text)
 
     @cached_property
     def commit_message_asset_credits(self):
