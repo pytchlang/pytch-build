@@ -1033,3 +1033,74 @@ class ProjectHistory:
                     basenames.append(entry.name)
 
         return basenames
+
+    def validate_credits(self):
+        """Check the 1-to-1 correspondence of tip-tree assets and credits
+
+        Assets are files under ``project-assets/`` and
+        ``tutorial-assets/`` in the tip tree; credits are the bullets
+        of ``credits.md``.
+        """
+        project_basenames = self.tip_tree_asset_basenames(
+            PROJECT_ASSET_DIRNAME
+        )
+        tutorial_basenames = self.tip_tree_asset_basenames(
+            TUTORIAL_ASSET_DIRNAME
+        )
+
+        # Reading credits.md; absence is a structure error (see docstring).
+        credits = self.all_asset_credits
+
+        # A basename appearing under both locations makes the flat
+        # basename -> asset mapping of credits.md ambiguous.
+        cross_collision = set(project_basenames) & set(tutorial_basenames)
+        if cross_collision:
+            self.raise_structure_error(
+                f"asset basename/s {sorted(cross_collision)} appear under"
+                " both project-assets/ and tutorial-assets/"
+            )
+
+        asset_basenames = project_basenames + tutorial_basenames
+
+        # A basename repeated within one location (e.g. graphics/foo.png
+        # and sounds/foo.png) is likewise ambiguous for a flat credits.md.
+        repeated_assets = [
+            bn for bn, n in Counter(asset_basenames).items() if n > 1
+        ]
+        if repeated_assets:
+            self.raise_structure_error(
+                f"asset basename/s {sorted(repeated_assets)} appear more"
+                " than once in the tip tree"
+            )
+
+        asset_basename_set = set(asset_basenames)
+
+        credited_basenames = [
+            basename
+            for credit in credits
+            for basename in credit.asset_basenames
+        ]
+        duplicate_credits = [
+            bn for bn, n in Counter(credited_basenames).items() if n > 1
+        ]
+        if duplicate_credits:
+            self.raise_structure_error(
+                f"asset basename/s {sorted(duplicate_credits)} credited"
+                " more than once in credits.md"
+            )
+
+        credited_basename_set = set(credited_basenames)
+
+        uncredited = asset_basename_set - credited_basename_set
+        if uncredited:
+            self.raise_structure_error(
+                f"asset/s {sorted(uncredited)} present in the tip tree but"
+                " not credited in credits.md"
+            )
+
+        dangling = credited_basename_set - asset_basename_set
+        if dangling:
+            self.raise_structure_error(
+                f"credits.md names asset/s {sorted(dangling)} not present"
+                " in the tip tree"
+            )
