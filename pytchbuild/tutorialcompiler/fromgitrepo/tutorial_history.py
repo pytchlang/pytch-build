@@ -124,6 +124,11 @@ class Asset:
 @dataclass
 class AssetsCreditsEntry:
     """A credit which applies to some of the assets in a tutorial
+
+    Legacy representation, derived from the body of the commit which adds
+    the asset(s).  Retained only for :py:meth:`ProjectCommit.assets_credits`
+    and the one-off ``credits.md`` conversion tool; the live credit
+    mechanism uses :py:class:`AssetListCredit`.
     """
 
     asset_basenames: [str]
