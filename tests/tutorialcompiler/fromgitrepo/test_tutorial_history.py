@@ -531,12 +531,21 @@ class TestProjectHistory:
             ):
                 project_history.all_assets
 
-    def test_all_asset_credits(self, fresh_project_history, caplog):
-        with caplog.at_level(logging.WARNING):
-            credits = fresh_project_history.all_asset_credits
-            assert len(credits) == 1
-            assert "bf0e5cf" in caplog.text
-            assert "9b40818" in caplog.text
+    def test_all_asset_credits(self, fresh_project_history):
+        # Parsed from boing/credits.md, in document order.
+        credits = fresh_project_history.all_asset_credits
+        assert [c.asset_basenames for c in credits] == [
+            ["alien.png"],
+            ["small-blue.png", "small-red.png"],
+            ["bell-ping.mp3"],
+            ["not-a-real-png.png"],
+            ["some-text.txt"],
+        ]
+
+        bell_ping = credits[2]
+        assert bell_ping.credit_li.name == "li"
+        assert bell_ping.credit_li.find("a") is not None
+        assert "bell-ping.mp3" in bell_ping.credit_li.get_text()
 
     def test_all_project_assets(self, project_history):
         got_paths = sorted([a.path for a in project_history.all_project_assets])
