@@ -754,6 +754,11 @@ class ProjectHistory:
         return f"{dirname}/{METADATA_FILE_BASENAME}"
 
     @cached_property
+    def credits_text_path(self):
+        dirname = self.top_level_directory_name
+        return f"{dirname}/{CREDITS_TEXT_FILE_BASENAME}"
+
+    @cached_property
     def tutorial_text(self):
         """The final tutorial text, depending on ``tutorial_text_source``
 
