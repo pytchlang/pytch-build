@@ -67,6 +67,7 @@ CODE_FILE_BASENAME = "code.py"
 TUTORIAL_TEXT_FILE_BASENAME = "tutorial.md"
 SUMMARY_TEXT_FILE_BASENAME = "summary.md"
 METADATA_FILE_BASENAME = "metadata.json"
+CREDITS_TEXT_FILE_BASENAME = "credits.md"
 
 
 ################################################################################
