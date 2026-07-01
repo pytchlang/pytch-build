@@ -1008,3 +1008,28 @@ class ProjectHistory:
                 f"; expected-but-not-in-repo {sorted(exp_not_in_repo)}"
                 f"; in-repo-but-not-expected {sorted(in_repo_not_exp)}"
             )
+
+    def tip_tree_asset_basenames(self, asset_dirname):
+        """Basenames of all asset blobs under ``<tutorial>/<asset_dirname>/``
+
+        Uses the tip tree, recursing into any subdirectories (e.g.
+        ``project-assets/graphics/...``).  Returns ``[]`` if the directory
+        is absent from the tip tree.
+        """
+        tip_tree = self.project_commits[0].tree
+        try:
+            root = tip_tree / self.top_level_directory_name / asset_dirname
+        except KeyError:
+            return []
+
+        basenames = []
+        pending = [root]
+        while pending:
+            subtree = pending.pop()
+            for entry in subtree:
+                if entry.type_str == "tree":
+                    pending.append(self.repo[entry.id])
+                else:
+                    basenames.append(entry.name)
+
+        return basenames
