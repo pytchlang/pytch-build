@@ -698,13 +698,14 @@ class ProjectHistory:
         return [a for a in self.all_assets if a.is_project_asset]
 
     @cached_property
-    def all_asset_credits(self):
-        """List of all AssetsCreditsEntry objects
+    def commit_message_asset_credits(self):
+        """Legacy list of :py:class:`AssetsCreditsEntry` from commit messages
+
+        Retained for use by temporary ``credits.md`` conversion tool.
+        Returned list is such that entries earlier in the list are for
+        earlier (nearest the root) commit in the history.
         """
         commits_credits = (c.assets_credits for c in self.project_commits)
-
-        # Provide the credits entries such that the earliest one in the list
-        # is for the earliest (nearest the root) commit in the history.
         all_credits = list(itertools.chain.from_iterable(commits_credits))
         return list(reversed(all_credits))
 
