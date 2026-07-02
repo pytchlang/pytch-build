@@ -149,6 +149,23 @@ and after that is free-form, but should be kept fairly short.  One
 paragraph of a few lines is enough.
 
 
+Tutorial credits file
+---------------------
+
+The tutorial directory should also include a ``credits.md`` file at
+top-level.  The only parts of this file which are relevant are
+bullet-list items which start with asset basenames (i.e., the last
+part of the full asset path/filename).  Every asset (project or
+tutorial) should be included in exactly one such bullet-list item.
+After the list of basenames, the remainder of the bullet-list item
+should summarise the credit, copyright, licence, etc., information.
+
+A ``credits.md`` file is required even if there are no assets.  An
+entry for an asset is required even if that asset is, for example,
+public domain.  In such a case, the message can state "in the public
+domain".
+
+
 Output from compiler
 --------------------
 
