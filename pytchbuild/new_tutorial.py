@@ -41,6 +41,27 @@ def create_new_tutorial_branch_and_structure(
     with (new_directory / "metadata.json").open("wt") as f_out:
         f_out.write('{"difficulty": "medium"}\n')
 
+    with (new_directory / "credits.md").open("wt") as f_out:
+        # No real credit bullets yet: a bullet naming an asset which does
+        # not exist would fail the build's credits validation.  The example
+        # is inside a fenced code block, which the parser ignores.
+        f_out.write(
+            f"# Credits for {tutorial_name}\n"
+            "\n"
+            "Credit every asset (image or sound) used by this tutorial,\n"
+            "whether it lives under `project-assets/` or `tutorial-assets/`.\n"
+            "Each asset is credited by a bullet-list item whose first content\n"
+            "is the asset's backtick-quoted basename; a single bullet may name\n"
+            "several assets which share one credit.  For example:\n"
+            "\n"
+            "```\n"
+            "- `alien.png` — Drawn by A. Author, licensed CC-BY 4.0.\n"
+            "- `beep.mp3`, `boop.mp3` — Made by us; public domain.\n"
+            "```\n"
+            "\n"
+            "TODO: Add a credit bullet for each asset used by this tutorial.\n"
+        )
+
     sig = create_signature(repo)
 
     commit_files(
