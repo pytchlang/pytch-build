@@ -719,3 +719,115 @@ class TestProjectHistory:
                 cloned_repo.workdir,
                 "origin/unit-tests-mismatched-assets",
             )
+
+
+class TestCreditsValidation:
+    """Validation of credits.md against the tip-tree asset set.
+
+    Most cases vary only the (working-directory) credits.md against boing's
+    fixed committed asset set.  The cross-location-collision and
+    repeated-basename cases need a problematic *committed* tree, so they use
+    dedicated fixture branches; the no-assets case uses catch-apple.
+    """
+
+    # Covers boing's six tip-tree assets (four project, two tutorial).
+    GOOD_CREDITS = (
+        "# Credits\n\n"
+        "- `alien.png` — Drawn by us.\n"
+        "- `small-blue.png`, `small-red.png` — Made by us.\n"
+        "- `bell-ping.mp3` — Sound by [someone](https://example.com/).\n"
+        "- `not-a-real-png.png` — Public domain.\n"
+        "- `some-text.txt` — Public domain.\n"
+    )
+
+    def _history(self, repo, credits_text):
+        # Asset basenames come from the tip tree, but credits.md is read from
+        # the working directory, so we vary only credits.md here.
+        credits_path = Path(repo.workdir) / "boing" / "credits.md"
+        if credits_text is None:
+            if credits_path.exists():
+                credits_path.unlink()
+        else:
+            credits_path.write_text(credits_text)
+        return TH.ProjectHistory(
+            repo.workdir,
+            "unit-tests-commits",
+            TH.ProjectHistory.TutorialTextSource.WORKING_DIRECTORY,
+        )
+
+    def test_good(self, clean_cloned_repo):
+        history = self._history(clean_cloned_repo, self.GOOD_CREDITS)
+        assert [c.asset_basenames for c in history.all_asset_credits] == [
+            ["alien.png"],
+            ["small-blue.png", "small-red.png"],
+            ["bell-ping.mp3"],
+            ["not-a-real-png.png"],
+            ["some-text.txt"],
+        ]
+
+    def test_missing_file_is_error(self, clean_cloned_repo):
+        with pytest.raises(TCE.TutorialStructureError, match="credits.md"):
+            self._history(clean_cloned_repo, None)
+
+    def test_uncredited_asset(self, clean_cloned_repo):
+        text = self.GOOD_CREDITS.replace(
+            "- `some-text.txt` — Public domain.\n", ""
+        )
+        with pytest.raises(TCE.TutorialStructureError,
+                           match=r"some-text\.txt.*not credited"):
+            self._history(clean_cloned_repo, text)
+
+    def test_dangling_credit(self, clean_cloned_repo):
+        text = self.GOOD_CREDITS + "- `ghost.png` — Nothing.\n"
+        with pytest.raises(TCE.TutorialStructureError,
+                           match=r"ghost\.png.*not present in the tip tree"):
+            self._history(clean_cloned_repo, text)
+
+    def test_duplicate_credit(self, clean_cloned_repo):
+        text = self.GOOD_CREDITS + "- `alien.png` — Credited again.\n"
+        with pytest.raises(TCE.TutorialStructureError,
+                           match=r"alien\.png.*more than once in credits.md"):
+            self._history(clean_cloned_repo, text)
+
+    def test_cross_location_collision(self, cloned_repo):
+        # Fixture branch whose tip tree has "clash.png" under both
+        # project-assets/ and tutorial-assets/.
+        with pytest.raises(
+                TCE.TutorialStructureError,
+                match=r"clash\.png.*both project-assets/ and tutorial-assets/"):
+            TH.ProjectHistory(
+                cloned_repo.workdir,
+                "origin/unit-tests-asset-clash-1",
+            )
+
+    def test_repeated_basename_in_tip_tree(self, cloned_repo):
+        # Fixture branch whose tip tree has the same basename ("dup.png")
+        # twice within project-assets/ (in graphics/ and sounds/).
+        with pytest.raises(
+                TCE.TutorialStructureError,
+                match=r"dup\.png.*more than once in the tip tree"):
+            TH.ProjectHistory(
+                cloned_repo.workdir,
+                "origin/unit-tests-asset-clash-2",
+            )
+
+    def test_no_assets_still_needs_credits_file(self, clean_cloned_repo):
+        # catch-apple is a real tutorial with no assets at all; it must still
+        # carry a credits.md, so an absent file is an error even when there
+        # is nothing to credit.
+        repo = clean_cloned_repo
+        origin_branch = "refs/remotes/origin/unit-tests-catch-apple"
+        target_oid = repo.lookup_reference(origin_branch).target
+        repo.create_branch("test-catch-apple", repo.get(target_oid))
+        repo.checkout("refs/heads/test-catch-apple")
+
+        credits_path = Path(repo.workdir) / "catch-apple" / "credits.md"
+        if credits_path.exists():
+            credits_path.unlink()
+
+        with pytest.raises(TCE.TutorialStructureError, match="credits.md"):
+            TH.ProjectHistory(
+                repo.workdir,
+                "test-catch-apple",
+                TH.ProjectHistory.TutorialTextSource.WORKING_DIRECTORY,
+            )
