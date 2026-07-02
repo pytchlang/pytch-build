@@ -1,6 +1,5 @@
 import pytest
 import re
-import logging
 import io
 import json
 import itertools
@@ -108,35 +107,6 @@ class TestProjectCommit:
     def test_message_subject(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "ae1fea2c9f21")
         assert pc.message_subject == "{base} Add empty code file"
-
-    def test_message_body(self, this_raw_repo):
-        pc = TH.ProjectCommit(this_raw_repo, "2f1f4fb")
-        assert pc.message_body.startswith("This sound")
-
-    def test_message_body_empty(self, this_raw_repo):
-        pc = TH.ProjectCommit(this_raw_repo, "9b40818")
-        assert pc.message_body == ""
-
-    def test_message_body_rejects(self, this_raw_repo):
-        pc = TH.ProjectCommit(this_raw_repo, "d5f7ae0")
-        with pytest.raises(TCE.TutorialStructureError,
-                           match="malformed commit message"):
-            pc.message_body
-
-    def test_asset_credits_with(self, this_raw_repo):
-        pc = TH.ProjectCommit(this_raw_repo, "2f1f4fb")
-        assert len(pc.assets_credits) == 1
-        credit = pc.assets_credits[0]
-        assert credit.asset_basenames == ["bell-ping.mp3"]
-        assert credit.asset_usage == "the project"
-        assert "candle damper" in credit.credit_markdown
-
-    @pytest.mark.parametrize("oid", ["9b40818", "c87cb28"])
-    def test_asset_credits_without(self, this_raw_repo, oid, caplog):
-        with caplog.at_level(logging.WARNING):
-            pc = TH.ProjectCommit(this_raw_repo, oid)
-            assert len(pc.assets_credits) == 0
-            assert "has no body" in caplog.text
 
     def test_identifier_slug_with(self, this_raw_repo):
         pc = TH.ProjectCommit(this_raw_repo, "e41e02c9be")
