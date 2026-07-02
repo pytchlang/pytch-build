@@ -33,7 +33,6 @@ import pygit2
 from collections import Counter
 import itertools
 import enum
-import colorlog
 import json
 from pathlib import Path
 from dataclasses import dataclass
@@ -57,8 +56,6 @@ from .interop import (
     NoIdsStructuredProject,
     JrTutorialPersistentInteractionState,
 )
-
-logger = colorlog.getLogger(__name__)
 
 
 ################################################################################
