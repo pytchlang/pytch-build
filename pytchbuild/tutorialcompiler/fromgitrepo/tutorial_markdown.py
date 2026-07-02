@@ -4,6 +4,7 @@ import markdown
 import markdown.extensions.fenced_code
 from bs4 import BeautifulSoup, NavigableString, Tag
 import copy
+from dataclasses import dataclass
 
 from .errors import TutorialStructureError
 
@@ -179,6 +180,21 @@ def leading_code_texts(li):
             break
 
     return texts or None
+
+
+@dataclass
+class AssetListCredit:
+    """A credit for one or more assets, parsed from a tutorial's ``credits.md``
+
+    ``asset_basenames`` — the basenames named by the leading
+    backtick-quoted run of a credit bullet
+
+    ``credit_li`` — the whole parsed ``<li>`` node (basenames plus
+    free-form credit body)
+    """
+
+    asset_basenames: [str]
+    credit_li: object
 
 
 def slugs_for_class(soup, cls):
