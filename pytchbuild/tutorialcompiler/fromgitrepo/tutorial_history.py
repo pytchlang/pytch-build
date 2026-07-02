@@ -593,9 +593,11 @@ class ProjectHistory:
         if asset_paths_set != commit_paths_set:
             self.raise_structure_error(
                 "assets found in metadata.orderedProjectAssets"
-                f" {sorted(asset_paths_set)}"
-                " disagree with assets found in commits"
-                f" {sorted(commit_paths_set)}"
+                " but not in commits:"
+                f" {sorted(asset_paths_set - commit_paths_set)};"
+                " assets found in commits"
+                " but not in metadata.orderedProjectAssets:"
+                f" {sorted(commit_paths_set - asset_paths_set)}"
             )
 
         asset_from_path = dict(
