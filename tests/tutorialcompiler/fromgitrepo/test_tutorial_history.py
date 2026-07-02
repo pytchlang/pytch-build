@@ -436,7 +436,11 @@ class TestProjectHistory:
                     "bell-ping.mp3",
                     "graphics/small-red.png"
                 ],
-                "disagree with assets"
+                (
+                    r"not in commits: \[\];"
+                    r".*not in metadata.orderedProjectAssets:"
+                    r" \['graphics/small-blue\.png'\]"
+                )
             ),
             (
                 "extra-one",
@@ -447,7 +451,10 @@ class TestProjectHistory:
                     "explosion.mp3",
                     "graphics/small-red.png"
                 ],
-                "disagree with assets"
+                (
+                    r"not in commits: \['explosion\.mp3\'\];"
+                    r".*not in metadata.orderedProjectAssets: \[\]"
+                )
             ),
             (
                 "contains-dup",

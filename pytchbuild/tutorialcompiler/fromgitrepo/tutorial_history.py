@@ -559,12 +559,13 @@ class ProjectHistory:
         content of that asset is used.
 
         If the metadata property "orderedProjectAssets" is not
-        present, the assets are in no particular order.
+        present, the assets in this ``all_assets`` property should not
+        be assumed to be in any particular order.
 
-        If the metadata property "orderedProjectAssets" is present,
+        If the metadata property ``orderedProjectAssets`` is present,
         its value should be a list of strings, giving the pathnames
         (relative to <tutorial-slug>/project-assets) of all assets;
-        the entries of this "all_assets" property are in that order.
+        the entries of this ``all_assets`` property are in that order.
         """
         commit_assets_all = self._assets_from_commits
 
@@ -593,9 +594,11 @@ class ProjectHistory:
         if asset_paths_set != commit_paths_set:
             self.raise_structure_error(
                 "assets found in metadata.orderedProjectAssets"
-                f" {sorted(asset_paths_set)}"
-                " disagree with assets found in commits"
-                f" {sorted(commit_paths_set)}"
+                " but not in commits:"
+                f" {sorted(asset_paths_set - commit_paths_set)};"
+                " assets found in commits"
+                " but not in metadata.orderedProjectAssets:"
+                f" {sorted(commit_paths_set - asset_paths_set)}"
             )
 
         asset_from_path = dict(
