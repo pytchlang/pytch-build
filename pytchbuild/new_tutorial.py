@@ -170,6 +170,9 @@ each containing a "TODO" marker.
 The metadata.json file has been created; you should edit this to label
 your tutorial with the appropriate difficulty level.
 
+A template credits.md file has been created; as you add assets, you must
+add a credit for each one there, otherwise the build will fail.
+
 You should now be able to go to the top-level directory of the
 pytch-releases checkout, and launch the development server with
 
