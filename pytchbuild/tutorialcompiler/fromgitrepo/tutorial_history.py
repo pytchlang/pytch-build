@@ -216,15 +216,6 @@ class ProjectCommit:
         return self.commit.message.split('\n')[0]
 
     @cached_property
-    def message_body(self):
-        lines = self.commit.message.split('\n')
-        if lines[1] != "":
-            raise TutorialStructureError(
-                f"commit {self.oid} has malformed commit message"
-            )
-        return "\n".join(lines[2:] + [""])
-
-    @cached_property
     def maybe_identifier_slug(self):
         m = re.match(r'\{\#([^ ]+)\}', self.message_subject)
         return m and m.group(1)
@@ -381,34 +372,6 @@ class ProjectCommit:
         if self.modifies_project_assets or self.modifies_tutorial_assets:
             return [Asset.from_delta(self.repo, delta)
                     for delta in self.diff_against_parent_or_empty.deltas]
-        else:
-            return []
-
-    @cached_property
-    def assets_credits(self):
-        should_have_credits = (
-            self.adds_project_assets
-            or self.modifies_project_assets
-            or self.adds_tutorial_assets
-        )
-
-        if should_have_credits:
-            credit_markdown = self.message_body
-            if re.match(r"^\s*$", credit_markdown):
-                logger.warning(f"commit {self.oid} adds assets but has no"
-                               " body containing Markdown for credits/licence")
-                return []
-
-            usage = ("the tutorial text/summary" if self.adds_tutorial_assets
-                     else "the project")
-
-            return [
-                AssetsCreditsEntry(
-                    [Path(asset.path).name for asset in self.added_assets],
-                    usage,
-                    credit_markdown
-                )
-            ]
         else:
             return []
 
@@ -711,18 +674,6 @@ class ProjectHistory:
         The credits are in the document order of ``credits.md``.
         """
         return AssetListCredit.list_from_credits_text(self.credits_text)
-
-    @cached_property
-    def commit_message_asset_credits(self):
-        """Legacy list of :py:class:`AssetsCreditsEntry` from commit messages
-
-        Retained for use by temporary ``credits.md`` conversion tool.
-        Returned list is such that entries earlier in the list are for
-        earlier (nearest the root) commit in the history.
-        """
-        commits_credits = (c.assets_credits for c in self.project_commits)
-        all_credits = list(itertools.chain.from_iterable(commits_credits))
-        return list(reversed(all_credits))
 
     @cached_property
     def top_level_directory_name(self):
