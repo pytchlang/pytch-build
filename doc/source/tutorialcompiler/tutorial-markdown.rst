@@ -9,10 +9,9 @@ various pieces of a tutorial:
 * The tutorial summary (in a tutorial's ``summary.md`` file)
 
 * The credits / acknowledgement / licence text for third-party assets
-  (in commit messages adding or modifying those assets)
+  (in a tutorial's ``credits.md`` file)
 
-All of these pieces of Markdown are processed by the
-``soup_from_markdown_text()`` function in::
+All of these pieces of Markdown are processed by functions in::
 
   pytchbuild/tutorialcompiler/fromgitrepo/tutorial_markdown.py
 
@@ -23,6 +22,15 @@ process:
 
 * The ``BeautifulSoup`` library parses that HTML into a Python object
   representation.
+
+There are two functions:
+
+* ``soup_from_markdown_text()``, which processes the custom shortcodes
+  for tutorial content;
+
+* ``plain_soup_from_markdown_text()``, which does not.
+
+Both functions use the ``fenced_code`` extension; see below.
 
 
 Shortcode processing
