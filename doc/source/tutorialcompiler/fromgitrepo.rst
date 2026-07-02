@@ -65,8 +65,8 @@ use of the shortcode::
 
   {{< asset-credits >}}
 
-which brings in the credit information from the messages of commits
-adding assets.  A separate "Credits" chapter can also be used.
+which brings in the credit information from the ``credits.md`` file.
+A separate "Credits" chapter can also be used.
 
 
 Chapters
@@ -114,22 +114,12 @@ files should be added in standard git commits.  More than one asset
 can be added in a single commit, but such commits should *not* include
 any other changes.
 
-The commit message should include copyright and licence information,
-for example creative commons, source attribution, etc.  This is
-free-form markdown, and the text is gathered by the tutorial-compiler
-and made available via the ``asset-credits`` shortcode.
-
-Current thinking is that assets will be added and then left
-unchanged.  Is there a use-case for modifying the graphics as part of
-the tutorial?  If so, how to encode version information in the code?
 
 Tutorial assets
 ~~~~~~~~~~~~~~~
 
 Assets for use in the tutorial itself, for example screenshots, can be
-included in a ``tutorial-assets`` directory.  Commits adding such
-assets should have credits/licence information along the same lines as
-the information given for project assets.
+included in a ``tutorial-assets`` directory.
 
 
 Tutorial summary file
