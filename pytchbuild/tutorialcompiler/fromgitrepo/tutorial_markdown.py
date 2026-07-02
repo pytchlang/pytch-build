@@ -165,7 +165,17 @@ def leading_code_texts(li):
 
     """
     texts = []
-    for child in li.children:
+
+    # Allow lists where items are separated by blank lines, which lead
+    # to <p> within the <li>.
+    container = li
+    child_0 = first_nontrivial_child(li)
+    if child_0 is None:
+        return None
+    if isinstance(child_0, Tag) and child_0.name == "p":
+        container = child_0
+
+    for child in container.children:
         if isinstance(child, Tag):
             if child.name == "code":
                 texts.append(child.get_text())
