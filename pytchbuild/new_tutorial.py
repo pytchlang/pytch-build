@@ -41,6 +41,27 @@ def create_new_tutorial_branch_and_structure(
     with (new_directory / "metadata.json").open("wt") as f_out:
         f_out.write('{"difficulty": "medium"}\n')
 
+    with (new_directory / "credits.md").open("wt") as f_out:
+        # No real credit bullets yet: a bullet naming an asset which does
+        # not exist would fail the build's credits validation.  The example
+        # is inside a fenced code block, which the parser ignores.
+        f_out.write(
+            f"# Credits for {tutorial_name}\n"
+            "\n"
+            "Credit every asset (image or sound) used by this tutorial,\n"
+            "whether it lives under `project-assets/` or `tutorial-assets/`.\n"
+            "Each asset is credited by a bullet-list item whose first content\n"
+            "is the asset's backtick-quoted basename; a single bullet may name\n"
+            "several assets which share one credit.  For example:\n"
+            "\n"
+            "```\n"
+            "- `alien.png` — Drawn by A. Author, licensed CC-BY 4.0.\n"
+            "- `beep.mp3`, `boop.mp3` — Made by us; public domain.\n"
+            "```\n"
+            "\n"
+            "TODO: Add a credit bullet for each asset used by this tutorial.\n"
+        )
+
     sig = create_signature(repo)
 
     commit_files(
@@ -49,9 +70,10 @@ def create_new_tutorial_branch_and_structure(
             f"{tutorial_slug}/tutorial.md",
             f"{tutorial_slug}/summary.md",
             f"{tutorial_slug}/metadata.json",
+            f"{tutorial_slug}/credits.md",
         ],
         sig,
-        "Add tutorial, summary, metadata placeholders",
+        "Add tutorial, summary, metadata, credits placeholders",
     )
 
     with (new_directory / "code.py").open("wt") as f_out:
@@ -147,6 +169,9 @@ each containing a "TODO" marker.
 
 The metadata.json file has been created; you should edit this to label
 your tutorial with the appropriate difficulty level.
+
+A template credits.md file has been created; as you add assets, you must
+add a credit for each one there, otherwise the build will fail.
 
 You should now be able to go to the top-level directory of the
 pytch-releases checkout, and launch the development server with
