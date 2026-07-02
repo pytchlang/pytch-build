@@ -196,6 +196,23 @@ class AssetListCredit:
     asset_basenames: [str]
     credit_li: object
 
+    @classmethod
+    def list_from_credits_text(cls, credits_text):
+        """List of ``AssetListCredit``, in document order, from ``credits.md``.
+
+        A *credit item* is an ``<li>`` whose leading content is a run of one
+        or more ``<code>`` elements (the asset basenames); the whole ``<li>``
+        (basenames plus free-form credit body) is retained for as-is
+        rendering.  Non-credit bullets, prose, and headings are ignored.
+        """
+        soup = plain_soup_from_markdown_text(credits_text)
+        credits = []
+        for li in soup.find_all("li"):
+            basenames = leading_code_texts(li)
+            if basenames is not None:
+                credits.append(cls(basenames, li))
+        return credits
+
 
 def slugs_for_class(soup, cls):
     """List of "data-slug" attrs for elements of given `cls`."""
