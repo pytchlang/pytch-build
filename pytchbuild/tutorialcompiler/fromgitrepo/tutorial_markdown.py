@@ -140,6 +140,16 @@ def plain_soup_from_markdown_text(markdown_text):
 RE_BASENAME_SEPARATOR = re.compile(r"[\s,]*")
 
 
+def first_nontrivial_child(elt):
+    for child in elt.children:
+        if isinstance(child, NavigableString):
+            if str(child).strip() != "":
+                return child
+        if isinstance(child, Tag):
+            return child
+    return None
+
+
 def leading_code_texts(li):
     """The leading run of ``<code>`` texts of a ``<li>``, or ``None``.
 
