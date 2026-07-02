@@ -33,7 +33,6 @@ import pygit2
 from collections import Counter
 import itertools
 import enum
-import colorlog
 import json
 from pathlib import Path
 from dataclasses import dataclass
@@ -57,8 +56,6 @@ from .interop import (
     NoIdsStructuredProject,
     JrTutorialPersistentInteractionState,
 )
-
-logger = colorlog.getLogger(__name__)
 
 
 ################################################################################
@@ -121,23 +118,6 @@ class Asset:
         # "project-assets" part.
         #
         return "/".join(Path(self.path).parts[2:])
-
-
-################################################################################
-
-@dataclass
-class AssetsCreditsEntry:
-    """A credit which applies to some of the assets in a tutorial
-
-    Legacy representation, derived from the body of the commit which adds
-    the asset(s).  Retained only for :py:meth:`ProjectCommit.assets_credits`
-    and the one-off ``credits.md`` conversion tool; the live credit
-    mechanism uses :py:class:`AssetListCredit`.
-    """
-
-    asset_basenames: [str]
-    asset_usage: str
-    credit_markdown: str
 
 
 ################################################################################
@@ -214,15 +194,6 @@ class ProjectCommit:
     @cached_property
     def message_subject(self):
         return self.commit.message.split('\n')[0]
-
-    @cached_property
-    def message_body(self):
-        lines = self.commit.message.split('\n')
-        if lines[1] != "":
-            raise TutorialStructureError(
-                f"commit {self.oid} has malformed commit message"
-            )
-        return "\n".join(lines[2:] + [""])
 
     @cached_property
     def maybe_identifier_slug(self):
@@ -384,34 +355,6 @@ class ProjectCommit:
         else:
             return []
 
-    @cached_property
-    def assets_credits(self):
-        should_have_credits = (
-            self.adds_project_assets
-            or self.modifies_project_assets
-            or self.adds_tutorial_assets
-        )
-
-        if should_have_credits:
-            credit_markdown = self.message_body
-            if re.match(r"^\s*$", credit_markdown):
-                logger.warning(f"commit {self.oid} adds assets but has no"
-                               " body containing Markdown for credits/licence")
-                return []
-
-            usage = ("the tutorial text/summary" if self.adds_tutorial_assets
-                     else "the project")
-
-            return [
-                AssetsCreditsEntry(
-                    [Path(asset.path).name for asset in self.added_assets],
-                    usage,
-                    credit_markdown
-                )
-            ]
-        else:
-            return []
-
     def assert_modifies_python_code(self):
         if not self.modifies_python_code:
             raise TutorialStructureError(
@@ -527,11 +470,9 @@ class ProjectHistory:
             repo_directory,
             tip_revision,
             tutorial_text_source=TutorialTextSource.TIP_REVISION,
-            should_validate_credits=True,
     ):
         self.repo = pygit2.Repository(repo_directory)
         self.tutorial_text_source = tutorial_text_source
-        self.should_validate_credits = should_validate_credits
         tip_oid = self.repo.revparse_single(tip_revision).id
         self.project_commits = self.commit_linear_ancestors(tip_oid)
 
@@ -552,8 +493,7 @@ class ProjectHistory:
     def validate_structure(self):
         self.validate_slug_uniqueness()
         self.validate_assets_consistency()
-        if self.should_validate_credits:
-            self.validate_credits()
+        self.validate_credits()
 
     def validate_slug_uniqueness(self):
         occurrences_of_slug = Counter(self.ordered_commit_slugs)
@@ -711,18 +651,6 @@ class ProjectHistory:
         The credits are in the document order of ``credits.md``.
         """
         return AssetListCredit.list_from_credits_text(self.credits_text)
-
-    @cached_property
-    def commit_message_asset_credits(self):
-        """Legacy list of :py:class:`AssetsCreditsEntry` from commit messages
-
-        Retained for use by temporary ``credits.md`` conversion tool.
-        Returned list is such that entries earlier in the list are for
-        earlier (nearest the root) commit in the history.
-        """
-        commits_credits = (c.assets_credits for c in self.project_commits)
-        all_credits = list(itertools.chain.from_iterable(commits_credits))
-        return list(reversed(all_credits))
 
     @cached_property
     def top_level_directory_name(self):
