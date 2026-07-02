@@ -45,6 +45,22 @@ class TestCreditsParsing:
             ["small-blue.png", "small-red.png"],
         ]
 
+    def test_multi_para_li(self):
+        text = (
+            "# Credits for blah\n"
+            "\n"
+            "- `red.png` --- blah which goes\n"
+            "  onto two lines\n"
+            "\n"
+            "- `green.png` --- blah which also goes\n"
+            "  onto two lines\n"
+            "\n"
+            "- `blue.png` --- blah\n"
+        )
+        assert self._basenames(text) == [
+            ["red.png"], ["green.png"], ["blue.png"],
+        ]
+
     def test_ignores_non_credit_bullets_and_prose(self):
         text = (
             "- `real.png` — A credit.\n"
