@@ -559,12 +559,13 @@ class ProjectHistory:
         content of that asset is used.
 
         If the metadata property "orderedProjectAssets" is not
-        present, the assets are in no particular order.
+        present, the assets in this ``all_assets`` property should not
+        be assumed to be in any particular order.
 
-        If the metadata property "orderedProjectAssets" is present,
+        If the metadata property ``orderedProjectAssets`` is present,
         its value should be a list of strings, giving the pathnames
         (relative to <tutorial-slug>/project-assets) of all assets;
-        the entries of this "all_assets" property are in that order.
+        the entries of this ``all_assets`` property are in that order.
         """
         commit_assets_all = self._assets_from_commits
 
