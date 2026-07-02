@@ -65,8 +65,8 @@ use of the shortcode::
 
   {{< asset-credits >}}
 
-which brings in the credit information from the messages of commits
-adding assets.  A separate "Credits" chapter can also be used.
+which brings in the credit information from the ``credits.md`` file.
+A separate "Credits" chapter can also be used.
 
 
 Chapters
@@ -114,22 +114,12 @@ files should be added in standard git commits.  More than one asset
 can be added in a single commit, but such commits should *not* include
 any other changes.
 
-The commit message should include copyright and licence information,
-for example creative commons, source attribution, etc.  This is
-free-form markdown, and the text is gathered by the tutorial-compiler
-and made available via the ``asset-credits`` shortcode.
-
-Current thinking is that assets will be added and then left
-unchanged.  Is there a use-case for modifying the graphics as part of
-the tutorial?  If so, how to encode version information in the code?
 
 Tutorial assets
 ~~~~~~~~~~~~~~~
 
 Assets for use in the tutorial itself, for example screenshots, can be
-included in a ``tutorial-assets`` directory.  Commits adding such
-assets should have credits/licence information along the same lines as
-the information given for project assets.
+included in a ``tutorial-assets`` directory.
 
 
 Tutorial summary file
@@ -147,6 +137,23 @@ and after that should have a H1 line, such as::
 
 and after that is free-form, but should be kept fairly short.  One
 paragraph of a few lines is enough.
+
+
+Tutorial credits file
+---------------------
+
+The tutorial directory should also include a ``credits.md`` file at
+top-level.  The only parts of this file which are relevant are
+bullet-list items which start with asset basenames (i.e., the last
+part of the full asset path/filename).  Every asset (project or
+tutorial) should be included in exactly one such bullet-list item.
+After the list of basenames, the remainder of the bullet-list item
+should summarise the credit, copyright, licence, etc., information.
+
+A ``credits.md`` file is required even if there are no assets.  An
+entry for an asset is required even if that asset is, for example,
+public domain.  In such a case, the message can state "in the public
+domain".
 
 
 Output from compiler
