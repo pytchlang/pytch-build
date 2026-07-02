@@ -29,6 +29,8 @@ def discovered_repository_path():
             "unit-tests-dupd-slugs-2",
             "unit-tests-sbs-shoot-fruit",
             "unit-tests-mismatched-assets",
+            "unit-tests-asset-clash-1",
+            "unit-tests-asset-clash-2",
     ]:
         if repo.lookup_branch(branch_name) is None:
             remote_branch_name = f"refs/remotes/origin/{branch_name}"
