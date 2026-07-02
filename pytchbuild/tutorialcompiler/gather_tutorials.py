@@ -8,7 +8,7 @@ import zipfile
 import copy
 import pygit2
 import itertools
-import re
+import html
 import subprocess
 import shutil
 from contextlib import closing
@@ -168,7 +168,7 @@ class TutorialCollection:
         pandoc_process = subprocess.Popen(
             [
                 pandoc,
-                "--from=markdown",
+                "--from=html",
                 "--to=rst",
                 "--output=-",
                 "-",
@@ -179,25 +179,19 @@ class TutorialCollection:
         )
         pandoc_input = pandoc_process.stdin
 
-        pandoc_input.write("# Assets contributed by tutorials\n\n")
+        pandoc_input.write("<h1>Assets contributed by tutorials</h1>\n")
 
         for n, t in self.tutorials.items():
-            # This computation of 'safe_name' is incomplete.  It
-            # handles "Q*Bert".
-            #
-            # TODO: Might need generalising.
-            #
-            safe_name = re.sub(r'\*', r'\*', t.name)
+            # HTML-escape the tutorial name (handles e.g. "Q*Bert" and any
+            # "&"/"<" which would otherwise be misparsed as HTML).
+            safe_name = html.escape(t.name)
 
-            pandoc_input.write(f"## Tutorial _{safe_name}_\n\n")
+            pandoc_input.write(f"<h2>Tutorial <em>{safe_name}</em></h2>\n")
+            pandoc_input.write("<ul>\n")
             for credit in t.project_history.all_asset_credits:
-                n_files = len(credit.asset_basenames)
-                files_noun = "File" if n_files == 1 else "Files"
-                basenames_list = ", ".join(
-                    f'`"{name}"`' for name in credit.asset_basenames
-                )
-                pandoc_input.write(f"\n{files_noun} {basenames_list}: ")
-                pandoc_input.write(credit.credit_markdown)
+                pandoc_input.write(str(credit.credit_li))
+                pandoc_input.write("\n")
+            pandoc_input.write("</ul>\n")
 
         pandoc_input.close()
         pandoc_process.wait()

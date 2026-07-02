@@ -45,7 +45,10 @@ from ..medialib import (
     MediaLibraryData,
 )
 from .structured_program import StructuredPytchProgram
-from .tutorial_markdown import soup_from_markdown_text
+from .tutorial_markdown import (
+    soup_from_markdown_text,
+    AssetListCredit,
+)
 from .tutorial_html_fragment import (
     node_is_div_of_any_class,
     maybe_task_commit_slug,
@@ -67,6 +70,7 @@ CODE_FILE_BASENAME = "code.py"
 TUTORIAL_TEXT_FILE_BASENAME = "tutorial.md"
 SUMMARY_TEXT_FILE_BASENAME = "summary.md"
 METADATA_FILE_BASENAME = "metadata.json"
+CREDITS_TEXT_FILE_BASENAME = "credits.md"
 
 
 ################################################################################
@@ -124,6 +128,11 @@ class Asset:
 @dataclass
 class AssetsCreditsEntry:
     """A credit which applies to some of the assets in a tutorial
+
+    Legacy representation, derived from the body of the commit which adds
+    the asset(s).  Retained only for :py:meth:`ProjectCommit.assets_credits`
+    and the one-off ``credits.md`` conversion tool; the live credit
+    mechanism uses :py:class:`AssetListCredit`.
     """
 
     asset_basenames: [str]
@@ -518,9 +527,11 @@ class ProjectHistory:
             repo_directory,
             tip_revision,
             tutorial_text_source=TutorialTextSource.TIP_REVISION,
+            should_validate_credits=True,
     ):
         self.repo = pygit2.Repository(repo_directory)
         self.tutorial_text_source = tutorial_text_source
+        self.should_validate_credits = should_validate_credits
         tip_oid = self.repo.revparse_single(tip_revision).id
         self.project_commits = self.commit_linear_ancestors(tip_oid)
 
@@ -541,6 +552,8 @@ class ProjectHistory:
     def validate_structure(self):
         self.validate_slug_uniqueness()
         self.validate_assets_consistency()
+        if self.should_validate_credits:
+            self.validate_credits()
 
     def validate_slug_uniqueness(self):
         occurrences_of_slug = Counter(self.ordered_commit_slugs)
@@ -693,12 +706,21 @@ class ProjectHistory:
 
     @cached_property
     def all_asset_credits(self):
-        """List of all AssetsCreditsEntry objects
+        """List of :py:class:`AssetListCredit` objects, parsed from ``credits.md``
+
+        The credits are in the document order of ``credits.md``.
+        """
+        return AssetListCredit.list_from_credits_text(self.credits_text)
+
+    @cached_property
+    def commit_message_asset_credits(self):
+        """Legacy list of :py:class:`AssetsCreditsEntry` from commit messages
+
+        Retained for use by temporary ``credits.md`` conversion tool.
+        Returned list is such that entries earlier in the list are for
+        earlier (nearest the root) commit in the history.
         """
         commits_credits = (c.assets_credits for c in self.project_commits)
-
-        # Provide the credits entries such that the earliest one in the list
-        # is for the earliest (nearest the root) commit in the history.
         all_credits = list(itertools.chain.from_iterable(commits_credits))
         return list(reversed(all_credits))
 
@@ -746,6 +768,11 @@ class ProjectHistory:
     def metadata_text_path(self):
         dirname = self.top_level_directory_name
         return f"{dirname}/{METADATA_FILE_BASENAME}"
+
+    @cached_property
+    def credits_text_path(self):
+        dirname = self.top_level_directory_name
+        return f"{dirname}/{CREDITS_TEXT_FILE_BASENAME}"
 
     @cached_property
     def tutorial_text(self):
@@ -854,6 +881,28 @@ class ProjectHistory:
             full_path = self.workdir_path / self.metadata_text_path
             with full_path.open("rt") as f_in:
                 return f_in.read()
+        else:
+            raise InternalError("unknown tutorial_text_source")
+
+    @cached_property
+    def credits_text(self):
+        """The ``credits.md`` text, depending on ``tutorial_text_source``
+
+        A missing ``credits.md`` raises a ``TutorialStructureError``.
+        """
+        if self.tutorial_text_source == self.TutorialTextSource.TIP_REVISION:
+            tip_commit = self.project_commits[0]
+            return tip_commit.text_file_contents(self.credits_text_path)
+        elif self.tutorial_text_source == self.TutorialTextSource.WORKING_DIRECTORY:
+            full_path = self.workdir_path / self.credits_text_path
+            try:
+                with full_path.open("rt") as f_in:
+                    return f_in.read()
+            except FileNotFoundError:
+                raise TutorialStructureError(
+                    f'file "{self.credits_text_path}" not found'
+                    " in working directory"
+                )
         else:
             raise InternalError("unknown tutorial_text_source")
 
@@ -974,4 +1023,100 @@ class ProjectHistory:
                 f" {sorted(intentionally_unused_assets)}"
                 f"; expected-but-not-in-repo {sorted(exp_not_in_repo)}"
                 f"; in-repo-but-not-expected {sorted(in_repo_not_exp)}"
+            )
+
+    def tip_tree_asset_basenames(self, asset_dirname):
+        """Basenames of all asset blobs under ``<tutorial>/<asset_dirname>/``
+
+        Uses the tip tree, recursing into any subdirectories (e.g.
+        ``project-assets/graphics/...``).  Returns ``[]`` if the directory
+        is absent from the tip tree.
+        """
+        tip_tree = self.project_commits[0].tree
+        try:
+            root = tip_tree / self.top_level_directory_name / asset_dirname
+        except KeyError:
+            return []
+
+        basenames = []
+        pending = [root]
+        while pending:
+            subtree = pending.pop()
+            for entry in subtree:
+                if entry.type_str == "tree":
+                    pending.append(self.repo[entry.id])
+                else:
+                    basenames.append(entry.name)
+
+        return basenames
+
+    def validate_credits(self):
+        """Check the 1-to-1 correspondence of tip-tree assets and credits
+
+        Assets are files under ``project-assets/`` and
+        ``tutorial-assets/`` in the tip tree; credits are the bullets
+        of ``credits.md``.
+        """
+        project_basenames = self.tip_tree_asset_basenames(
+            PROJECT_ASSET_DIRNAME
+        )
+        tutorial_basenames = self.tip_tree_asset_basenames(
+            TUTORIAL_ASSET_DIRNAME
+        )
+
+        # Reading credits.md; absence is a structure error (see docstring).
+        credits = self.all_asset_credits
+
+        # A basename appearing under both locations makes the flat
+        # basename -> asset mapping of credits.md ambiguous.
+        cross_collision = set(project_basenames) & set(tutorial_basenames)
+        if cross_collision:
+            self.raise_structure_error(
+                f"asset basename/s {sorted(cross_collision)} appear under"
+                " both project-assets/ and tutorial-assets/"
+            )
+
+        asset_basenames = project_basenames + tutorial_basenames
+
+        # A basename repeated within one location (e.g. graphics/foo.png
+        # and sounds/foo.png) is likewise ambiguous for a flat credits.md.
+        repeated_assets = [
+            bn for bn, n in Counter(asset_basenames).items() if n > 1
+        ]
+        if repeated_assets:
+            self.raise_structure_error(
+                f"asset basename/s {sorted(repeated_assets)} appear more"
+                " than once in the tip tree"
+            )
+
+        asset_basename_set = set(asset_basenames)
+
+        credited_basenames = [
+            basename
+            for credit in credits
+            for basename in credit.asset_basenames
+        ]
+        duplicate_credits = [
+            bn for bn, n in Counter(credited_basenames).items() if n > 1
+        ]
+        if duplicate_credits:
+            self.raise_structure_error(
+                f"asset basename/s {sorted(duplicate_credits)} credited"
+                " more than once in credits.md"
+            )
+
+        credited_basename_set = set(credited_basenames)
+
+        uncredited = asset_basename_set - credited_basename_set
+        if uncredited:
+            self.raise_structure_error(
+                f"asset/s {sorted(uncredited)} present in the tip tree but"
+                " not credited in credits.md"
+            )
+
+        dangling = credited_basename_set - asset_basename_set
+        if dangling:
+            self.raise_structure_error(
+                f"credits.md names asset/s {sorted(dangling)} not present"
+                " in the tip tree"
             )

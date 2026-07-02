@@ -2,8 +2,9 @@ import re
 import xml.etree.ElementTree as etree
 import markdown
 import markdown.extensions.fenced_code
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, NavigableString, Tag
 import copy
+from dataclasses import dataclass
 
 from .errors import TutorialStructureError
 
@@ -123,6 +124,114 @@ def soup_from_markdown_text(markdown_text):
     flat_soup = BeautifulSoup(html, "html.parser")
     soup = gather_learner_task_divs(flat_soup)
     return soup
+
+
+def plain_soup_from_markdown_text(markdown_text):
+    """Soup of ``markdown_text`` with no custom shortcode processing.
+
+    Fenced code blocks are supported.
+    """
+    html = markdown.markdown(markdown_text, extensions=["fenced_code"])
+    return BeautifulSoup(html, "html.parser")
+
+
+# Whitespace and punctuation permitted between the leading backtick-quoted
+# asset basenames of a credit bullet (e.g., "`a.png`, `b.png`").
+RE_BASENAME_SEPARATOR = re.compile(r"[\s,]*")
+
+
+def first_nontrivial_child(elt):
+    for child in elt.children:
+        if isinstance(child, NavigableString):
+            if str(child).strip() != "":
+                return child
+        if isinstance(child, Tag):
+            return child
+    return None
+
+
+def leading_code_texts(li):
+    """The leading run of ``<code>`` texts of a ``<li>``, or ``None``.
+
+    A *credit item* is a list item whose first content is a
+    backtick-quoted string (rendered as ``<code>``).  A single bullet
+    may name several assets as a run of ``<code>`` elements separated
+    only by whitespace/commas.
+
+    Return the list of the text contents of that leading run of
+    ``<code>`` elements if ``li`` is a credit item, or ``None`` if it
+    is not (i.e., its leading content is prose rather than a
+    backtick-quoted name).
+
+    """
+    texts = []
+
+    # Allow lists where items are separated by blank lines, which lead
+    # to <p> within the <li>.
+    container = li
+    child_0 = first_nontrivial_child(li)
+    if child_0 is None:
+        return None
+    if isinstance(child_0, Tag) and child_0.name == "p":
+        container = child_0
+
+    for child in container.children:
+        if isinstance(child, Tag):
+            if child.name == "code":
+                texts.append(child.get_text())
+                continue
+            # Any other element ends the leading run; it is a credit item
+            # if and only if we have already seen at least one <code>.
+            break
+        elif isinstance(child, NavigableString):
+            if texts:
+                # Between/after basenames: only whitespace/commas may occur
+                # before the credit body proper begins.
+                if RE_BASENAME_SEPARATOR.fullmatch(str(child)):
+                    continue
+                break
+            else:
+                # Before the first basename only whitespace is permitted; any
+                # other leading text means this bullet is not a credit item.
+                if str(child).strip() == "":
+                    continue
+                return None
+        else:
+            break
+
+    return texts or None
+
+
+@dataclass
+class AssetListCredit:
+    """A credit for one or more assets, parsed from a tutorial's ``credits.md``
+
+    ``asset_basenames`` — the basenames named by the leading
+    backtick-quoted run of a credit bullet
+
+    ``credit_li`` — the whole parsed ``<li>`` node (basenames plus
+    free-form credit body)
+    """
+
+    asset_basenames: [str]
+    credit_li: object
+
+    @classmethod
+    def list_from_credits_text(cls, credits_text):
+        """List of ``AssetListCredit``, in document order, from ``credits.md``.
+
+        A *credit item* is an ``<li>`` whose leading content is a run of one
+        or more ``<code>`` elements (the asset basenames); the whole ``<li>``
+        (basenames plus free-form credit body) is retained for as-is
+        rendering.  Non-credit bullets, prose, and headings are ignored.
+        """
+        soup = plain_soup_from_markdown_text(credits_text)
+        credits = []
+        for li in soup.find_all("li"):
+            basenames = leading_code_texts(li)
+            if basenames is not None:
+                credits.append(cls(basenames, li))
+        return credits
 
 
 def slugs_for_class(soup, cls):

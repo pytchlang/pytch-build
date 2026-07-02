@@ -29,6 +29,8 @@ def discovered_repository_path():
             "unit-tests-dupd-slugs-2",
             "unit-tests-sbs-shoot-fruit",
             "unit-tests-mismatched-assets",
+            "unit-tests-asset-clash-1",
+            "unit-tests-asset-clash-2",
     ]:
         if repo.lookup_branch(branch_name) is None:
             remote_branch_name = f"refs/remotes/origin/{branch_name}"
@@ -100,7 +102,8 @@ def clean_cloned_repo(tmpdir_factory, discovered_repository_path):
     """
     This repo cloned into a tmpdir, checked out at the branch
     "unit-tests-commits", ensuring the repo's user name and email
-    address are configured.  Scoped to "function".
+    address are configured.  Scoped to "function" so individual tests
+    can modify the working directory if needed.
     """
     return _repo_clone(tmpdir_factory, discovered_repository_path)
 

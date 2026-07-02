@@ -197,20 +197,16 @@ class TestHtmlFragment:
 
         div = THF.tutorial_div_from_project_history(project_history)
 
-        front_matter_credits = (
-            div
-            .find("div", class_="front-matter")
-            .find_all("p", class_="credit-intro")
-        )
-        assert len(front_matter_credits) == 1
+        def credit_items(container):
+            lists = container.find_all("ul", class_="asset-credits-list")
+            assert len(lists) == 1
+            return lists[0].find_all("li", recursive=False)
 
-        # Find credit-intro elts within final chapter:
-        body_credits = (
-            div
-            .find_all("div", class_="chapter-content")[-1]
-            .find_all("p", class_="credit-intro")
-        )
-        assert len(body_credits) == 1
+        front_matter = div.find("div", class_="front-matter")
+        assert len(credit_items(front_matter)) == 5
+
+        final_chapter = div.find_all("div", class_="chapter-content")[-1]
+        assert len(credit_items(final_chapter)) == 5
 
 
 class TestPredicates:
