@@ -184,7 +184,7 @@ class TestHtmlFragment:
     def test_work_in_progress_marker(self, project_history):
         got_div = THF.tutorial_div_from_project_history(project_history)
         front_matter = got_div.find("div", class_="front-matter")
-        if project_history.tutorial_text.startswith("Working copy"):
+        if project_history.tutorial_text.startswith("# Working copy"):
             assert "data-seek-to-chapter" not in front_matter.attrs
         else:
             assert front_matter.attrs["data-seek-to-chapter"] == "2"

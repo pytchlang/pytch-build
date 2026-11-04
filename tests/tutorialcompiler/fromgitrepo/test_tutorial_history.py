@@ -287,7 +287,7 @@ class TestProjectHistory:
         TTS = TH.ProjectHistory.TutorialTextSource
         text_source = project_history.tutorial_text_source
         target_text = ("# Boing!" if text_source == TTS.TIP_REVISION
-                       else "Working copy")
+                       else "# Working copy")
         assert project_history.tutorial_text.startswith(target_text)
 
     def test_summary_text(self, project_history):
