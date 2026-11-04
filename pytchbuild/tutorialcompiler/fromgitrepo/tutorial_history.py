@@ -69,6 +69,37 @@ SUMMARY_TEXT_FILE_BASENAME = "summary.md"
 METADATA_FILE_BASENAME = "metadata.json"
 CREDITS_TEXT_FILE_BASENAME = "credits.md"
 
+# Keep in sync by hand with the webapp's single source of truth for
+# supported languages: `kLanguagePreferenceOrder` in
+# "src/model/languages.ts".
+KNOWN_TUTORIAL_LANGUAGES = ["en", "de", "ga"]
+
+KNOWN_TUTORIAL_DIFFICULTIES = [
+    "getting-started",
+    "beginner",
+    "medium",
+    "advanced",
+]
+
+KNOWN_PROGRAM_KINDS = ["flat", "per-method"]
+
+# The metadata slots written into the build output, as the
+# "data-metadata-json" attribute of the tutorial and summary divs.
+# All are always present (see ProjectHistory.completed_metadata).
+#
+# The front end parses this metadata with a strict schema, so adding a
+# slot here is a two-step change: first deploy a front end which
+# accepts the new slot (as optional), then deploy tutorials built to
+# emit it.  The opposite order would make cached front-end bundles
+# reject the tutorial index.
+EMITTED_METADATA_SLOTS = [
+    "programKind",
+    "difficulty",
+    "language",
+    "tutorialId",
+    "displayName",
+]
+
 
 ################################################################################
 
@@ -745,6 +776,25 @@ class ProjectHistory:
         else:
             raise InternalError("unknown tutorial_text_source")
 
+    @cached_property
+    def summary_display_name(self):
+        """The text of the sole ``<h1>`` of the summary
+
+        This is the title shown in the front end's list of tutorials,
+        and is the tutorial's canonical display name.  It need not
+        match the ``<h1>`` of the tutorial text itself.
+        """
+        summary_soup = soup_from_markdown_text(self.summary_text)
+        h1_elts = summary_soup.find_all("h1")
+        if len(h1_elts) != 1:
+            self.raise_structure_error(
+                f"summary has {len(h1_elts)} <h1> elements (expecting just one)"
+            )
+        display_name = h1_elts[0].get_text().strip()
+        if display_name == "":
+            self.raise_structure_error("summary has empty <h1>")
+        return display_name
+
     def project_checkpoint(self, m_slug, interaction_state):
         code_text = (
             self.initial_code_text if m_slug is None
@@ -814,6 +864,68 @@ class ProjectHistory:
                 return f_in.read()
         else:
             raise InternalError("unknown tutorial_text_source")
+
+    @cached_property
+    def completed_metadata(self):
+        """The source metadata, validated, with defaults filled in
+
+        Contains all slots of the source ``metadata.json``, together
+        with the following, all guaranteed present:
+
+        * ``programKind`` — defaults to ``"flat"``;
+        * ``difficulty`` — required in the source;
+        * ``language`` — defaults to ``"en"``;
+        * ``tutorialId`` — defaults to the top-level directory name;
+        * ``displayName`` — never in the source; the text of the
+          summary's ``<h1>``.
+        """
+        metadata = json.loads(self.metadata_text)
+
+        if "displayName" in metadata:
+            self.raise_structure_error(
+                'metadata must not contain "displayName"'
+                " (it is derived from the summary's <h1>)"
+            )
+
+        if "difficulty" not in metadata:
+            self.raise_structure_error('metadata has no "difficulty"')
+
+        completed = {
+            "programKind": "flat",
+            "language": "en",
+            "tutorialId": self.top_level_directory_name,
+            **metadata,
+            "displayName": self.summary_display_name,
+        }
+
+        def require_known_value(slot, known_values):
+            value = completed[slot]
+            if value not in known_values:
+                self.raise_structure_error(
+                    f'metadata "{slot}" is {json.dumps(value)};'
+                    f" expecting one of {known_values}"
+                )
+
+        require_known_value("programKind", KNOWN_PROGRAM_KINDS)
+        require_known_value("difficulty", KNOWN_TUTORIAL_DIFFICULTIES)
+        require_known_value("language", KNOWN_TUTORIAL_LANGUAGES)
+
+        tutorial_id = completed["tutorialId"]
+        if not (isinstance(tutorial_id, str) and tutorial_id != ""):
+            self.raise_structure_error(
+                'metadata "tutorialId" must be a non-empty string'
+            )
+
+        return completed
+
+    @cached_property
+    def emitted_metadata(self):
+        """The ``completed_metadata`` restricted to the emitted slots
+
+        See ``EMITTED_METADATA_SLOTS``.
+        """
+        completed = self.completed_metadata
+        return {slot: completed[slot] for slot in EMITTED_METADATA_SLOTS}
 
     @cached_property
     def credits_text(self):
