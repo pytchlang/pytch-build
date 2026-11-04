@@ -83,6 +83,23 @@ KNOWN_TUTORIAL_DIFFICULTIES = [
 
 KNOWN_PROGRAM_KINDS = ["flat", "per-method"]
 
+# The metadata slots written into the build output, as the
+# "data-metadata-json" attribute of the tutorial and summary divs.
+# All are always present (see ProjectHistory.completed_metadata).
+#
+# The front end parses this metadata with a strict schema, so adding a
+# slot here is a two-step change: first deploy a front end which
+# accepts the new slot (as optional), then deploy tutorials built to
+# emit it.  The opposite order would make cached front-end bundles
+# reject the tutorial index.
+EMITTED_METADATA_SLOTS = [
+    "programKind",
+    "difficulty",
+    "language",
+    "tutorialId",
+    "displayName",
+]
+
 
 ################################################################################
 
@@ -900,6 +917,15 @@ class ProjectHistory:
             )
 
         return completed
+
+    @cached_property
+    def emitted_metadata(self):
+        """The ``completed_metadata`` restricted to the emitted slots
+
+        See ``EMITTED_METADATA_SLOTS``.
+        """
+        completed = self.completed_metadata
+        return {slot: completed[slot] for slot in EMITTED_METADATA_SLOTS}
 
     @cached_property
     def credits_text(self):
