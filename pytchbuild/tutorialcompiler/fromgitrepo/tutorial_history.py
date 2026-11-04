@@ -83,6 +83,18 @@ KNOWN_TUTORIAL_DIFFICULTIES = [
 
 KNOWN_PROGRAM_KINDS = ["flat", "per-method"]
 
+# All slots which may appear in a tutorial's source "metadata.json".
+# Any other slot (e.g., a misspelling) is an error.
+KNOWN_SOURCE_METADATA_SLOTS = [
+    "programKind",
+    "difficulty",
+    "language",
+    "tutorialId",
+    "groupedProjectAssets",
+    "orderedProjectAssets",
+    "intentionallyUnusedAssets",
+]
+
 # The metadata slots written into the build output, as the
 # "data-metadata-json" attribute of the tutorial and summary divs.
 # All are always present (see ProjectHistory.completed_metadata).
@@ -885,6 +897,12 @@ class ProjectHistory:
             self.raise_structure_error(
                 'metadata must not contain "displayName"'
                 " (it is derived from the summary's <h1>)"
+            )
+
+        unknown_slots = set(metadata) - set(KNOWN_SOURCE_METADATA_SLOTS)
+        if unknown_slots:
+            self.raise_structure_error(
+                f"metadata has unknown slots {sorted(unknown_slots)}"
             )
 
         if "difficulty" not in metadata:
