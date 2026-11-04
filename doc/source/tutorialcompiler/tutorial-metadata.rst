@@ -47,13 +47,13 @@ At the moment, the only tags used are:
   within it.  If ``groupedProjectAssets`` does not appear in the
   metadata, all assets are created as singleton media library entries.
 
-* ``orderedProjectAssets`` (optional) — only relevant to "flat"
-  tutorials, in which case it determines the order in which the
-  project assets are added when creating a tutorial-following project
-  or a demo.  If not present, the assets are added in order of the
-  most recent commit affecting (adding or modifying) them, with
-  most-recently affected assets first.  If present, must be an array
-  containing a complete list of the pathnames (within
+* ``orderedProjectAssets`` (optional) — determines the order in which
+  the project assets are added when creating a tutorial-following
+  project or a demo, whatever the ``programKind``.  (Currently only
+  "flat" tutorials use it.)  If not present, the assets are added in
+  order of the most recent commit affecting (adding or modifying)
+  them, with most-recently affected assets first.  If present, must
+  be an array containing a complete list of the pathnames (within
   ``project-assets``) of all assets.
 
 The property :py:attr:`metadata_text` of the
