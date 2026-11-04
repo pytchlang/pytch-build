@@ -113,6 +113,10 @@ class TestCompletedMetadata:
                 {"difficulty": "medium", "tutorialId": 42},
                 '"tutorialId" must be a non-empty string',
             ),
+            (
+                {"difficulty": "medium", "intentionalyUnusedAssets": []},
+                r"unknown slots \['intentionalyUnusedAssets'\]",
+            ),
         ],
     )
     def test_invalid(self, history_with, metadata, exp_match):
