@@ -31,7 +31,7 @@ class TutorialBundle:
             summary_div_from_project_history(project_history),
             project_history.all_assets,
             project_history.final_code_text,
-            json.loads(project_history.metadata_text),
+            project_history.completed_metadata,
             project_history.chapter_checkpoints,
         )
 
