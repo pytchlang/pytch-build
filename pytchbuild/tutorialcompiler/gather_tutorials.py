@@ -220,6 +220,25 @@ class TutorialCollection:
         return [info.summary_dict for info in self.tutorials.values()]
 
 
+def verify_unique_tutorial_languages(bundles):
+    """Check no two bundles share a (tutorialId, language) pair
+
+    Translations of the same tutorial share a ``tutorialId``, but each
+    must be in a different language.
+    """
+    dir_name_from_key = {}
+    for bundle in bundles:
+        metadata = bundle.metadata
+        key = (metadata["tutorialId"], metadata["language"])
+        dir_name = bundle.top_level_directory_name
+        if (existing_dir_name := dir_name_from_key.get(key)) is not None:
+            raise TutorialStructureError(
+                f'tutorials "{existing_dir_name}" and "{dir_name}"'
+                f' both have tutorialId "{key[0]}" and language "{key[1]}"'
+            )
+        dir_name_from_key[key] = dir_name
+
+
 def sole_tree_entry(commit):
     entries = list(commit.tree)
     if len(entries) != 1:
