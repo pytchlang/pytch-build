@@ -83,7 +83,9 @@ The tags used are:
   ``Backdrop`` in the code.
 
 The tag ``displayName`` must *not* appear in ``metadata.json``; it is
-derived by the build (see below).
+derived by the build (see below).  Nor may any tag not listed above
+appear; this catches misspellings of the optional tags, which would
+otherwise be silently ignored.
 
 The ``groupedProjectAssets``, ``orderedProjectAssets``, and
 ``intentionallyUnusedAssets`` tags are used only by the build.  A
