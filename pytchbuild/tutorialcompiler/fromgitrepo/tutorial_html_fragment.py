@@ -262,8 +262,27 @@ def warn_if_slug_usage_mismatch(project_history, soup):
             logger.warning("    " + diff_item)
 
 
+def verify_tutorial_title(project_history, soup):
+    """Check the tutorial has exactly one <h1>, before the first <h2>
+
+    The front end uses this <h1> as the title of the front matter
+    ("chapter 0").  Its text need not match the summary's <h1>.
+    """
+    heading_names = [elt.name for elt in soup.find_all(["h1", "h2"])]
+    n_h1s = heading_names.count("h1")
+    if n_h1s != 1:
+        project_history.raise_structure_error(
+            f"tutorial has {n_h1s} <h1> elements (expecting just one)"
+        )
+    if heading_names[0] != "h1":
+        project_history.raise_structure_error(
+            "tutorial's <h1> is not before its first <h2>"
+        )
+
+
 def tutorial_div_from_project_history(project_history):
     soup = soup_from_markdown_text(project_history.tutorial_text)
+    verify_tutorial_title(project_history, soup)
     warn_if_slug_usage_mismatch(project_history, soup)
 
     chapters = []
