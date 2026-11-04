@@ -69,6 +69,20 @@ SUMMARY_TEXT_FILE_BASENAME = "summary.md"
 METADATA_FILE_BASENAME = "metadata.json"
 CREDITS_TEXT_FILE_BASENAME = "credits.md"
 
+# Keep in sync by hand with the webapp's single source of truth for
+# supported languages: `kLanguagePreferenceOrder` in
+# "src/model/languages.ts".
+KNOWN_TUTORIAL_LANGUAGES = ["en", "de", "ga"]
+
+KNOWN_TUTORIAL_DIFFICULTIES = [
+    "getting-started",
+    "beginner",
+    "medium",
+    "advanced",
+]
+
+KNOWN_PROGRAM_KINDS = ["flat", "per-method"]
+
 
 ################################################################################
 
@@ -833,6 +847,59 @@ class ProjectHistory:
                 return f_in.read()
         else:
             raise InternalError("unknown tutorial_text_source")
+
+    @cached_property
+    def completed_metadata(self):
+        """The source metadata, validated, with defaults filled in
+
+        Contains all slots of the source ``metadata.json``, together
+        with the following, all guaranteed present:
+
+        * ``programKind`` — defaults to ``"flat"``;
+        * ``difficulty`` — required in the source;
+        * ``language`` — defaults to ``"en"``;
+        * ``tutorialId`` — defaults to the top-level directory name;
+        * ``displayName`` — never in the source; the text of the
+          summary's ``<h1>``.
+        """
+        metadata = json.loads(self.metadata_text)
+
+        if "displayName" in metadata:
+            self.raise_structure_error(
+                'metadata must not contain "displayName"'
+                " (it is derived from the summary's <h1>)"
+            )
+
+        if "difficulty" not in metadata:
+            self.raise_structure_error('metadata has no "difficulty"')
+
+        completed = {
+            "programKind": "flat",
+            "language": "en",
+            "tutorialId": self.top_level_directory_name,
+            **metadata,
+            "displayName": self.summary_display_name,
+        }
+
+        def require_known_value(slot, known_values):
+            value = completed[slot]
+            if value not in known_values:
+                self.raise_structure_error(
+                    f'metadata "{slot}" is {json.dumps(value)};'
+                    f" expecting one of {known_values}"
+                )
+
+        require_known_value("programKind", KNOWN_PROGRAM_KINDS)
+        require_known_value("difficulty", KNOWN_TUTORIAL_DIFFICULTIES)
+        require_known_value("language", KNOWN_TUTORIAL_LANGUAGES)
+
+        tutorial_id = completed["tutorialId"]
+        if not (isinstance(tutorial_id, str) and tutorial_id != ""):
+            self.raise_structure_error(
+                'metadata "tutorialId" must be a non-empty string'
+            )
+
+        return completed
 
     @cached_property
     def credits_text(self):
