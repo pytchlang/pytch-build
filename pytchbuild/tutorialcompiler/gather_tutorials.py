@@ -135,6 +135,8 @@ class TutorialCollection:
         bundles = [TutorialBundle.from_project_history(info.project_history)
                    for info in self.tutorials.values()]
 
+        verify_unique_tutorial_languages(bundles)
+
         for bundle in bundles:
             bundle.write_to_zipfile(zfile)
 
