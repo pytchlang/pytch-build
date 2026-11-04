@@ -36,7 +36,7 @@ class TutorialBundle:
         )
 
     def maybe_write_chapter_starts(self, out_zipfile):
-        program_kind = self.metadata.get("programKind", "flat")
+        program_kind = self.metadata["programKind"]
         if program_kind != "per-method":
             return
 
