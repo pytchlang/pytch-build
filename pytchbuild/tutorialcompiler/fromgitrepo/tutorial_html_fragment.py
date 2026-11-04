@@ -320,8 +320,7 @@ def tutorial_div_from_project_history(project_history):
 
     chapters.append(current_chapter)
 
-    # Round-trip to get compact representation:
-    metadata_json = json.dumps(json.loads(project_history.metadata_text))
+    metadata_json = json.dumps(project_history.emitted_metadata)
 
     tutorial_div = soup.new_tag("div", attrs={
         "class": "tutorial-bundle",
@@ -370,8 +369,7 @@ def summary_div_from_project_history(project_history):
     for img in soup.find_all("img"):
         img.parent.attrs["class"] = "image-container"
 
-    # Round-trip to get compact representation:
-    metadata_json = json.dumps(json.loads(project_history.metadata_text))
+    metadata_json = json.dumps(project_history.emitted_metadata)
 
     summary_div = soup.new_tag(
         "div",
