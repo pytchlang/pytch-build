@@ -1,10 +1,12 @@
 import pytest
+import json
 from dataclasses import dataclass
 from typing import List
 from bs4 import BeautifulSoup
 
 import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_history as TH
 import pytchbuild.tutorialcompiler.fromgitrepo.tutorial_html_fragment as THF
+import pytchbuild.tutorialcompiler.fromgitrepo.errors as TCE
 
 
 @dataclass
@@ -207,6 +209,41 @@ class TestHtmlFragment:
 
         final_chapter = div.find_all("div", class_="chapter-content")[-1]
         assert len(credit_items(final_chapter)) == 5
+
+    def test_tutorial_div_metadata(self, project_history):
+        history = project_history
+        div = THF.tutorial_div_from_project_history(history)
+        got_metadata = json.loads(div.attrs["data-metadata-json"])
+        assert got_metadata == history.emitted_metadata
+
+        # The tutorial's own <h1> differs from the summary's; the
+        # display name comes from the summary's.
+        assert div.find("h1").get_text() != got_metadata["displayName"]
+        assert got_metadata["displayName"] == history.summary_display_name
+
+    def test_summary_div_metadata(self, project_history):
+        history = project_history
+        div = THF.summary_div_from_project_history(history)
+        got_metadata = json.loads(div.attrs["data-metadata-json"])
+        assert got_metadata == history.emitted_metadata
+        assert got_metadata["displayName"] == div.find("h1").get_text()
+
+    @pytest.mark.parametrize(
+        "tutorial_text, exp_match",
+        [
+            ("Intro.\n\n## Chapter\n", "tutorial has 0 <h1> elements"),
+            ("# One\n\n# Two\n\n## Chapter\n", "tutorial has 2 <h1> elements"),
+            ("# One\n\n## Chapter\n\n# Two\n", "tutorial has 2 <h1> elements"),
+            ("## Chapter\n\n# Title\n", "<h1> is not before its first <h2>"),
+        ],
+    )
+    def test_bad_tutorial_title(
+        self, fresh_project_history, tutorial_text, exp_match
+    ):
+        history = fresh_project_history
+        history.tutorial_text = tutorial_text
+        with pytest.raises(TCE.TutorialStructureError, match=exp_match):
+            THF.tutorial_div_from_project_history(history)
 
 
 class TestPredicates:
