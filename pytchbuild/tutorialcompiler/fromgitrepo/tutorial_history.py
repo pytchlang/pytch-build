@@ -745,6 +745,25 @@ class ProjectHistory:
         else:
             raise InternalError("unknown tutorial_text_source")
 
+    @cached_property
+    def summary_display_name(self):
+        """The text of the sole ``<h1>`` of the summary
+
+        This is the title shown in the front end's list of tutorials,
+        and is the tutorial's canonical display name.  It need not
+        match the ``<h1>`` of the tutorial text itself.
+        """
+        summary_soup = soup_from_markdown_text(self.summary_text)
+        h1_elts = summary_soup.find_all("h1")
+        if len(h1_elts) != 1:
+            self.raise_structure_error(
+                f"summary has {len(h1_elts)} <h1> elements (expecting just one)"
+            )
+        display_name = h1_elts[0].get_text().strip()
+        if display_name == "":
+            self.raise_structure_error("summary has empty <h1>")
+        return display_name
+
     def project_checkpoint(self, m_slug, interaction_state):
         code_text = (
             self.initial_code_text if m_slug is None
