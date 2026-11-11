@@ -350,11 +350,8 @@ def commit_to_releases(repo, tutorials):
 
     sig = create_signature(repo)
 
-    build_sources = tutorials.build_sources_dicts
-    build_sources_yaml = yaml.dump(build_sources, sort_keys=False).encode()
-
     extra_files = {
-        "build-sources.yaml": build_sources_yaml,
+        "build-sources.yaml": build_sources_yaml(tutorials.build_sources_dicts),
     }
 
     release_recipes_tip = str(repo.revparse_single(RELEASE_RECIPES_BRANCH_NAME).id)
