@@ -100,7 +100,7 @@ class IdeMessage:
     @classmethod
     def from_path(cls, path):
         kind = path.stem
-        with path.open("rt") as f_in:
+        with path.open("rt", encoding="utf-8") as f_in:
             text = f_in.read()
         return cls(path.parent.name, kind, text)
 

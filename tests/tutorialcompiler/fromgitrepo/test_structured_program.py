@@ -10,7 +10,7 @@ import ast
 def fixture_code_text(relative_path):
     this_dir = Path(__file__).parent
     full_path = this_dir / "structured-program-fixtures" / relative_path
-    return full_path.open("rt").read()
+    return full_path.open("rt", encoding="utf-8").read()
 
 
 def structured_program_from_path(relative_path):

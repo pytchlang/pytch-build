@@ -482,9 +482,9 @@ class TestProjectHistory:
         repo.checkout("refs/heads/test-ordered-assets")
 
         metadata_path = Path(repo.workdir) / "boing/metadata.json"
-        metadata_obj = json.load(metadata_path.open())
+        metadata_obj = json.load(metadata_path.open(encoding="utf-8"))
         metadata_obj["orderedProjectAssets"] = orderedProjectAssets_value
-        metadata_path.write_text(json.dumps(metadata_obj))
+        metadata_path.write_text(json.dumps(metadata_obj), encoding="utf-8")
 
         project_history = TH.ProjectHistory(
             clean_cloned_repo.workdir,
@@ -725,7 +725,7 @@ class TestCreditsValidation:
             if credits_path.exists():
                 credits_path.unlink()
         else:
-            credits_path.write_text(credits_text)
+            credits_path.write_text(credits_text, encoding="utf-8")
         return TH.ProjectHistory(
             repo.workdir,
             "unit-tests-commits",

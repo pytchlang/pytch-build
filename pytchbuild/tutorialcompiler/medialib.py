@@ -128,5 +128,5 @@ class MediaLibraryData:
             entry.write_files(out_dir, self.data_from_content_id)
 
         index_data = [e.as_output_dict() for e in self.entries]
-        with (out_dir / "index.json").open("wt") as f_out:
+        with (out_dir / "index.json").open("wt", encoding="utf-8") as f_out:
             json.dump(index_data, f_out, indent=2)

@@ -33,6 +33,15 @@ def yaml_load(yaml_content):
     return yaml.load(yaml_content, yaml.Loader)
 
 
+def build_sources_yaml(build_sources):
+    """Return the UTF-8 encoding of the YAML for `build_sources`
+
+    Non-ASCII characters (e.g., in tutorial names) appear as themselves
+    rather than as escapes, so the file is readable and searchable.
+    """
+    return yaml.dump(build_sources, sort_keys=False, allow_unicode=True).encode("utf-8")
+
+
 @dataclass
 class TutorialSummary:
     name: str  # Currently just for human readers
@@ -69,7 +78,7 @@ class TutorialCollection:
         Source = TutorialCollection.IndexSource
         if source == Source.WORKING_DIRECTORY:
             index_path = Path(repo.workdir) / "index.yaml"
-            with index_path.open("rt") as yaml_file:
+            with index_path.open("rt", encoding="utf-8") as yaml_file:
                 return yaml_file.read()
         elif source == Source.RECIPES_TIP:
             return index_data_at_recipes_tip(repo).decode("utf-8")
@@ -341,11 +350,8 @@ def commit_to_releases(repo, tutorials):
 
     sig = create_signature(repo)
 
-    build_sources = tutorials.build_sources_dicts
-    build_sources_yaml = yaml.dump(build_sources, sort_keys=False).encode()
-
     extra_files = {
-        "build-sources.yaml": build_sources_yaml,
+        "build-sources.yaml": build_sources_yaml(tutorials.build_sources_dicts),
     }
 
     release_recipes_tip = str(repo.revparse_single(RELEASE_RECIPES_BRANCH_NAME).id)
