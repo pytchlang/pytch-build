@@ -32,16 +32,16 @@ def create_new_tutorial_branch_and_structure(
 
     # TODO: Worth moving to, e.g., Jinja for these?
 
-    with (new_directory / "tutorial.md").open("wt") as f_out:
+    with (new_directory / "tutorial.md").open("wt", encoding="utf-8") as f_out:
         f_out.write(f"# {tutorial_name}\n\nTODO: Write tutorial\n")
 
-    with (new_directory / "summary.md").open("wt") as f_out:
+    with (new_directory / "summary.md").open("wt", encoding="utf-8") as f_out:
         f_out.write(f"# {tutorial_name}\n\nTODO: Write summary\n")
 
-    with (new_directory / "metadata.json").open("wt") as f_out:
+    with (new_directory / "metadata.json").open("wt", encoding="utf-8") as f_out:
         f_out.write('{"difficulty": "medium"}\n')
 
-    with (new_directory / "credits.md").open("wt") as f_out:
+    with (new_directory / "credits.md").open("wt", encoding="utf-8") as f_out:
         # No real credit bullets yet: a bullet naming an asset which does
         # not exist would fail the build's credits validation.  The example
         # is inside a fenced code block, which the parser ignores.
@@ -76,7 +76,7 @@ def create_new_tutorial_branch_and_structure(
         "Add tutorial, summary, metadata, credits placeholders",
     )
 
-    with (new_directory / "code.py").open("wt") as f_out:
+    with (new_directory / "code.py").open("wt", encoding="utf-8") as f_out:
         f_out.write("import pytch\n")
 
     commit_files(
@@ -96,7 +96,7 @@ def add_new_tutorial_to_index_yaml(repo, name, branch):
     if not index_yaml_path.is_file():
         raise RuntimeError("file index.yaml not found")
 
-    with index_yaml_path.open("at") as f_out:
+    with index_yaml_path.open("at", encoding="utf-8") as f_out:
         f_out.write(f"- name: {name}\n  tip-commit: {branch}\n")
 
     sig = create_signature(repo)

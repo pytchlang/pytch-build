@@ -31,7 +31,7 @@ def commit_lut_from_branch_records(branch_records):
 )
 def main(repository_path, index_source):
     repo_root = Path(pygit2.Repository(repository_path).workdir)
-    with (repo_root / "build-sources.yaml").open() as f_in:
+    with (repo_root / "build-sources.yaml").open(encoding="utf-8") as f_in:
         build_sources_data = yaml.load(f_in, yaml.Loader)
         build_sources_lut = commit_lut_from_branch_records(
             build_sources_data

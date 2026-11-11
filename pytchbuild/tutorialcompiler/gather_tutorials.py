@@ -69,7 +69,7 @@ class TutorialCollection:
         Source = TutorialCollection.IndexSource
         if source == Source.WORKING_DIRECTORY:
             index_path = Path(repo.workdir) / "index.yaml"
-            with index_path.open("rt") as yaml_file:
+            with index_path.open("rt", encoding="utf-8") as yaml_file:
                 return yaml_file.read()
         elif source == Source.RECIPES_TIP:
             return index_data_at_recipes_tip(repo).decode("utf-8")

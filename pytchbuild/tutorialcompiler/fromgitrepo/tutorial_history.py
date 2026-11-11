@@ -771,7 +771,7 @@ class ProjectHistory:
             return tip_commit.text_file_contents(self.tutorial_text_path)
         elif self.tutorial_text_source == self.TutorialTextSource.WORKING_DIRECTORY:
             full_path = self.workdir_path / self.tutorial_text_path
-            with full_path.open("rt") as f_in:
+            with full_path.open("rt", encoding="utf-8") as f_in:
                 return f_in.read()
         else:
             raise InternalError("unknown tutorial_text_source")
@@ -783,7 +783,7 @@ class ProjectHistory:
             return tip_commit.text_file_contents(self.summary_text_path)
         elif self.tutorial_text_source == self.TutorialTextSource.WORKING_DIRECTORY:
             full_path = self.workdir_path / self.summary_text_path
-            with full_path.open("rt") as f_in:
+            with full_path.open("rt", encoding="utf-8") as f_in:
                 return f_in.read()
         else:
             raise InternalError("unknown tutorial_text_source")
@@ -872,7 +872,7 @@ class ProjectHistory:
             return tip_commit.text_file_contents(self.metadata_text_path)
         elif self.tutorial_text_source == self.TutorialTextSource.WORKING_DIRECTORY:
             full_path = self.workdir_path / self.metadata_text_path
-            with full_path.open("rt") as f_in:
+            with full_path.open("rt", encoding="utf-8") as f_in:
                 return f_in.read()
         else:
             raise InternalError("unknown tutorial_text_source")
@@ -957,7 +957,7 @@ class ProjectHistory:
         elif self.tutorial_text_source == self.TutorialTextSource.WORKING_DIRECTORY:
             full_path = self.workdir_path / self.credits_text_path
             try:
-                with full_path.open("rt") as f_in:
+                with full_path.open("rt", encoding="utf-8") as f_in:
                     return f_in.read()
             except FileNotFoundError:
                 raise TutorialStructureError(
