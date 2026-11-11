@@ -7,7 +7,7 @@ from .tutorialcompiler.gather_tutorials import TutorialCollection
 @click.command()
 @click.option(
     "-o", "--output-file",
-    type=click.File(mode="wt"),
+    type=click.File(mode="wt", encoding="utf-8"),
     required=True,
     help="where to write the ReST giving asset credits",
 )
