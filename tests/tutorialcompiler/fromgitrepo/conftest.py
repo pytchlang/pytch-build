@@ -79,19 +79,19 @@ def cloned_repo(tmpdir_factory, discovered_repository_path):
 
     tutorial_path = clone_path / "boing/tutorial.md"
 
-    with open(tutorial_path, "wt") as f_tutorial:
+    with open(tutorial_path, "wt", encoding="utf-8") as f_tutorial:
         f_tutorial.write("# Working copy of tutorial\n"
                          "\n\n{{< commit import-pytch >}}\n"
                          "\n\n{{< commit add-Alien-skeleton >}}\n")
 
     summary_path = clone_path / "boing/summary.md"
 
-    with open(summary_path, "wt") as f_summary:
+    with open(summary_path, "wt", encoding="utf-8") as f_summary:
         f_summary.write("# Working summary for Boing\n")
 
     metadata_path = clone_path / "boing/metadata.json"
 
-    with open(metadata_path, "wt") as f_metadata:
+    with open(metadata_path, "wt", encoding="utf-8") as f_metadata:
         f_metadata.write('{"difficulty": "beginner"}')
 
     return repo

@@ -16,7 +16,7 @@ class TestEnsureStatusClean:
 
     def test_when_untracked_files(self, clean_cloned_repo):
         new_file_path = Path(clean_cloned_repo.workdir) / "hello.txt"
-        with new_file_path.open("wt") as f_out:
+        with new_file_path.open("wt", encoding="utf-8") as f_out:
             f_out.write("Hello world!\n")
         with pytest.raises(RuntimeError, match="repo not clean"):
             TCRF.ensure_status_clean(clean_cloned_repo)
@@ -47,7 +47,7 @@ class TestCommitFiles:
 
         workdir_path = Path(clean_cloned_repo.workdir)
         path_to_modify = workdir_path / "boing" / "tutorial.md"
-        with path_to_modify.open("at") as f_out:
+        with path_to_modify.open("at", encoding="utf-8") as f_out:
             f_out.write("\n\nHello some more text!\n")
 
         sig = TCRF.create_signature(clean_cloned_repo)
