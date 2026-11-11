@@ -41,3 +41,17 @@ class TestVerifyUniqueTutorialLanguages:
                 _bundle("boing--ga", "boing", "ga"),
                 _bundle("boing--ga-v2", "boing", "ga"),
             ])
+
+
+class TestBuildSourcesYaml:
+    def test_non_ascii_name(self):
+        build_sources = [{
+            "name": "Script-ar-script Buail an t-úll",
+            "branch_name": "bn/sbs-shoot-the-fruit--ga-01",
+            "dir_name": "sbs-shoot-the-fruit--ga",
+            "commit_id": "0123456789abcdef0123456789abcdef01234567",
+        }]
+        yaml_bytes = GT.build_sources_yaml(build_sources)
+        assert "Buail an t-úll".encode("utf-8") in yaml_bytes
+        assert b"\\x" not in yaml_bytes
+        assert GT.yaml_load(yaml_bytes) == build_sources
